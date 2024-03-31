@@ -1,4 +1,4 @@
-package com.newsboy.server.global.model;
+package com.OnedayOwner.server.global.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
