@@ -26,4 +26,6 @@ public class Customer extends BaseTimeEntity {
 
     private LocalDate birth;
     private int point;
+
+
 }

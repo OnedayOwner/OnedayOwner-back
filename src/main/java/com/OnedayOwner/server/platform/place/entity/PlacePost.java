@@ -14,4 +14,12 @@ public class PlacePost extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "place_post_id")
     private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "place_info_id")
+    private PlaceInfo placeInfo;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "place_description_id")
+    private PlaceDescription placeDescription;
 }

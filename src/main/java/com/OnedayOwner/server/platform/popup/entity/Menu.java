@@ -19,4 +19,8 @@ public class Menu extends BaseTimeEntity {
     private String name;
     private int price;
     private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "popup_restaurant_id")
+    private PopupRestaurant popupRestaurant;
 }
