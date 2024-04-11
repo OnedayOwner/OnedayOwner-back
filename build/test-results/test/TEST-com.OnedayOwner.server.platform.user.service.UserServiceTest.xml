@@ -1,99 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta http-equiv="x-ua-compatible" content="IE=edge"/>
-<title>Test results - CustomerServiceTest</title>
-<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
-<link href="../css/style.css" rel="stylesheet" type="text/css"/>
-<script src="../js/report.js" type="text/javascript"></script>
-</head>
-<body>
-<div id="content">
-<h1>CustomerServiceTest</h1>
-<div class="breadcrumbs">
-<a href="../index.html">all</a> &gt; 
-<a href="../packages/com.OnedayOwner.server.platform.user.service.html">com.OnedayOwner.server.platform.user.service</a> &gt; CustomerServiceTest</div>
-<div id="summary">
-<table>
-<tr>
-<td>
-<div class="summaryGroup">
-<table>
-<tr>
-<td>
-<div class="infoBox" id="tests">
-<div class="counter">2</div>
-<p>tests</p>
-</div>
-</td>
-<td>
-<div class="infoBox" id="failures">
-<div class="counter">0</div>
-<p>failures</p>
-</div>
-</td>
-<td>
-<div class="infoBox" id="ignored">
-<div class="counter">0</div>
-<p>ignored</p>
-</div>
-</td>
-<td>
-<div class="infoBox" id="duration">
-<div class="counter">1.463s</div>
-<p>duration</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</td>
-<td>
-<div class="infoBox success" id="successRate">
-<div class="percent">100%</div>
-<p>successful</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div id="tabs">
-<ul class="tabLinks">
-<li>
-<a href="#tab0">Tests</a>
-</li>
-<li>
-<a href="#tab1">Standard output</a>
-</li>
-</ul>
-<div id="tab0" class="tab">
-<h2>Tests</h2>
-<table>
-<thead>
-<tr>
-<th>Test</th>
-<th>Duration</th>
-<th>Result</th>
-</tr>
-</thead>
-<tr>
-<td class="success">로그인()</td>
-<td class="success">1.447s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">회원가입()</td>
-<td class="success">0.016s</td>
-<td class="success">passed</td>
-</tr>
-</table>
-</div>
-<div id="tab1" class="tab">
-<h2>Standard output</h2>
-<span class="code">
-<pre>00:45:35.959 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.OnedayOwner.server.platform.user.service.CustomerServiceTest]: CustomerServiceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-00:45:36.349 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.OnedayOwner.server.OnedayOwnerServerApplication for test class com.OnedayOwner.server.platform.user.service.CustomerServiceTest
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.OnedayOwner.server.platform.user.service.UserServiceTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-04-11T08:28:00" hostname="DESKTOP-PGD89KD" time="1.334">
+  <properties/>
+  <testcase name="로그인()" classname="com.OnedayOwner.server.platform.user.service.UserServiceTest" time="1.309"/>
+  <testcase name="회원가입()" classname="com.OnedayOwner.server.platform.user.service.UserServiceTest" time="0.023"/>
+  <system-out><![CDATA[17:27:51.805 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.OnedayOwner.server.platform.user.service.UserServiceTest]: UserServiceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+17:27:52.140 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.OnedayOwner.server.OnedayOwnerServerApplication for test class com.OnedayOwner.server.platform.user.service.UserServiceTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -103,19 +14,19 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.2.4)
 
-2024-04-11T00:45:37.251+09:00  INFO 3088 --- [    Test worker] c.O.s.p.u.service.CustomerServiceTest    : Starting CustomerServiceTest using Java 17.0.8 with PID 3088 (started by 529ac in C:\Users\529ac\Desktop\Toy Project\OnedayOwner-back)
-2024-04-11T00:45:37.256+09:00  INFO 3088 --- [    Test worker] c.O.s.p.u.service.CustomerServiceTest    : No active profile set, falling back to 1 default profile: &quot;default&quot;
-2024-04-11T00:45:38.739+09:00  INFO 3088 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2024-04-11T00:45:38.945+09:00  INFO 3088 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 185 ms. Found 1 JPA repository interface.
-2024-04-11T00:45:39.921+09:00  INFO 3088 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2024-04-11T00:45:40.066+09:00  INFO 3088 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
-2024-04-11T00:45:40.179+09:00  INFO 3088 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2024-04-11T00:45:40.807+09:00  INFO 3088 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2024-04-11T00:45:40.875+09:00  INFO 3088 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2024-04-11T00:45:41.018+09:00  INFO 3088 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:tcp://localhost/~/test user=SA
-2024-04-11T00:45:41.021+09:00  INFO 3088 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2024-04-11T00:45:41.071+09:00  WARN 3088 --- [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2024-04-11T00:45:43.188+09:00  INFO 3088 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-04-11T17:27:52.882+09:00  INFO 18064 --- [    Test worker] c.O.s.p.user.service.UserServiceTest     : Starting UserServiceTest using Java 17.0.8 with PID 18064 (started by 529ac in C:\Users\529ac\Desktop\Toy Project\OnedayOwner-back)
+2024-04-11T17:27:52.882+09:00  INFO 18064 --- [    Test worker] c.O.s.p.user.service.UserServiceTest     : No active profile set, falling back to 1 default profile: "default"
+2024-04-11T17:27:54.269+09:00  INFO 18064 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-04-11T17:27:54.485+09:00  INFO 18064 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 187 ms. Found 1 JPA repository interface.
+2024-04-11T17:27:55.463+09:00  INFO 18064 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-04-11T17:27:55.635+09:00  INFO 18064 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2024-04-11T17:27:55.722+09:00  INFO 18064 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-04-11T17:27:56.227+09:00  INFO 18064 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-04-11T17:27:56.321+09:00  INFO 18064 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-04-11T17:27:56.430+09:00  INFO 18064 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:tcp://localhost/~/test user=SA
+2024-04-11T17:27:56.446+09:00  INFO 18064 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-04-11T17:27:56.508+09:00  WARN 18064 --- [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-04-11T17:27:58.704+09:00  INFO 18064 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 Hibernate: 
     drop table if exists customer cascade 
 Hibernate: 
@@ -327,9 +238,9 @@ Hibernate:
        add constraint FK6m8t814b7jj5vst549hnp9lpd 
        foreign key (reservation_id) 
        references reservation
-2024-04-11T00:45:43.394+09:00  INFO 3088 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2024-04-11T00:45:44.498+09:00  WARN 3088 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2024-04-11T00:45:45.337+09:00  INFO 3088 --- [    Test worker] c.O.s.p.u.service.CustomerServiceTest    : Started CustomerServiceTest in 8.637 seconds (process running for 11.297)
+2024-04-11T17:27:58.875+09:00  INFO 18064 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-04-11T17:27:59.974+09:00  WARN 18064 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-04-11T17:28:00.866+09:00  INFO 18064 --- [    Test worker] c.O.s.p.user.service.UserServiceTest     : Started UserServiceTest in 8.447 seconds (process running for 10.948)
 Hibernate: 
     insert 
     into
@@ -376,19 +287,6 @@ Hibernate:
         customer c1_0 
     where
         c1_0.email=?
-</pre>
-</span>
-</div>
-</div>
-<div id="footer">
-<p>
-<div>
-<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
-<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
-</label>
-</div>Generated by 
-<a href="http://www.gradle.org">Gradle 8.7</a> at 2024. 4. 11. 오전 12:45:47</p>
-</div>
-</div>
-</body>
-</html>
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

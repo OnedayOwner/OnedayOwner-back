@@ -1,8 +1,6 @@
 package com.OnedayOwner.server.platform.user.service;
 
-import com.OnedayOwner.server.platform.user.dto.request.CustomerJoinRequest;
-import com.OnedayOwner.server.platform.user.dto.request.CustomerLoginRequest;
-import com.OnedayOwner.server.platform.user.dto.response.CustomerLoginResponse;
+import com.OnedayOwner.server.platform.user.dto.UserDTO;
 import com.OnedayOwner.server.platform.user.entity.Customer;
 import com.OnedayOwner.server.platform.user.entity.Gender;
 import com.OnedayOwner.server.platform.user.repository.CustomerRepository;
@@ -17,10 +15,10 @@ import java.util.Optional;
 
 @SpringBootTest
 @Transactional
-public class CustomerServiceTest {
+public class UserServiceTest {
 
     @Autowired
-    CustomerService customerService;
+    UserService userService;
     @Autowired
     CustomerRepository customerRepository;
 
@@ -28,7 +26,7 @@ public class CustomerServiceTest {
     public void 회원가입() {
         //given
         String email="1234@naver.com";
-        CustomerJoinRequest customerJoinRequest = CustomerJoinRequest.builder()
+        UserDTO.UserJoinRequest userJoinRequest = UserDTO.UserJoinRequest.builder()
                 .name("Kim")
                 .phoneNumber("010-1234-5678")
                 .gender(Gender.MALE)
@@ -38,7 +36,7 @@ public class CustomerServiceTest {
                 .build();
 
         //when
-        customerService.joinCustomer(customerJoinRequest);
+        userService.joinUser(userJoinRequest);
 
         //then
         Optional<Customer> findCustomer = customerRepository.findCustomerByEmail(email);
@@ -46,9 +44,9 @@ public class CustomerServiceTest {
             throw new IllegalStateException("회원가입이 진행되지 않았습니다.");
         }
         Customer customer=findCustomer.get();
-        Assertions.assertEquals(customer.getName(),customerJoinRequest.getName());
-        Assertions.assertEquals(customer.getPassword(),customerJoinRequest.getPassword());
-        Assertions.assertEquals(customer.getPhoneNumber(),customerJoinRequest.getPhoneNumber());
+        Assertions.assertEquals(customer.getName(),userJoinRequest.getName());
+        Assertions.assertEquals(customer.getPassword(),userJoinRequest.getPassword());
+        Assertions.assertEquals(customer.getPhoneNumber(),userJoinRequest.getPhoneNumber());
     }
 
     @Test
@@ -56,7 +54,7 @@ public class CustomerServiceTest {
         //given
         String email="1234@naver.com";
         String password="1234";
-        CustomerJoinRequest customerJoinRequest = CustomerJoinRequest.builder()
+        UserDTO.UserJoinRequest userJoinRequest = UserDTO.UserJoinRequest.builder()
                 .name("Kim")
                 .phoneNumber("010-1234-5678")
                 .gender(Gender.MALE)
@@ -64,19 +62,19 @@ public class CustomerServiceTest {
                 .email(email)
                 .password(password)
                 .build();
-        customerService.joinCustomer(customerJoinRequest);
+        userService.joinUser(userJoinRequest);
 
         //when
-        CustomerLoginRequest customerLoginRequest = CustomerLoginRequest.builder()
+        UserDTO.UserLoginRequest userLoginRequest = UserDTO.UserLoginRequest.builder()
                 .email(email)
                 .password(password)
                 .build();
-        CustomerLoginResponse findCustomer = customerService.loginCustomer(customerLoginRequest);
+        UserDTO.UserLoginResponse findUser = userService.loginUser(userLoginRequest);
 
         //then
-        if (findCustomer==null){
+        if (findUser==null){
             throw new IllegalStateException("로그인이 진행되지 않았습니다.");
         }
-        Assertions.assertEquals(findCustomer.getName(),customerJoinRequest.getName());
+        Assertions.assertEquals(findUser.getName(),userJoinRequest.getName());
     }
 }
