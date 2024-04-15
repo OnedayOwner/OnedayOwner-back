@@ -5,6 +5,7 @@ import com.OnedayOwner.server.platform.place.entity.PlaceInfo;
 import com.OnedayOwner.server.platform.user.entity.Owner;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -36,4 +37,13 @@ public class PopupRestaurant extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_info_id")
     private PlaceInfo placeInfo;
+
+    @Builder
+    public PopupRestaurant(String name, LocalDate startDate , LocalDate endDate, Owner owner, PlaceInfo placeInfo) {
+        this.name = name;
+        this.startDate=startDate;
+        this.endDate=endDate;
+        this.owner=owner;
+        this.placeInfo=placeInfo;
+    }
 }
