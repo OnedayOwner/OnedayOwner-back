@@ -1,16 +1,13 @@
-package com.OnedayOwner.server.platform.popup.entity;
+package com.OnedayOwner.server.platform.reservation.entity;
 
-import com.OnedayOwner.server.platform.feedback.entity.Feedback;
-import com.OnedayOwner.server.platform.place.entity.PlaceInfo;
+import com.OnedayOwner.server.platform.popup.entity.PopupRestaurant;
 import com.OnedayOwner.server.platform.user.entity.Customer;
-import com.OnedayOwner.server.platform.user.entity.Owner;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,7 +17,7 @@ import java.util.List;
 public class Reservation {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
     private Long id;
 

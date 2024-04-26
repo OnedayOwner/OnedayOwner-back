@@ -1,13 +1,11 @@
-package com.OnedayOwner.server.platform.popup.entity;
+package com.OnedayOwner.server.platform.reservation.entity;
 
-import com.OnedayOwner.server.platform.user.entity.Customer;
+import com.OnedayOwner.server.platform.popup.entity.Menu;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter

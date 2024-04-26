@@ -1,38 +1,40 @@
 package com.OnedayOwner.server.platform.popup.entity;
 
 import com.OnedayOwner.server.global.model.BaseTimeEntity;
-import com.OnedayOwner.server.platform.user.entity.Customer;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Menu extends BaseTimeEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class BusinessTime extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "menu_id")
+    @Column(name = "business_time_id")
     private Long id;
 
-    private String name;
-    private int price;
-    private String description;
+    private LocalTime openTime;
+    private LocalTime closeTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "popup_restaurant_id")
     private PopupRestaurant popupRestaurant;
 
-    @Builder
-    public Menu(String name, int price , String description, PopupRestaurant popupRestaurant) {
-        this.name = name;
-        this.price=price;
-        this.description=description;
 
+    @Builder
+    public BusinessTime(PopupRestaurant popupRestaurant, LocalTime openTime, LocalTime closeTime) {
         this.popupRestaurant = popupRestaurant;
-        popupRestaurant.addMenu(this);
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+
+        popupRestaurant.addBusinessTime(this);
     }
+
 }

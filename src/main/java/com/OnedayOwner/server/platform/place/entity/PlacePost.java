@@ -1,6 +1,7 @@
 package com.OnedayOwner.server.platform.place.entity;
 
 import com.OnedayOwner.server.global.model.BaseTimeEntity;
+import com.OnedayOwner.server.platform.Address;
 import com.OnedayOwner.server.platform.user.entity.PlaceProvider;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -17,9 +18,7 @@ public class PlacePost extends BaseTimeEntity {
     @Column(name = "place_post_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "place_info_id")
-    private PlaceInfo placeInfo;
+    private Address address;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_description_id")
@@ -30,8 +29,8 @@ public class PlacePost extends BaseTimeEntity {
     private PlaceProvider placeProvider;
 
     @Builder
-    public PlacePost(PlaceInfo placeInfo, PlaceDescription placeDescription, PlaceProvider placeProvider) {
-        this.placeInfo=placeInfo;
+    public PlacePost(Address address, PlaceDescription placeDescription, PlaceProvider placeProvider) {
+        this.address=address;
         this.placeDescription=placeDescription;
         this.placeProvider=placeProvider;
     }
