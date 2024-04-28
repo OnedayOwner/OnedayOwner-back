@@ -33,7 +33,11 @@ public class PopupService {
 
 
     @Transactional
-    public PopupDto.PopupSummary registerPopup(PopupDto.PopupRestaurantForm restaurantForm, PopupDto.AddressForm addressForm, Long ownerId){
+    public PopupDto.PopupInBusinessDetail registerPopup(
+            PopupDto.PopupRestaurantForm restaurantForm,
+            PopupDto.AddressForm addressForm,
+            List<PopupDto.MenuForm> menuForms,
+            Long ownerId){
         //레스토랑 등록
         PopupRestaurant restaurant = popupRestaurantRepository.save(PopupRestaurant.builder()
                 .name(restaurantForm.getName())
@@ -48,24 +52,41 @@ public class PopupService {
                 ))
                 .build());
 
+        registerMenus(menuForms, restaurant.getId());//메뉴 등록
+
         restaurantForm.getBusinessTimes().forEach(o -> {
             BusinessTime businessTime = BusinessTime.builder()
                     .openTime(o.getOpenTime())
                     .closeTime(o.getCloseTime())
                     .popupRestaurant(restaurant)
                     .build();
-            businessTimeRepository.save(businessTime);
-            registerReservationTime(o, restaurant);
+            businessTimeRepository.save(businessTime);//영업시간 등록
+            registerReservationTime(o, restaurant);//예약시간 등록
         });
 
 
-        return PopupDto.PopupSummary.builder()
-                .id(restaurant.getId())
-                .name(restaurant.getName())
-                .address(restaurant.getAddress())
-                .description(restaurant.getDescription())
+        return PopupDto.PopupInBusinessDetail.builder()
+                .popupRestaurant(restaurant)
                 .build();
 
+    }
+
+    @Transactional
+    public PopupDto.PopupInBusinessDetail getPopupInBusinessDetail(Long ownerId){
+        return popupRestaurantRepository.getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimes(ownerId)
+                .map(PopupDto.PopupInBusinessDetail::new)
+                .orElseThrow(
+                        () -> new BusinessException(ErrorCode.IN_BUSINESS_POPUP_NOT_FOUND)
+                );
+    }
+
+    @Transactional
+    public PopupDto.PopupHistoryDetail getPopupHistoryDetail(Long popupId){
+        return popupRestaurantRepository.getPopupRestaurantWithMenus(popupId)
+                .map(PopupDto.PopupHistoryDetail::new)
+                .orElseThrow(
+                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+                );
     }
 
     @Transactional
@@ -87,20 +108,40 @@ public class PopupService {
     }
 
     @Transactional
-    public Menu registerMenu(PopupDto.MenuForm menuForm, Long popupId){
-        return menuRepository.save(Menu.builder()
+    public PopupDto.MenuDetail registerMenu(PopupDto.MenuForm menuForm, Long popupId){
+        return new PopupDto.MenuDetail(menuRepository.save(Menu.builder()
                 .name(menuForm.getName())
                 .price(menuForm.getPrice())
                 .description(menuForm.getDescription())
                 .popupRestaurant(popupRestaurantRepository.findById(popupId).orElseThrow(
                         () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
                 ))
-                .build());
+                .build()));
     }
 
     @Transactional
-    public List<PopupRestaurant> getPopupListByOwner(Long ownerId){
-        return popupRestaurantRepository.findAllByOwnerIdAndInBusiness(ownerId, false);
+    public List<PopupDto.MenuDetail> registerMenus(List<PopupDto.MenuForm> menuForms, Long popupId){
+        return menuForms.stream()
+                .map(menuForm -> menuRepository.save(Menu.builder()
+                    .name(menuForm.getName())
+                    .price(menuForm.getPrice())
+                    .description(menuForm.getDescription())
+                    .popupRestaurant(popupRestaurantRepository.findById(popupId).orElseThrow(
+                            () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+                    ))
+                    .build()))
+                .toList()
+                .stream()
+                .map(PopupDto.MenuDetail::new)
+                .toList();
+    }
+
+    @Transactional
+    public List<PopupDto.PopupSummary> getPopupHistoryByOwner(Long ownerId){
+        return popupRestaurantRepository.findAllByOwnerIdAndInBusiness(ownerId, false)
+                .stream()
+                .map(PopupDto.PopupSummary::new)
+                .toList();
     }
 
     @Transactional

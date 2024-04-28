@@ -21,16 +21,18 @@ public class Menu extends BaseTimeEntity {
     private String name;
     private int price;
     private String description;
+    private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "popup_restaurant_id")
     private PopupRestaurant popupRestaurant;
 
     @Builder
-    public Menu(String name, int price , String description, PopupRestaurant popupRestaurant) {
+    public Menu(String name, int price , String description, PopupRestaurant popupRestaurant, String imageUrl) {
         this.name = name;
         this.price=price;
         this.description=description;
+        this.imageUrl=imageUrl;
 
         this.popupRestaurant = popupRestaurant;
         popupRestaurant.addMenu(this);
