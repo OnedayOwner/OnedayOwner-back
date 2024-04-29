@@ -17,13 +17,11 @@ public class PopupController {
 
     @PostMapping("/register")
     public ResponseEntity<PopupDto.PopupInBusinessDetail> registerPopup(
-        PopupDto.PopupRestaurantForm form,
-        PopupDto.AddressForm addressForm,
-        List<PopupDto.MenuForm> menuForms,
+        @RequestBody PopupDto.PopupRestaurantForm form,
         Long ownerId
     ) {
         return ResponseEntity.ok()
-            .body(popupService.registerPopup(form, addressForm, menuForms, ownerId));
+            .body(popupService.registerPopup(form, ownerId));
     }
 
     @PostMapping("/{popupId}/menu")

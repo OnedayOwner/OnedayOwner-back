@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -35,24 +36,22 @@ public class PopupService {
     @Transactional
     public PopupDto.PopupInBusinessDetail registerPopup(
             PopupDto.PopupRestaurantForm restaurantForm,
-            PopupDto.AddressForm addressForm,
-            List<PopupDto.MenuForm> menuForms,
             Long ownerId){
         //레스토랑 등록
         PopupRestaurant restaurant = popupRestaurantRepository.save(PopupRestaurant.builder()
                 .name(restaurantForm.getName())
                 .address(Address.builder()
-                        .city(addressForm.getCity())
-                        .street(addressForm.getStreet())
-                        .zipcode(addressForm.getZipcode())
-                        .detail(addressForm.getDetail())
+                        .city(restaurantForm.getAddress().getCity())
+                        .street(restaurantForm.getAddress().getStreet())
+                        .zipcode(restaurantForm.getAddress().getZipcode())
+                        .detail(restaurantForm.getAddress().getDetail())
                         .build())
                 .owner(ownerRepository.findById(ownerId).orElseThrow(
                         () -> new BusinessException(ErrorCode.OWNER_NOT_FOUND)
                 ))
                 .build());
 
-        registerMenus(menuForms, restaurant.getId());//메뉴 등록
+        registerMenus(restaurantForm.getMenuForms(), restaurant.getId());//메뉴 등록
 
         restaurantForm.getBusinessTimes().forEach(o -> {
             BusinessTime businessTime = BusinessTime.builder()
@@ -63,7 +62,6 @@ public class PopupService {
             businessTimeRepository.save(businessTime);//영업시간 등록
             registerReservationTime(o, restaurant);//예약시간 등록
         });
-
 
         return PopupDto.PopupInBusinessDetail.builder()
                 .popupRestaurant(restaurant)

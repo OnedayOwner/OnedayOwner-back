@@ -37,6 +37,7 @@ public class PopupRestaurant extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private Owner owner;
+
     private Address address;
     private Boolean inBusiness;
     private String description;

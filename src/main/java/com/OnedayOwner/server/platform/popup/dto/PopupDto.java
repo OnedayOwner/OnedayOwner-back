@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -22,16 +23,21 @@ public class PopupDto {
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
         private String description;
+        private AddressForm address;
         private List<BusinessTimeForm> businessTimes;
+        private List<MenuForm> menuForms;
 
         @Builder
-        public PopupRestaurantForm(String name, LocalDateTime startDateTime, LocalDateTime endDateTime, String description, List<BusinessTimeForm> businessTimes) {
+        public PopupRestaurantForm(String name, LocalDateTime startDateTime, LocalDateTime endDateTime, String description,
+                                   AddressForm address, List<BusinessTimeForm> businessTimes, List<MenuForm> menuForms
+        ) {
             this.name = name;
             this.startDateTime = startDateTime;
             this.endDateTime = endDateTime;
             this.description = description;
+            this.address = address;
             this.businessTimes = businessTimes;
-
+            this.menuForms = menuForms;
         }
     }
 
