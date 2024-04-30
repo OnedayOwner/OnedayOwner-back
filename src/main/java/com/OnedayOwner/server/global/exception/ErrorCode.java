@@ -18,6 +18,10 @@ public enum ErrorCode {
     NULL_POINT_ERROR(404, "C005", "Null Point Exception"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
     INTERNAL_SERVER_ERROR(500, "C007", "Internal Server Error"),
+    OWNER_NOT_FOUND(404, "C008", "Owner not found"),
+    POPUP_NOT_FOUND(404, "C009", "Popup not found"),
+    IN_BUSINESS_POPUP_NOT_FOUND(404, "C010", "진행중인 팝업식당이 없습니다."),
+
 
     ;
 
