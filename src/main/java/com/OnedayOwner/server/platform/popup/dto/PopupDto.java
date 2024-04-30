@@ -42,7 +42,7 @@ public class PopupDto {
     }
 
     @Getter
-    @NoArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class BusinessTimeForm{
         private LocalTime openTime;
         private LocalTime closeTime;
@@ -118,7 +118,7 @@ public class PopupDto {
     }
 
     @Getter
-    @NoArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class PopupHistoryDetail extends PopupSummary{
 
         @Builder
@@ -147,7 +147,7 @@ public class PopupDto {
     }
 
     @Getter
-    @NoArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class MenuSummary{
         private Long id;
         private String name;

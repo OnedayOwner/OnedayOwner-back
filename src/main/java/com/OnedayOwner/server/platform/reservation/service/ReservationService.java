@@ -1,5 +1,6 @@
 package com.OnedayOwner.server.platform.reservation.service;
 
+import com.OnedayOwner.server.platform.reservation.dto.ReservationDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,14 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReservationService {
 
     /*
-    팝업 매장 리스트 조회
-     */
-
-    /*
     팝업 매장 정보 조회
     예약 form 전송
      */
+    public void registerReservation() {
 
+    }
 
     /*
     예약 form 받아서 예약 생성
