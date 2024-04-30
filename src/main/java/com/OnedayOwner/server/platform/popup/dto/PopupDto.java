@@ -206,5 +206,4 @@ public class PopupDto {
             this.maxPeople = reservationTime.getMaxPeople();
         }
     }
-
 }

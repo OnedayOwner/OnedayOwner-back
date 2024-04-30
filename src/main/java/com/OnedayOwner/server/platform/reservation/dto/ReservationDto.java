@@ -1,5 +1,6 @@
 package com.OnedayOwner.server.platform.reservation.dto;
 
+import com.OnedayOwner.server.platform.popup.dto.PopupDto;
 import com.OnedayOwner.server.platform.popup.entity.Menu;
 import com.OnedayOwner.server.platform.popup.entity.PopupRestaurant;
 import com.OnedayOwner.server.platform.user.entity.Customer;
@@ -43,6 +44,18 @@ public class ReservationDto {
         public ReservationMenuForm(int quantity, Menu menu) {
             this.quantity = quantity;
             this.menu = menu;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class PopupDetailForReservationDto extends PopupDto.PopupSummary {
+        private List<LocalDateTime> reservationPossibleDateTimes;
+
+        @Builder
+        public PopupDetailForReservationDto(PopupRestaurant popupRestaurant, List<LocalDateTime> reservationPossibleDateTimes) {
+            super(popupRestaurant);
+            this.reservationPossibleDateTimes = reservationPossibleDateTimes;
         }
     }
 }

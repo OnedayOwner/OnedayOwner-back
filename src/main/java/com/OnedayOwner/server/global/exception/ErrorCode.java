@@ -21,7 +21,7 @@ public enum ErrorCode {
     OWNER_NOT_FOUND(404, "C008", "Owner not found"),
     POPUP_NOT_FOUND(404, "C009", "Popup not found"),
     IN_BUSINESS_POPUP_NOT_FOUND(404, "C010", "진행중인 팝업식당이 없습니다."),
-
+    RESERVATION_TIME_NOT_FOUND(404, "C011", "설정된 예약 시간이 없습니다.")
 
     ;
 
