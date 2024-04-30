@@ -97,6 +97,7 @@ public class PopupDto {
         private String name;
         private AddressForm address;
         private String description;
+        private List<MenuDetail> menus;
 
 
         public PopupSummary(PopupRestaurant popupRestaurant) {
@@ -109,17 +110,7 @@ public class PopupDto {
                     .detail(popupRestaurant.getAddress().getDetail())
                     .build();
             this.description = popupRestaurant.getDescription();
-        }
-    }
 
-    @Getter
-    @NoArgsConstructor
-    public static class PopupHistoryDetail extends PopupSummary{
-        private List<MenuDetail> menus;
-
-        @Builder
-        public PopupHistoryDetail(PopupRestaurant popupRestaurant) {
-            super(popupRestaurant);
             this.menus = popupRestaurant.getMenus().stream()
                     .map(MenuDetail::new)
                     .toList();
@@ -127,10 +118,19 @@ public class PopupDto {
     }
 
     @Getter
+    @NoArgsConstructor
+    public static class PopupHistoryDetail extends PopupSummary{
+
+        @Builder
+        public PopupHistoryDetail(PopupRestaurant popupRestaurant) {
+            super(popupRestaurant);
+        }
+    }
+
+    @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class PopupInBusinessDetail extends PopupSummary{
         private List<ReservationTimeDto> reservationTimes;
-        private List<MenuDetail> menus;
         private List<BusinessTimeDto> businessTimes;
 
         @Builder
@@ -140,9 +140,6 @@ public class PopupDto {
                     .map(ReservationTimeDto::new)
                     .toList();
 
-            this.menus = popupRestaurant.getMenus().stream()
-                    .map(MenuDetail::new)
-                    .toList();
             this.businessTimes = popupRestaurant.getBusinessTimes().stream()
                     .map(BusinessTimeDto::new)
                     .toList();
