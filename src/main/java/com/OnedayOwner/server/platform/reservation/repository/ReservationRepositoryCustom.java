@@ -6,4 +6,5 @@ import java.util.List;
 public interface ReservationRepositoryCustom {
 
     List<LocalDateTime> findReservationTimesByCustomersGreaterThanMaxPeople(Long id, int maxPeople);
+    Integer findnumberOfPeopleByReservationTimeAndPopupId(Long id, LocalDateTime reservationTime);
 }

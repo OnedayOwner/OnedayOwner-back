@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface ReservationTimeRepository extends JpaRepository<ReservationTime, Long> {
 
     List<ReservationTime> findAllByPopupRestaurantId(Long id);
+    Boolean existsByStartTimeAndPopupRestaurantId(LocalTime startTime, Long id);
 }

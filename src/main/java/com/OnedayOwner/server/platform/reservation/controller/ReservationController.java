@@ -4,10 +4,7 @@ import com.OnedayOwner.server.platform.reservation.dto.ReservationDto;
 import com.OnedayOwner.server.platform.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,13 +14,26 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     /*
-    고객 입장에서 팝업 상세 및 예약 화면
+    팝업의 예약 가능 일자 조회
      */
-    @GetMapping("/{popupId}")
-    public ResponseEntity<ReservationDto.PopupDetailForReservationDto> getPopupDetailForReservation(
+    @GetMapping("/schedule/{popupId}")
+    public ResponseEntity<ReservationDto.ReservationPossibleTimesDto> getPossibleTimesForReservation(
             @PathVariable("popupId")Long popupId
     ) {
         return ResponseEntity.ok()
-                .body(reservationService.getPopupDetailForReservation(popupId));
+                .body(reservationService.getPossibleTimesForReservation(popupId));
+    }
+
+    /*
+    새로운 예약 등록
+    예약 상세 내역을 반환
+     */
+    @PostMapping("/register")
+    public ResponseEntity<ReservationDto.ReservationDetailForCustomer> registerReservation(
+            @RequestBody ReservationDto.ReservationForm reservationForm,
+            Long customerId
+    ) {
+        return ResponseEntity.ok()
+                .body(reservationService.registerReservation(reservationForm, customerId));
     }
 }

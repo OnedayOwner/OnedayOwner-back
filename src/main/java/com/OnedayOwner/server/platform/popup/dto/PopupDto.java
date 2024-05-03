@@ -1,5 +1,6 @@
 package com.OnedayOwner.server.platform.popup.dto;
 
+import com.OnedayOwner.server.platform.Address;
 import com.OnedayOwner.server.platform.popup.entity.BusinessTime;
 import com.OnedayOwner.server.platform.popup.entity.Menu;
 import com.OnedayOwner.server.platform.popup.entity.PopupRestaurant;
@@ -102,7 +103,7 @@ public class PopupDto {
 
         public PopupSummary(PopupRestaurant popupRestaurant) {
             this.id = popupRestaurant.getId();
-            name = popupRestaurant.getName();
+            this.name = popupRestaurant.getName();
             this.address = AddressForm.builder()
                     .city(popupRestaurant.getAddress().getCity())
                     .street(popupRestaurant.getAddress().getStreet())
@@ -204,6 +205,26 @@ public class PopupDto {
             this.startTime = reservationTime.getStartTime();
             this.endTime = reservationTime.getEndTime();
             this.maxPeople = reservationTime.getMaxPeople();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class PopupSummaryForReservation{
+        private Long id;
+        private String name;
+        private AddressForm address;
+
+        @Builder
+        public PopupSummaryForReservation(PopupRestaurant popupRestaurant, Address address) {
+            this.id = popupRestaurant.getId();
+            this.name = popupRestaurant.getName();
+            this.address = AddressForm.builder()
+                    .city(address.getCity())
+                    .street(address.getStreet())
+                    .zipcode(address.getZipcode())
+                    .detail(address.getDetail())
+                    .build();
         }
     }
 }
