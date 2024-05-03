@@ -1,19 +1,18 @@
 package com.OnedayOwner.server.platform.user.dto;
 
 import com.OnedayOwner.server.platform.user.entity.Gender;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.OnedayOwner.server.platform.user.entity.Owner;
+import lombok.*;
 
 import java.time.LocalDate;
 
 
 public class UserDTO {
+
     /*
     Request
      */
-    @NoArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
     @Builder
@@ -26,7 +25,7 @@ public class UserDTO {
         private String email;
     }
 
-    @NoArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
     @Builder
@@ -38,7 +37,7 @@ public class UserDTO {
     /*
     Response
      */
-    @NoArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
     @Builder
@@ -46,5 +45,29 @@ public class UserDTO {
         private Long id;
         private String name;
         private int point;
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class OwnerLonginResponse{
+        private Long id;
+
+        private String name;
+        private String phoneNumber;
+
+        private Gender gender;
+
+        private LocalDate birth;
+        private String email;
+
+        @Builder
+        public OwnerLonginResponse(Owner owner){
+            this.id = owner.getId();
+            this.name = owner.getName();
+            this.phoneNumber = owner.getPhoneNumber();
+            this.gender = owner.getGender();
+            this.birth = owner.getBirth();
+            this.email = owner.getEmail();
+        }
     }
 }
