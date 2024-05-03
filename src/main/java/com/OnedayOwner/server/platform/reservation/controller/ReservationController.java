@@ -18,7 +18,7 @@ public class ReservationController {
      */
     @GetMapping("/schedule/{popupId}")
     public ResponseEntity<ReservationDto.ReservationPossibleTimesDto> getPossibleTimesForReservation(
-            @PathVariable("popupId")Long popupId
+            @PathVariable("popupId") Long popupId
     ) {
         return ResponseEntity.ok()
                 .body(reservationService.getPossibleTimesForReservation(popupId));
@@ -35,5 +35,17 @@ public class ReservationController {
     ) {
         return ResponseEntity.ok()
                 .body(reservationService.registerReservation(reservationForm, customerId));
+    }
+
+    /*
+    예약 상세 조회-고객
+     */
+    @GetMapping("/{reservationId}")
+    public ResponseEntity<ReservationDto.ReservationDetailForCustomer> getReservationDetailByCustomer(
+            @PathVariable("reservationId") Long reservationId,
+            Long customerId
+    ) {
+        return ResponseEntity.ok()
+                .body(reservationService.getReservationDetailByCustomer(reservationId, customerId));
     }
 }
