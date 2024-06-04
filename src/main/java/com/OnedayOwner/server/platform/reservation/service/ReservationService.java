@@ -136,7 +136,7 @@ public class ReservationService {
                 && reservationTime.isAfter(LocalDateTime.now())
                 && reservationTime.isAfter(findPopup.getStartDateTime())
                 && reservationTime.isBefore(findPopup.getEndDateTime())
-                && reservationRepository.findnumberOfPeopleByReservationTimeAndPopupId(popupId, reservationTime) + numberOfPeople
+                && reservationRepository.findNumberOfPeopleByReservationTimeAndPopupId(popupId, reservationTime).orElse(0) + numberOfPeople
                 <= findPopup.getReservationTimes().stream().findFirst().orElseThrow(
                 () -> new BusinessException(ErrorCode.RESERVATION_TIME_NOT_FOUND)
         ).getMaxPeople();

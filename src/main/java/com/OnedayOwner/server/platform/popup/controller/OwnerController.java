@@ -10,12 +10,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/popups")
-public class PopupController {
+@RequestMapping("/api/owners")
+public class OwnerController {
 
     private final PopupService popupService;
 
-    @PostMapping("/register")
+    @PostMapping("/popup/register")
     public ResponseEntity<PopupDto.PopupInBusinessDetail> registerPopup(
         @RequestBody PopupDto.PopupRestaurantForm form,
         Long ownerId
@@ -24,7 +24,7 @@ public class PopupController {
             .body(popupService.registerPopup(form, ownerId));
     }
 
-    @PostMapping("/{popupId}/menu")
+    @PostMapping("/popup/{popupId}/menu")
     public ResponseEntity<PopupDto.MenuDetail> registerMenu(
         PopupDto.MenuForm form,
         @PathVariable("popupId")Long popupId
@@ -41,7 +41,7 @@ public class PopupController {
             .body(popupService.getPopupInBusinessDetail(ownerId));
     }
 
-    @GetMapping("/history/{popupId}")
+    @GetMapping("/popup/history/{popupId}")
     public ResponseEntity<PopupDto.PopupHistoryDetail> getPopupDetail(
             @PathVariable("popupId")Long popupId
             ) {
@@ -49,7 +49,7 @@ public class PopupController {
             .body(popupService.getPopupHistoryDetail(popupId));
     }
 
-    @GetMapping("/history/list")
+    @GetMapping("/popup/history/list")
     public ResponseEntity<List<PopupDto.PopupSummary>> getPopupHistory(
             Long ownerId
     ) {

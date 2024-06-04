@@ -31,13 +31,13 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom{
     }
 
     @Override
-    public Integer findnumberOfPeopleByReservationTimeAndPopupId(Long id, LocalDateTime reservationTime) {
-        return jpaQueryFactory.select(reservation.numberOfPeople.sum())
+    public Optional<Integer> findNumberOfPeopleByReservationTimeAndPopupId(Long id, LocalDateTime reservationTime) {
+        return Optional.ofNullable(jpaQueryFactory.select(reservation.numberOfPeople.sum())
                 .from(reservation)
                 .leftJoin(reservation.popupRestaurant, popupRestaurant)
                 .where(reservation.popupRestaurant.id.eq(id),
                         reservation.reservationTime.eq(reservationTime))
-                .fetchOne();
+                .fetchOne());
 
     }
 }
