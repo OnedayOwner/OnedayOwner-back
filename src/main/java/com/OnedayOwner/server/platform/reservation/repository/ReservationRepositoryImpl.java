@@ -1,5 +1,6 @@
 package com.OnedayOwner.server.platform.reservation.repository;
 
+import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
@@ -10,6 +11,7 @@ import java.util.Optional;
 import static com.OnedayOwner.server.platform.popup.entity.QMenu.menu;
 import static com.OnedayOwner.server.platform.popup.entity.QPopupRestaurant.popupRestaurant;
 import static com.OnedayOwner.server.platform.reservation.entity.QReservation.reservation;
+import static com.OnedayOwner.server.platform.reservation.entity.QReservationTime.reservationTime;
 
 public class ReservationRepositoryImpl implements ReservationRepositoryCustom{
 
@@ -17,17 +19,6 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom{
 
     public ReservationRepositoryImpl(EntityManager em) {
         this.jpaQueryFactory = new JPAQueryFactory(em);
-    }
-
-    @Override
-    public List<LocalDateTime> findReservationTimesByCustomersGreaterThanMaxPeople(Long id, int maxPeople) {
-        return jpaQueryFactory.select(reservation.reservationTime)
-                .from(reservation)
-                .leftJoin(reservation.popupRestaurant, popupRestaurant)
-                .where(reservation.popupRestaurant.id.eq(id))
-                .groupBy(reservation.reservationTime)
-                .having(reservation.numberOfPeople.sum().goe(maxPeople))
-                .fetch();
     }
 
     @Override

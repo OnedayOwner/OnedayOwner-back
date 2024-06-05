@@ -6,13 +6,14 @@ import com.OnedayOwner.server.platform.popup.entity.Menu;
 import com.OnedayOwner.server.platform.popup.entity.PopupRestaurant;
 import com.OnedayOwner.server.platform.reservation.entity.Reservation;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationMenu;
-import com.OnedayOwner.server.platform.user.entity.Customer;
+import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class ReservationDto {
@@ -50,12 +51,31 @@ public class ReservationDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ReservationPossibleTimesDto {
-        private List<LocalDateTime> reservationPossibleDateTimes;
+    public static class ReservationTimesDto {
+        private List<ReservationTimeDto> reservationTimes;
 
         @Builder
-        public ReservationPossibleTimesDto(List<LocalDateTime> reservationPossibleDateTimes) {
-            this.reservationPossibleDateTimes = reservationPossibleDateTimes;
+        public ReservationTimesDto(List<ReservationTime> reservationTimes) {
+            this.reservationTimes = reservationTimes.stream()
+                    .map(ReservationTimeDto::new)
+                    .toList();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ReservationTimeDto{
+        private Long id;
+        private LocalTime startTime;
+        private LocalTime endTime;
+        private int maxPeople;
+
+        @Builder
+        public ReservationTimeDto(ReservationTime reservationTime) {
+            this.id = reservationTime.getId();
+            this.startTime = reservationTime.getStartTime();
+            this.endTime = reservationTime.getEndTime();
+            this.maxPeople = reservationTime.getMaxPeople();
         }
     }
 

@@ -17,11 +17,11 @@ public class CustomerController {
     팝업의 예약 가능 일자 조회
      */
     @GetMapping("/schedule/{popupId}")
-    public ResponseEntity<ReservationDto.ReservationPossibleTimesDto> getPossibleTimesForReservation(
+    public ResponseEntity<ReservationDto.ReservationTimesDto> getPossibleTimesForReservation(
             @PathVariable("popupId") Long popupId
     ) {
         return ResponseEntity.ok()
-                .body(reservationService.getPossibleTimesForReservation(popupId));
+                .body(reservationService.getReservationTimes(popupId));
     }
 
     /*

@@ -9,7 +9,6 @@ import com.OnedayOwner.server.platform.popup.repository.PopupRestaurantRepositor
 import com.OnedayOwner.server.platform.reservation.dto.ReservationDto;
 import com.OnedayOwner.server.platform.reservation.entity.Reservation;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationMenu;
-import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationMenuRepository;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationRepository;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationTimeRepository;
@@ -18,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,39 +36,10 @@ public class ReservationService {
     팝업의 예약 가능 일자 조회
      */
     @Transactional
-    public ReservationDto.ReservationPossibleTimesDto getPossibleTimesForReservation(Long popupId){
-        return ReservationDto.ReservationPossibleTimesDto.builder()
-                .reservationPossibleDateTimes(checkPossibleTimesForReservation(popupId))
+    public ReservationDto.ReservationTimesDto getReservationTimes(Long popupId){
+        return ReservationDto.ReservationTimesDto.builder()
+                .reservationTimes(reservationTimeRepository.getPossibleReservationTimes(popupId))
                 .build();
-    }
-
-    /*
-    팝업 기간중 현재 LocalDateTime 이후로 예약이 가능한 모든 LocalDateTime을 리스트로 반환
-     */
-    private List<LocalDateTime> checkPossibleTimesForReservation(Long popupId) {
-        List<LocalDateTime> ReservationPossibleTimes = new ArrayList<>();
-        PopupRestaurant popupRestaurant = popupRestaurantRepository.findById(popupId)
-                .orElseThrow(
-                        () -> new BusinessException(ErrorCode.IN_BUSINESS_POPUP_NOT_FOUND)
-                );
-
-        LocalDate i = popupRestaurant.getStartDateTime().toLocalDate();
-        while(i.isBefore(popupRestaurant.getEndDateTime().toLocalDate().plusDays(1))) {
-            for (ReservationTime reservationTime : reservationTimeRepository.findAllByPopupRestaurantId(popupId)) {
-                LocalDateTime reservationPossibleTime = i.atTime(reservationTime.getStartTime());
-                if (reservationRepository.findReservationTimesByCustomersGreaterThanMaxPeople(popupId, popupRestaurant.getReservationTimes().stream().findFirst()
-                        .orElseThrow(
-                                () -> new BusinessException(ErrorCode.RESERVATION_TIME_NOT_FOUND)
-                        ).getMaxPeople()).contains(reservationPossibleTime)) {
-                    continue;
-                }
-                if (reservationPossibleTime.isAfter(LocalDateTime.now()) && reservationPossibleTime.isAfter(popupRestaurant.getStartDateTime()) && reservationPossibleTime.isBefore(popupRestaurant.getEndDateTime())) {
-                    ReservationPossibleTimes.add(reservationPossibleTime);
-                }
-            }
-            i = i.plusDays(1);
-        }
-        return ReservationPossibleTimes;
     }
 
     /*
