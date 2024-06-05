@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -21,6 +22,7 @@ public class ReservationTime extends BaseTimeEntity {
     @Column(name = "reservation_time_id")
     private Long id;
 
+    private LocalDate reservationDate;
     private LocalTime startTime;
     private LocalTime endTime;
     private int maxPeople;
@@ -30,8 +32,9 @@ public class ReservationTime extends BaseTimeEntity {
     private PopupRestaurant popupRestaurant;
 
     @Builder
-    public ReservationTime(PopupRestaurant popupRestaurant, LocalTime startTime, LocalTime endTime, int maxPeople) {
+    public ReservationTime(PopupRestaurant popupRestaurant, LocalDate reservationDate,LocalTime startTime, LocalTime endTime, int maxPeople) {
         this.popupRestaurant = popupRestaurant;
+        this.reservationDate = reservationDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.maxPeople = maxPeople;

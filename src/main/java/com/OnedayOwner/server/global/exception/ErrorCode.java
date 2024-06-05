@@ -21,8 +21,12 @@ public enum ErrorCode {
     OWNER_NOT_FOUND(404, "C008", "Owner not found"),
     POPUP_NOT_FOUND(404, "C009", "Popup not found"),
     IN_BUSINESS_POPUP_NOT_FOUND(404, "C010", "진행중인 팝업식당이 없습니다."),
-
-
+    RESERVATION_TIME_NOT_FOUND(404, "C011", "설정된 예약 시간이 없습니다."),
+    CAN_NOT_RESERVE_DURING_THAT_TIME(404, "C012", "해당 시간에 예약이 불가합니다."),
+    CUSTOMER_NOT_FOUND(404, "C013", "Customer not found"),
+    MENU_NOT_FOUND(404, "C014", "Menu not found"),
+    RESERVATION_NOT_FOUND(404, "C015", "Reservation not found"),
+    CANNOT_ACCESS_RESERVATION(404, "C016", "해당 예약에 접근할 수 없습니다.")
     ;
 
     private final String code;

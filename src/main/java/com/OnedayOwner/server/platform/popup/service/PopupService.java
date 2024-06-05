@@ -17,10 +17,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +43,8 @@ public class PopupService {
         //레스토랑 등록
         PopupRestaurant restaurant = popupRestaurantRepository.save(PopupRestaurant.builder()
                 .name(restaurantForm.getName())
+                .startDateTime(restaurantForm.getStartDateTime())
+                .endDateTime(restaurantForm.getEndDateTime())
                 .address(Address.builder()
                         .city(restaurantForm.getAddress().getCity())
                         .street(restaurantForm.getAddress().getStreet())
@@ -89,20 +94,37 @@ public class PopupService {
 
     @Transactional
     public void registerReservationTime(PopupDto.BusinessTimeForm form, PopupRestaurant restaurant){
-        long minutesBetween = ChronoUnit.MINUTES.between(form.getOpenTime(), form.getCloseTime());
-        long numberOfSlots = minutesBetween / form.getReservationTimeUnit();
+        LocalDate startDate = restaurant.getStartDateTime().toLocalDate();
+        LocalDate endDate = restaurant.getEndDateTime().toLocalDate();
 
-        for(int i = 0; i<numberOfSlots; i++){
-            LocalTime slotStartTime = form.getOpenTime().plusMinutes((i * form.getReservationTimeUnit()));
-            LocalTime slotEndTime = slotStartTime.plusMinutes(form.getReservationTimeUnit());
+        Stream.iterate(startDate, date -> date.plusDays(1))
+                .limit(ChronoUnit.DAYS.between(startDate, endDate) + 1)
+                .forEach(date -> {
+                    long minutesBetween = ChronoUnit.MINUTES.between(form.getOpenTime(), form.getCloseTime());
+                    long numberOfSlots = minutesBetween / form.getReservationTimeUnit();
 
-            reservationTimeRepository.save(ReservationTime.builder()
-                    .popupRestaurant(restaurant)
-                    .startTime(slotStartTime)
-                    .endTime(slotEndTime)
-                    .maxPeople(form.getMaxPeoplePerTime())
-                    .build());
-        }
+                    for (int i = 0; i < numberOfSlots; i++) {
+                        LocalTime slotStartTime = form.getOpenTime().plusMinutes((i * form.getReservationTimeUnit()));
+                        LocalTime slotEndTime = slotStartTime.plusMinutes(form.getReservationTimeUnit());
+
+                        LocalDateTime startDateTime = LocalDateTime.of(date, slotStartTime);
+                        LocalDateTime endDateTime = LocalDateTime.of(date, slotEndTime);
+                        if(startDateTime.isBefore(restaurant.getStartDateTime())){
+                            continue;
+                        }
+                        if(endDateTime.isAfter(restaurant.getEndDateTime())){
+                            break;
+                        }
+
+                        reservationTimeRepository.save(ReservationTime.builder()
+                                .popupRestaurant(restaurant)
+                                .reservationDate(date)
+                                .startTime(slotStartTime)
+                                .endTime(slotEndTime)
+                                .maxPeople(form.getMaxPeoplePerTime())
+                                .build());
+                    }
+                });
     }
 
     @Transactional
