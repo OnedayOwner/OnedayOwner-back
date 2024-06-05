@@ -42,4 +42,7 @@ public class ReservationTime extends BaseTimeEntity {
         popupRestaurant.addReservationTime(this);
     }
 
+    public void minusMaxPeople(int numberOfPeople){
+        this.maxPeople -= numberOfPeople;
+    }
 }

@@ -4,6 +4,7 @@ import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.OnedayOwner.server.platform.popup.entity.QPopupRestaurant.popupRestaurant;
@@ -22,7 +23,8 @@ public class ReservationTimeRepositoryImpl implements ReservationTimeRepositoryC
         return jpaQueryFactory.selectFrom(reservationTime)
                 .leftJoin(reservationTime.popupRestaurant, popupRestaurant)
                 .where(reservationTime.popupRestaurant.id.eq(id),
-                        reservationTime.maxPeople.gt(0))
+                        reservationTime.maxPeople.gt(0),
+                        reservationTime.reservationDate.gt(LocalDate.now()))
                 .fetch();
     }
 }

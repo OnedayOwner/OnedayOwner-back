@@ -21,7 +21,7 @@ public class Reservation {
     @Column(name = "reservation_id")
     private Long id;
 
-    private LocalDateTime reservationTime;
+    private LocalDateTime reservationDateTime;
     private int numberOfPeople;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,10 +36,14 @@ public class Reservation {
     private List<ReservationMenu> reservationMenus;
 
     @Builder
-    public Reservation(LocalDateTime reservationTime, int numberOfPeople , PopupRestaurant popupRestaurant, Customer customer) {
-        this.reservationTime = reservationTime;
+    public Reservation(LocalDateTime reservationDateTime, int numberOfPeople , PopupRestaurant popupRestaurant, Customer customer) {
+        this.reservationDateTime = reservationDateTime;
         this.numberOfPeople=numberOfPeople;
         this.popupRestaurant=popupRestaurant;
         this.customer=customer;
+    }
+
+    public void addReservationMenu(ReservationMenu reservationMenu){
+        this.reservationMenus.add(reservationMenu);
     }
 }

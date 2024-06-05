@@ -26,7 +26,8 @@ public enum ErrorCode {
     CUSTOMER_NOT_FOUND(404, "C013", "Customer not found"),
     MENU_NOT_FOUND(404, "C014", "Menu not found"),
     RESERVATION_NOT_FOUND(404, "C015", "Reservation not found"),
-    CANNOT_ACCESS_RESERVATION(404, "C016", "해당 예약에 접근할 수 없습니다.")
+    CANNOT_ACCESS_RESERVATION(404, "C016", "해당 예약에 접근할 수 없습니다."),
+    NUMBER_OF_PEOPLE_EXCEEDED(404, "C017", "예약 가능 인원을 초과하였습니다.")
     ;
 
     private final String code;

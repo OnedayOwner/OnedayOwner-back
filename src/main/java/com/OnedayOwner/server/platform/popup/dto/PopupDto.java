@@ -216,14 +216,14 @@ public class PopupDto {
         private AddressForm address;
 
         @Builder
-        public PopupSummaryForReservation(PopupRestaurant popupRestaurant, Address address) {
+        public PopupSummaryForReservation(PopupRestaurant popupRestaurant) {
             this.id = popupRestaurant.getId();
             this.name = popupRestaurant.getName();
             this.address = AddressForm.builder()
-                    .city(address.getCity())
-                    .street(address.getStreet())
-                    .zipcode(address.getZipcode())
-                    .detail(address.getDetail())
+                    .city(popupRestaurant.getAddress().getCity())
+                    .street(popupRestaurant.getAddress().getStreet())
+                    .zipcode(popupRestaurant.getAddress().getZipcode())
+                    .detail(popupRestaurant.getAddress().getDetail())
                     .build();
         }
     }

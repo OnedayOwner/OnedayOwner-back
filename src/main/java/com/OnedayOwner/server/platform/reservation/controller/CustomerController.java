@@ -26,10 +26,9 @@ public class CustomerController {
 
     /*
     새로운 예약 등록
-    예약 상세 내역을 반환
      */
     @PostMapping("/register")
-    public ResponseEntity<ReservationDto.ReservationDetailForCustomer> registerReservation(
+    public ResponseEntity<ReservationDto.ReservationDetail> registerReservation(
             @RequestBody ReservationDto.ReservationForm reservationForm,
             Long customerId
     ) {
@@ -41,7 +40,7 @@ public class CustomerController {
     예약 상세 조회-고객
      */
     @GetMapping("/{reservationId}")
-    public ResponseEntity<ReservationDto.ReservationDetailForCustomer> getReservationDetailByCustomer(
+    public ResponseEntity<ReservationDto.ReservationDetail> getReservationDetailByCustomer(
             @PathVariable("reservationId") Long reservationId,
             Long customerId
     ) {
