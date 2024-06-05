@@ -53,15 +53,16 @@ public class ReservationService {
                 .orElseThrow(
                         () -> new BusinessException(ErrorCode.IN_BUSINESS_POPUP_NOT_FOUND)
                 );
+        List<LocalDateTime> reservationTimesByCustomersGreaterThanMaxPeople = reservationRepository.findReservationTimesByCustomersGreaterThanMaxPeople(popupId, popupRestaurant.getReservationTimes().stream().findFirst()
+                .orElseThrow(
+                        () -> new BusinessException(ErrorCode.RESERVATION_TIME_NOT_FOUND)
+                ).getMaxPeople());
 
         LocalDate i = popupRestaurant.getStartDateTime().toLocalDate();
         while(i.isBefore(popupRestaurant.getEndDateTime().toLocalDate().plusDays(1))) {
             for (ReservationTime reservationTime : reservationTimeRepository.findAllByPopupRestaurantId(popupId)) {
                 LocalDateTime reservationPossibleTime = i.atTime(reservationTime.getStartTime());
-                if (reservationRepository.findReservationTimesByCustomersGreaterThanMaxPeople(popupId, popupRestaurant.getReservationTimes().stream().findFirst()
-                        .orElseThrow(
-                                () -> new BusinessException(ErrorCode.RESERVATION_TIME_NOT_FOUND)
-                        ).getMaxPeople()).contains(reservationPossibleTime)) {
+                if (reservationTimesByCustomersGreaterThanMaxPeople.contains(reservationPossibleTime)) {
                     continue;
                 }
                 if (reservationPossibleTime.isAfter(LocalDateTime.now()) && reservationPossibleTime.isAfter(popupRestaurant.getStartDateTime()) && reservationPossibleTime.isBefore(popupRestaurant.getEndDateTime())) {
