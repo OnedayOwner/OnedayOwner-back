@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,7 +34,7 @@ public class Reservation {
     private Customer customer;
 
     @OneToMany(mappedBy = "reservation")
-    private List<ReservationMenu> reservationMenus;
+    private List<ReservationMenu> reservationMenus = new ArrayList<>();
 
     @Builder
     public Reservation(LocalDateTime reservationDateTime, int numberOfPeople , PopupRestaurant popupRestaurant, Customer customer) {
