@@ -79,15 +79,15 @@ public class ReservationDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ReservationDetail {
-        private Long reservationId;
-        private LocalDateTime reservationTime;
+        private Long Id;
+        private LocalDateTime reservationDateTime;
         private int numberOfPeople;
         private PopupDto.PopupSummaryForReservation popupSummaryForReservation;
         private List<ReservationMenuDetail> reservationMenuDetails;
         @Builder
         public ReservationDetail(Reservation reservation) {
-            this.reservationId = reservation.getId();
-            this.reservationTime = reservation.getReservationDateTime();
+            this.Id = reservation.getId();
+            this.reservationDateTime = reservation.getReservationDateTime();
             this.numberOfPeople = reservation.getNumberOfPeople();
             this.popupSummaryForReservation = PopupDto.PopupSummaryForReservation.builder()
                     .popupRestaurant(reservation.getPopupRestaurant())
@@ -108,6 +108,27 @@ public class ReservationDto {
         public ReservationMenuDetail(ReservationMenu reservationMenu) {
             this.quantity = reservationMenu.getQuantity();
             this.menuName = reservationMenu.getMenu().getName();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ReservationSummary{
+        private Long id;
+        private int numberOfPeople;
+        private String popupName;
+        private LocalDateTime reservationDateTime;
+        private List<ReservationMenuDetail> reservationMenuDetails;
+
+        public ReservationSummary(Reservation reservation) {
+            this.id = reservation.getId();
+            this.numberOfPeople = reservation.getNumberOfPeople();
+            this.popupName = reservation.getPopupRestaurant().getName();
+            this.reservationDateTime = reservation.getReservationDateTime();
+            this.reservationMenuDetails = reservation.getReservationMenus()
+                    .stream()
+                    .map(ReservationMenuDetail::new)
+                    .toList();
         }
     }
 }

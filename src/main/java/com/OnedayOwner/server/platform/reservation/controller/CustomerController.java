@@ -63,4 +63,15 @@ public class CustomerController {
         return  ResponseEntity.ok()
                 .body(popupService.getPopupsInBusinessForCustomer());
     }
+
+    /*
+    예약 리스트 조회
+     */
+    @GetMapping("/reservations")
+    public ResponseEntity<List<ReservationDto.ReservationSummary>> getReservationsByCustomer(
+            Long customerId
+    ){
+        return  ResponseEntity.ok()
+                .body(reservationService.getReservationsByCustomer(customerId));
+    }
 }

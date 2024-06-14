@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -111,5 +112,16 @@ public class ReservationService {
         return ReservationDto.ReservationDetail.builder()
                 .reservation(reservation)
                 .build();
+    }
+
+    /*
+    예약 리스트 조회
+     */
+    @Transactional
+    public List<ReservationDto.ReservationSummary> getReservationsByCustomer(Long customerId) {
+        return reservationRepository.findAllByCustomerId(customerId)
+                .stream()
+                .map(ReservationDto.ReservationSummary::new)
+                .toList();
     }
 }
