@@ -99,7 +99,7 @@ public class ReservationService {
     예약 상세 조회-고객
      */
     @Transactional
-    public ReservationDto.ReservationDetail getReservationDetailByCustomer(Long reservationId, Long customerId) {
+    public ReservationDto.ReservationDetail getReservationDetailForCustomer(Long reservationId, Long customerId) {
         //조회하는 고객의 예약이 맞는지 체크
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
                 () -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND)

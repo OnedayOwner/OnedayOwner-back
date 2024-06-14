@@ -171,5 +171,12 @@ public class PopupService {
                 );
     }
 
-
+    //팝업 리스트 조회
+    @Transactional
+    public List<PopupDto.PopupSummaryForCustomer> getPopupsInBusinessForCustomer(){
+        return popupRestaurantRepository.findAllByInBusiness(true)
+                .stream()
+                .map(PopupDto.PopupSummaryForCustomer::new)
+                .toList();
+    }
 }
