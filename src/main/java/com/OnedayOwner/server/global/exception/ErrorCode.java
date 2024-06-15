@@ -37,6 +37,19 @@ public enum ErrorCode {
     INVALID_TOKEN_SIGNATURE(403, "JWT_004", "Invalid Token"),
     INVALID_CLAIM(401, "JWT_005", "Invalid Claim"),
 
+    USER_NOT_FOUND(404, "C008", "User not found"),
+
+    VERIFICATION_CODE_NOT_FOUND(404, "C018", "Verification code not found"),
+    EXPIRED_VERIFICATION_CODE(403, "C019", "Verification code expired"),
+
+    USER_ALREADY_EXIST(403, "C020", "User already exist"),
+
+    VERIFICATION_CODE_NOT_MATCH(403, "C021", "Verification code not match"),
+
+    DUPLICATE_ID(400, "C022","Id already exist"),
+
+    INVALID_PHONE_NUMBER(400, "C023", "PhoneNumber is invalid"),
+    FREQUENT_SMS_REQUEST(400, "C024", "Wait for new sms request"),
     ;
 
     private final String code;

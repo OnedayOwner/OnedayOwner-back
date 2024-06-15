@@ -17,6 +17,7 @@ public class SecurityConstant {
 
             new MethodUri(Method.ALL, "/api/health"),
             new MethodUri(Method.ALL, "/api/users/join"),
+            new MethodUri(Method.ALL, "/api/users/login"),
             new MethodUri(Method.ALL, "/api/auth/**")
     ));
 }

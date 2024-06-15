@@ -1,9 +1,18 @@
 package com.OnedayOwner.server.platform.user.service;
 
-import com.OnedayOwner.server.platform.user.dto.UserDTO;
+import com.OnedayOwner.server.global.exception.BusinessException;
+import com.OnedayOwner.server.global.exception.ErrorCode;
+import com.OnedayOwner.server.platform.Address;
+import com.OnedayOwner.server.platform.auth.dto.VerificationDto;
+import com.OnedayOwner.server.platform.auth.service.AuthService;
+import com.OnedayOwner.server.platform.user.dto.UserDto;
 import com.OnedayOwner.server.platform.user.entity.Customer;
+import com.OnedayOwner.server.platform.user.entity.Role;
+import com.OnedayOwner.server.platform.user.entity.User;
 import com.OnedayOwner.server.platform.user.repository.CustomerRepository;
+import com.OnedayOwner.server.platform.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,43 +20,83 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class UserService {
 
-    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
+    private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void joinUser(UserDTO.UserJoinRequest userJoinRequest) {
-        Customer customer=Customer.builder()
-                .name(userJoinRequest.getName())
-                .phoneNumber(userJoinRequest.getPhoneNumber())
-                .gender(userJoinRequest.getGender())
-                .birth(userJoinRequest.getBirth())
-                .password(userJoinRequest.getPassword())
-                .email(userJoinRequest.getEmail())
-                .build();
-        customerRepository.save(customer);  //유저별 저장 로직 구현 필요
+    public UserDto.UserInfo join(UserDto.JoinDto joinDto, Role role){
+
+        VerificationDto.Request verificationDto = new VerificationDto.Request(
+                joinDto.getCodeId(), joinDto.getPhoneNumber(), joinDto.getVerificationCode()
+        );
+
+        if(userRepository.findByPhoneNumber(joinDto.getPhoneNumber()).isPresent()){
+            throw new BusinessException(ErrorCode.USER_ALREADY_EXIST);
+        }
+
+//        if(!authService.verifyCode(verificationDto).getIsVerified()){
+//            throw new BusinessException(ErrorCode.VERIFICATION_CODE_NOT_MATCH);
+//        }
+
+        if(duplicateIdCheck(joinDto.getLoginId(), role)){
+            throw new BusinessException(ErrorCode.DUPLICATE_ID);
+        }
+
+        String hashedPassword = passwordEncoder.encode(joinDto.getPassword());
+
+        if(role == Role.OWNER) {
+            System.out.println("OWNER------------------");
+            User joinUser = User.builder()
+                    .name(joinDto.getName())
+                    .birth(joinDto.getBirth())
+                    .email(joinDto.getEmail())
+                    .gender(joinDto.getGender())
+                    .role(Role.OWNER)
+                    .loginId(joinDto.getLoginId())
+                    .phoneNumber(joinDto.getPhoneNumber())
+                    .password(hashedPassword)
+                    .build();
+            userRepository.save(joinUser);
+            return new UserDto.UserInfo(joinUser);
+        }
+        else {
+            System.out.println("CUSTOMER------------------");
+            User joinUser = User.builder()
+                    .name(joinDto.getName())
+                    .birth(joinDto.getBirth())
+                    .email(joinDto.getEmail())
+                    .gender(joinDto.getGender())
+                    .role(Role.OWNER)
+                    .loginId(joinDto.getLoginId())
+                    .phoneNumber(joinDto.getPhoneNumber())
+                    .password(hashedPassword)
+                    .address(new Address(joinDto.getAddressForm()))
+                    .build();
+            userRepository.save(joinUser);
+            return new UserDto.OwnerInfo(joinUser);
+        }
+
     }
 
+    @Transactional
+    public Boolean duplicateIdCheck(String loginId, Role role){
+        return userRepository.findByLoginIdAndRole(loginId, role).isPresent();//아이다 중복이면 true 반환
+    }
 
+    @Transactional
+    public UserDto.UserInfo login(UserDto.LoginDto loginDto){
+        if(userRepository.findByLoginId(loginDto.getLoginId()).isEmpty()){
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+        }
 
-    public UserDTO.UserLoginResponse loginUser(UserDTO.UserLoginRequest userLoginRequest) {
-        /*
-        유저별 로그인 로직 구현 필요
-         */
-        Optional<Customer> findCustomer = customerRepository.findCustomerByEmail(userLoginRequest.getEmail());
-        if(findCustomer.isEmpty()){
-            return null;
+        if(userRepository.findByLoginId(loginDto.getLoginId()).get().getRole() == Role.OWNER){
+            return new UserDto.OwnerInfo(userRepository.findByLoginId(loginDto.getLoginId()).get());
         }
-        Customer customer=findCustomer.get();
-        if(!customer.getPassword().equals(userLoginRequest.getPassword())){
-            return null;
+        else{
+            return new UserDto.UserInfo(userRepository.findByLoginId(loginDto.getLoginId()).get());
         }
-        UserDTO.UserLoginResponse userLoginResponse=UserDTO.UserLoginResponse.builder()
-                .id(customer.getId())
-                .name(customer.getName())
-                .point(customer.getPoint())
-                .build();
-        return userLoginResponse;
     }
 }

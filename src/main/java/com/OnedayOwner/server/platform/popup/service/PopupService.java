@@ -46,9 +46,8 @@ public class PopupService {
                 .startDateTime(restaurantForm.getStartDateTime())
                 .endDateTime(restaurantForm.getEndDateTime())
                 .address(Address.builder()
-                        .city(restaurantForm.getAddress().getCity())
-                        .street(restaurantForm.getAddress().getStreet())
                         .zipcode(restaurantForm.getAddress().getZipcode())
+                        .street(restaurantForm.getAddress().getStreet())
                         .detail(restaurantForm.getAddress().getDetail())
                         .build())
                 .owner(ownerRepository.findById(ownerId).orElseThrow(
