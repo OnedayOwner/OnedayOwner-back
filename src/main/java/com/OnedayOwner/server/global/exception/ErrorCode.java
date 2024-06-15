@@ -50,6 +50,8 @@ public enum ErrorCode {
 
     INVALID_PHONE_NUMBER(400, "C023", "PhoneNumber is invalid"),
     FREQUENT_SMS_REQUEST(400, "C024", "Wait for new sms request"),
+    WRONG_ID_AND_PASSWORD(400, "C025", "Id and password not match"),
+
     ;
 
     private final String code;

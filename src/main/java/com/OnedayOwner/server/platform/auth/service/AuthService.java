@@ -12,6 +12,7 @@ import com.OnedayOwner.server.platform.auth.entity.AccessToken;
 import com.OnedayOwner.server.platform.auth.entity.VerificationCode;
 import com.OnedayOwner.server.platform.auth.repositoty.AccessTokenRepository;
 import com.OnedayOwner.server.platform.auth.repositoty.VerificationCodeRepository;
+import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.entity.User;
 import com.OnedayOwner.server.platform.user.repository.UserRepository;
 import com.auth0.jwt.JWT;
@@ -49,8 +50,8 @@ public class AuthService {
     }
 
     @Transactional
-    public Boolean passwordAuthenticate(String loginId, String rawPassword){
-        User user = userRepository.findByLoginId(loginId).orElseThrow(
+    public Boolean passwordAuthenticate(String loginId, String rawPassword, Role role){
+        User user = userRepository.findByLoginIdAndRole(loginId, role).orElseThrow(
                 () -> new BusinessException(ErrorCode.USER_NOT_FOUND)
         );
         return passwordEncoder.matches(rawPassword, user.getPassword());

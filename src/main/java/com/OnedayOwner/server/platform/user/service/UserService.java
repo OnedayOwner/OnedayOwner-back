@@ -85,12 +85,16 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto.UserInfo login(UserDto.LoginDto loginDto){
-        if(userRepository.findByLoginId(loginDto.getLoginId()).isEmpty()){
-            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    public UserDto.UserInfo login(UserDto.LoginDto loginDto, Role role){
+//        if(userRepository.findByLoginIdAndRole(loginDto.getLoginId(), role).isEmpty()){
+//            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+//        } //authService에서 실행
+
+        if(!authService.passwordAuthenticate(loginDto.getLoginId(), loginDto.getPassword(), role)){
+            throw new BusinessException(ErrorCode.WRONG_ID_AND_PASSWORD);    
         }
 
-        if(userRepository.findByLoginId(loginDto.getLoginId()).get().getRole() == Role.OWNER){
+        if(userRepository.findByLoginIdAndRole(loginDto.getLoginId(), role).get().getRole() == Role.OWNER){
             return new UserDto.OwnerInfo(userRepository.findByLoginId(loginDto.getLoginId()).get());
         }
         else{

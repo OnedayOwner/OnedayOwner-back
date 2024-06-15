@@ -26,7 +26,6 @@ public class UserController {
             @RequestParam Role role
     ) {
         UserDto.UserInfo userDto = userService.join(joinDto, role);
-
         AccessToken accessToken = authService
                 .createAccessTokenByPhoneNumber(userDto.getPhoneNumber());
         String bearerToken = jwtConfig.getPrefix() + accessToken.getToken();
@@ -37,9 +36,10 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<UserDto.UserInfo> login(
-            @RequestBody @Valid UserDto.LoginDto loginDto
+            @RequestBody @Valid UserDto.LoginDto loginDto,
+            @RequestParam Role role
     ){
-        UserDto.UserInfo userDto = userService.login(loginDto);
+        UserDto.UserInfo userDto = userService.login(loginDto, role);
         AccessToken accessToken = authService
                 .createAccessTokenByPhoneNumber(userDto.getPhoneNumber());
         String bearerToken = jwtConfig.getPrefix() + accessToken.getToken();
