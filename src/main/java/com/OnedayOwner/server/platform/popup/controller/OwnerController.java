@@ -1,9 +1,11 @@
 package com.OnedayOwner.server.platform.popup.controller;
 
+import com.OnedayOwner.server.global.security.SecurityUtils;
 import com.OnedayOwner.server.platform.popup.dto.PopupDto;
 import com.OnedayOwner.server.platform.popup.service.PopupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +20,9 @@ public class OwnerController {
     @PostMapping("/popup/register")
     public ResponseEntity<PopupDto.PopupInBusinessDetail> registerPopup(
         @RequestBody PopupDto.PopupRestaurantForm form,
-        Long ownerId
+        SecurityContextHolderAwareRequestWrapper request
     ) {
+        Long ownerId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
             .body(popupService.registerPopup(form, ownerId));
     }
@@ -35,8 +38,9 @@ public class OwnerController {
 
     @GetMapping("/popup")
     public ResponseEntity<PopupDto.PopupInBusinessDetail> getPopupInBusiness(
-        Long ownerId
+            SecurityContextHolderAwareRequestWrapper request
     ) {
+        Long ownerId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
             .body(popupService.getPopupInBusinessDetail(ownerId));
     }
@@ -51,8 +55,9 @@ public class OwnerController {
 
     @GetMapping("/popup/history/list")
     public ResponseEntity<List<PopupDto.PopupSummary>> getPopupHistory(
-            Long ownerId
+            SecurityContextHolderAwareRequestWrapper request
     ) {
+        Long ownerId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
             .body(popupService.getPopupHistoryByOwner(ownerId));
     }
