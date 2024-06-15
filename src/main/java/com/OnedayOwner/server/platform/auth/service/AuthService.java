@@ -124,9 +124,8 @@ public class AuthService {
     }
 
     @Transactional
-    public AccessToken createAccessTokenByPhoneNumber(String phoneNumber) {
-        System.out.println("phoneNumber : " + phoneNumber);
-        User user = userRepository.findByPhoneNumber(phoneNumber)
+    public AccessToken createAccessTokenByLoginIdAndRole(String loginId, Role role) {
+        User user = userRepository.findByLoginIdAndRole(loginId, role)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return createAccessToken(user);
     }

@@ -27,7 +27,7 @@ public class UserController {
     ) {
         UserDto.UserInfo userDto = userService.join(joinDto, role);
         AccessToken accessToken = authService
-                .createAccessTokenByPhoneNumber(userDto.getPhoneNumber());
+                .createAccessTokenByLoginIdAndRole(joinDto.getLoginId(), role);
         String bearerToken = jwtConfig.getPrefix() + accessToken.getToken();
         return ResponseEntity.ok()
                 .header(jwtConfig.getHeader(), bearerToken)
@@ -41,7 +41,7 @@ public class UserController {
     ){
         UserDto.UserInfo userDto = userService.login(loginDto, role);
         AccessToken accessToken = authService
-                .createAccessTokenByPhoneNumber(userDto.getPhoneNumber());
+                .createAccessTokenByLoginIdAndRole(loginDto.getLoginId(), role);
         String bearerToken = jwtConfig.getPrefix() + accessToken.getToken();
         return ResponseEntity.ok()
                 .header(jwtConfig.getHeader(), bearerToken)

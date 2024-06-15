@@ -29,25 +29,6 @@ public class AuthController {
                 .body(authService.sendSms(smsRequestDto.getPhoneNumber()));
     }
 
-    @PostMapping("/verification")
-    public ResponseEntity<VerificationDto.Response> verifyCode(
-            @RequestBody @Valid VerificationDto.Request verificationDto
-    ) {
-
-        VerificationDto.Response response = authService.verifyCode(verificationDto);
-
-        if (response.getIsVerified() && response.getIsUser()) {
-            // verified & user -> jwt token is required
-            AccessToken accessToken = authService
-                    .createAccessTokenByPhoneNumber(verificationDto.getPhoneNumber());
-            String bearerToken = jwtConfig.getPrefix() + accessToken.getToken();
-            return ResponseEntity.ok()
-                    .header(jwtConfig.getHeader(), bearerToken)
-                    .body(response);
-        } else {
-            return ResponseEntity.ok().body(response);
-        }
-    }
 
     @PostMapping("token/refresh")
     private ResponseEntity<Object> refresh(

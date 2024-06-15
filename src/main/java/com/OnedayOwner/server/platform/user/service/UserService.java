@@ -33,7 +33,7 @@ public class UserService {
                 joinDto.getCodeId(), joinDto.getPhoneNumber(), joinDto.getVerificationCode()
         );
 
-        if(userRepository.findByPhoneNumber(joinDto.getPhoneNumber()).isPresent()){
+        if(userRepository.findByLoginIdAndRole(joinDto.getLoginId(), role).isPresent()){
             throw new BusinessException(ErrorCode.USER_ALREADY_EXIST);
         }
 
