@@ -48,7 +48,6 @@ public class UserService {
         String hashedPassword = passwordEncoder.encode(joinDto.getPassword());
 
         if(role == Role.OWNER) {
-            System.out.println("OWNER------------------");
             User joinUser = User.builder()
                     .name(joinDto.getName())
                     .birth(joinDto.getBirth())
@@ -60,10 +59,9 @@ public class UserService {
                     .password(hashedPassword)
                     .build();
             userRepository.save(joinUser);
-            return new UserDto.UserInfo(joinUser);
+            return new UserDto.OwnerInfo(joinUser);
         }
         else {
-            System.out.println("CUSTOMER------------------");
             User joinUser = User.builder()
                     .name(joinDto.getName())
                     .birth(joinDto.getBirth())
@@ -76,7 +74,7 @@ public class UserService {
                     .address(new Address(joinDto.getAddressForm()))
                     .build();
             userRepository.save(joinUser);
-            return new UserDto.OwnerInfo(joinUser);
+            return new UserDto.CustomerInfo(joinUser);
         }
 
     }

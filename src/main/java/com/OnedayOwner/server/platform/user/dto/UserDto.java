@@ -135,14 +135,6 @@ public class UserDto {
     @Getter
     @NoArgsConstructor(access = PROTECTED)
     public static class OwnerInfo extends UserInfo{
-        private String name;
-        private String phoneNumber;
-        private LocalDate birth;
-        private String loginId;
-        private String email;
-
-        private Role role;
-        private Gender gender;
 
         @Builder
         public OwnerInfo(User owner){

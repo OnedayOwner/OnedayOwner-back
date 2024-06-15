@@ -105,7 +105,7 @@ public class AuthService {
         VerificationCode verificationCode = new VerificationCode(phoneNumber);
         verificationCodeRepository.save(verificationCode);
 
-        coolSms.sendSms(phoneNumber, makeContent(verificationCode.getCode()));
+        //coolSms.sendSms(phoneNumber, makeContent(verificationCode.getCode()));
 
         return new SmsDto.Response(verificationCode.getId());
     }
