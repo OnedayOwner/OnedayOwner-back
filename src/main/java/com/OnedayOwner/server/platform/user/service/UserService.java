@@ -37,9 +37,9 @@ public class UserService {
             throw new BusinessException(ErrorCode.USER_ALREADY_EXIST);
         }
 
-//        if(!authService.verifyCode(verificationDto).getIsVerified()){
-//            throw new BusinessException(ErrorCode.VERIFICATION_CODE_NOT_MATCH);
-//        }
+        if(!authService.verifyCode(verificationDto).getIsVerified()){
+            throw new BusinessException(ErrorCode.VERIFICATION_CODE_NOT_MATCH);
+        }
 
         if(duplicateIdCheck(joinDto.getLoginId(), role)){
             throw new BusinessException(ErrorCode.DUPLICATE_ID);

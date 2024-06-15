@@ -56,7 +56,6 @@ public class PopupTest {
                 .build();
 
         PopupDto.AddressForm addressForm = PopupDto.AddressForm.builder()
-                .city("city1")
                 .street("street1")
                 .zipcode("zipcode1")
                 .detail("detail1")

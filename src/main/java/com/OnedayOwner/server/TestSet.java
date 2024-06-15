@@ -1,10 +1,7 @@
 package com.OnedayOwner.server;
 
-import com.OnedayOwner.server.platform.popup.dto.PopupDto;
 import com.OnedayOwner.server.platform.popup.service.PopupService;
-import com.OnedayOwner.server.platform.user.dto.UserDTO;
 import com.OnedayOwner.server.platform.user.entity.Customer;
-import com.OnedayOwner.server.platform.user.entity.Gender;
 import com.OnedayOwner.server.platform.user.entity.Owner;
 import com.OnedayOwner.server.platform.user.repository.CustomerRepository;
 import com.OnedayOwner.server.platform.user.repository.OwnerRepository;
@@ -15,9 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
