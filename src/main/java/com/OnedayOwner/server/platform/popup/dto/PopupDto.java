@@ -62,14 +62,12 @@ public class PopupDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class AddressForm{
-        private String city;
         private String street;
         private String zipcode;
         private String detail;
 
         @Builder
-        public AddressForm(String city, String street, String zipcode, String detail) {
-            this.city = city;
+        public AddressForm(String street, String zipcode, String detail) {
             this.street = street;
             this.zipcode = zipcode;
             this.detail = detail;
@@ -105,7 +103,6 @@ public class PopupDto {
             this.id = popupRestaurant.getId();
             this.name = popupRestaurant.getName();
             this.address = AddressForm.builder()
-                    .city(popupRestaurant.getAddress().getCity())
                     .street(popupRestaurant.getAddress().getStreet())
                     .zipcode(popupRestaurant.getAddress().getZipcode())
                     .detail(popupRestaurant.getAddress().getDetail())
@@ -216,14 +213,13 @@ public class PopupDto {
         private AddressForm address;
 
         @Builder
-        public PopupSummaryForReservation(PopupRestaurant popupRestaurant, Address address) {
+        public PopupSummaryForReservation(PopupRestaurant popupRestaurant) {
             this.id = popupRestaurant.getId();
             this.name = popupRestaurant.getName();
             this.address = AddressForm.builder()
-                    .city(address.getCity())
-                    .street(address.getStreet())
-                    .zipcode(address.getZipcode())
-                    .detail(address.getDetail())
+                    .street(popupRestaurant.getAddress().getStreet())
+                    .zipcode(popupRestaurant.getAddress().getZipcode())
+                    .detail(popupRestaurant.getAddress().getDetail())
                     .build();
         }
     }

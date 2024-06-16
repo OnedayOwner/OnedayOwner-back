@@ -12,7 +12,8 @@ import com.OnedayOwner.server.platform.popup.repository.MenuRepository;
 import com.OnedayOwner.server.platform.popup.repository.PopupRestaurantRepository;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationTimeRepository;
-import com.OnedayOwner.server.platform.user.repository.OwnerRepository;
+import com.OnedayOwner.server.platform.user.entity.Role;
+import com.OnedayOwner.server.platform.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Stream;
@@ -31,7 +31,7 @@ public class PopupService {
 
     private final PopupRestaurantRepository popupRestaurantRepository;
     private final MenuRepository menuRepository;
-    private final OwnerRepository ownerRepository;
+    private final UserRepository userRepository;
     private final BusinessTimeRepository businessTimeRepository;
     private final ReservationTimeRepository reservationTimeRepository;
 
@@ -46,12 +46,11 @@ public class PopupService {
                 .startDateTime(restaurantForm.getStartDateTime())
                 .endDateTime(restaurantForm.getEndDateTime())
                 .address(Address.builder()
-                        .city(restaurantForm.getAddress().getCity())
-                        .street(restaurantForm.getAddress().getStreet())
                         .zipcode(restaurantForm.getAddress().getZipcode())
+                        .street(restaurantForm.getAddress().getStreet())
                         .detail(restaurantForm.getAddress().getDetail())
                         .build())
-                .owner(ownerRepository.findById(ownerId).orElseThrow(
+                .user(userRepository.findByIdAndRole(ownerId, Role.OWNER).orElseThrow(
                         () -> new BusinessException(ErrorCode.OWNER_NOT_FOUND)
                 ))
                 .build());
@@ -76,7 +75,7 @@ public class PopupService {
 
     @Transactional
     public PopupDto.PopupInBusinessDetail getPopupInBusinessDetail(Long ownerId){
-        return popupRestaurantRepository.getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimes(ownerId)
+        return popupRestaurantRepository.getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimesByUserId(ownerId)
                 .map(PopupDto.PopupInBusinessDetail::new)
                 .orElseThrow(
                         () -> new BusinessException(ErrorCode.IN_BUSINESS_POPUP_NOT_FOUND)
@@ -85,7 +84,7 @@ public class PopupService {
 
     @Transactional
     public PopupDto.PopupHistoryDetail getPopupHistoryDetail(Long popupId){
-        return popupRestaurantRepository.getPopupRestaurantWithMenus(popupId)
+        return popupRestaurantRepository.getPopupRestaurantWithMenusById(popupId)
                 .map(PopupDto.PopupHistoryDetail::new)
                 .orElseThrow(
                         () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
@@ -158,7 +157,7 @@ public class PopupService {
 
     @Transactional
     public List<PopupDto.PopupSummary> getPopupHistoryByOwner(Long ownerId){
-        return popupRestaurantRepository.findAllByOwnerIdAndInBusiness(ownerId, false)
+        return popupRestaurantRepository.findAllByUserIdAndInBusiness(ownerId, false)
                 .stream()
                 .map(PopupDto.PopupSummary::new)
                 .toList();
@@ -166,7 +165,7 @@ public class PopupService {
 
     @Transactional
     public PopupRestaurant getPopupInBusinessByOwner(Long ownerId){
-        return popupRestaurantRepository.findByOwnerIdAndInBusiness(ownerId, true)
+        return popupRestaurantRepository.findByUserIdAndInBusiness(ownerId, true)
                 .orElseThrow(
                         () -> new BusinessException(ErrorCode.IN_BUSINESS_POPUP_NOT_FOUND)
                 );

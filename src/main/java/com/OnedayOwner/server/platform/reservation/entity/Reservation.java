@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,7 +22,7 @@ public class Reservation {
     @Column(name = "reservation_id")
     private Long id;
 
-    private LocalDateTime reservationTime;
+    private LocalDateTime reservationDateTime;
     private int numberOfPeople;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,13 +34,17 @@ public class Reservation {
     private Customer customer;
 
     @OneToMany(mappedBy = "reservation")
-    private List<ReservationMenu> reservationMenus;
+    private List<ReservationMenu> reservationMenus = new ArrayList<>();
 
     @Builder
-    public Reservation(LocalDateTime reservationTime, int numberOfPeople , PopupRestaurant popupRestaurant, Customer customer) {
-        this.reservationTime = reservationTime;
+    public Reservation(LocalDateTime reservationDateTime, int numberOfPeople , PopupRestaurant popupRestaurant, Customer customer) {
+        this.reservationDateTime = reservationDateTime;
         this.numberOfPeople=numberOfPeople;
         this.popupRestaurant=popupRestaurant;
         this.customer=customer;
+    }
+
+    public void addReservationMenu(ReservationMenu reservationMenu){
+        this.reservationMenus.add(reservationMenu);
     }
 }

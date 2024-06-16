@@ -26,7 +26,32 @@ public enum ErrorCode {
     CUSTOMER_NOT_FOUND(404, "C013", "Customer not found"),
     MENU_NOT_FOUND(404, "C014", "Menu not found"),
     RESERVATION_NOT_FOUND(404, "C015", "Reservation not found"),
-    CANNOT_ACCESS_RESERVATION(404, "C016", "해당 예약에 접근할 수 없습니다.")
+    CANNOT_ACCESS_RESERVATION(404, "C016", "해당 예약에 접근할 수 없습니다."),
+    NUMBER_OF_PEOPLE_EXCEEDED(404, "C017", "예약 가능 인원을 초과하였습니다."),
+
+    // Auth - Token
+    TOKEN_USER_NOT_MATCH(400, "C011", "토큰의 사용자 정보가 올바르지 않습니다."),
+    ACCESS_TOKEN_EXPIRED(401, "JWT_001", "Access Token Expired"),
+    REFRESH_TOKEN_EXPIRED(403, "JWT_002", "Refresh Token Expired"),
+    ACCESS_TOKEN_NOT_FOUND(404, "JWT_003", "토큰을 찾을 수 없습니다"),
+    INVALID_TOKEN_SIGNATURE(403, "JWT_004", "Invalid Token"),
+    INVALID_CLAIM(401, "JWT_005", "Invalid Claim"),
+
+    USER_NOT_FOUND(404, "C008", "User not found"),
+
+    VERIFICATION_CODE_NOT_FOUND(404, "C018", "Verification code not found"),
+    EXPIRED_VERIFICATION_CODE(403, "C019", "Verification code expired"),
+
+    USER_ALREADY_EXIST(403, "C020", "User already exist"),
+
+    VERIFICATION_CODE_NOT_MATCH(403, "C021", "Verification code not match"),
+
+    DUPLICATE_ID(400, "C022","Id already exist"),
+
+    INVALID_PHONE_NUMBER(400, "C023", "PhoneNumber is invalid"),
+    FREQUENT_SMS_REQUEST(400, "C024", "Wait for new sms request"),
+    WRONG_ID_AND_PASSWORD(400, "C025", "Id and password not match"),
+
     ;
 
     private final String code;

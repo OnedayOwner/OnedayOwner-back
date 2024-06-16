@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface PopupRestaurantRepository extends JpaRepository<PopupRestaurant, Long>, PopupRestaurantRepositoryCustom {
 
-    Optional<PopupRestaurant> findByOwnerIdAndInBusiness(Long ownerId, Boolean inBusiness);
-    List<PopupRestaurant> findAllByOwnerIdAndInBusiness(Long ownerId, Boolean inBusiness);
+    Optional<PopupRestaurant> findByUserIdAndInBusiness(Long ownerId, Boolean inBusiness);
+    List<PopupRestaurant> findAllByUserIdAndInBusiness(Long ownerId, Boolean inBusiness);
 }

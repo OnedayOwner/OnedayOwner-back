@@ -17,19 +17,18 @@ public class CustomerController {
     팝업의 예약 가능 일자 조회
      */
     @GetMapping("/schedule/{popupId}")
-    public ResponseEntity<ReservationDto.ReservationPossibleTimesDto> getPossibleTimesForReservation(
+    public ResponseEntity<ReservationDto.ReservationTimesDto> getPossibleTimesForReservation(
             @PathVariable("popupId") Long popupId
     ) {
         return ResponseEntity.ok()
-                .body(reservationService.getPossibleTimesForReservation(popupId));
+                .body(reservationService.getReservationTimes(popupId));
     }
 
     /*
     새로운 예약 등록
-    예약 상세 내역을 반환
      */
     @PostMapping("/register")
-    public ResponseEntity<ReservationDto.ReservationDetailForCustomer> registerReservation(
+    public ResponseEntity<ReservationDto.ReservationDetail> registerReservation(
             @RequestBody ReservationDto.ReservationForm reservationForm,
             Long customerId
     ) {
@@ -41,7 +40,7 @@ public class CustomerController {
     예약 상세 조회-고객
      */
     @GetMapping("/{reservationId}")
-    public ResponseEntity<ReservationDto.ReservationDetailForCustomer> getReservationDetailByCustomer(
+    public ResponseEntity<ReservationDto.ReservationDetail> getReservationDetailByCustomer(
             @PathVariable("reservationId") Long reservationId,
             Long customerId
     ) {

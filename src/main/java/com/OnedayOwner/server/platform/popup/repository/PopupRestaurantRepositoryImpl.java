@@ -24,21 +24,21 @@ public class PopupRestaurantRepositoryImpl implements PopupRestaurantRepositoryC
     }
 
     @Override
-    public Optional<PopupRestaurant> getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimes(Long id) {
+    public Optional<PopupRestaurant> getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimesByUserId(Long ownerId) {
         return jpaQueryFactory.selectFrom(popupRestaurant)
                 .leftJoin(popupRestaurant.menus, menu).fetchJoin()
 //                .leftJoin(popupRestaurant.reservationTimes, reservationTime).fetchJoin()
 //                .leftJoin(popupRestaurant.businessTimes, businessTime).fetchJoin()
-                .where(popupRestaurant.id.eq(id),
+                .where(popupRestaurant.user.id.eq(ownerId),
                         popupRestaurant.inBusiness.eq(true))
                 .fetch().stream().findFirst();
     }
 
     @Override
-    public Optional<PopupRestaurant> getPopupRestaurantWithMenus(Long id) {
+    public Optional<PopupRestaurant> getPopupRestaurantWithMenusById(Long popupId) {
         return jpaQueryFactory.selectFrom(popupRestaurant)
                 .leftJoin(popupRestaurant.menus).fetchJoin()
-                .where(popupRestaurant.id.eq(id))
+                .where(popupRestaurant.id.eq(popupId))
                 .fetch().stream().findFirst();
     }
 

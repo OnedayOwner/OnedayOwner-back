@@ -32,5 +32,7 @@ public class ReservationMenu {
         this.quantity = quantity;
         this.menu=menu;
         this.reservation=reservation;
+
+        reservation.addReservationMenu(this);
     }
 }
