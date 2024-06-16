@@ -20,4 +20,11 @@ public class SecurityConstant {
             new MethodUri(Method.ALL, "/api/users/login"),
             new MethodUri(Method.ALL, "/api/auth/**")
     ));
+
+    public static final Set<MethodUri> OWNER_URI = new HashSet<>(Arrays.asList(
+       new MethodUri(Method.ALL, "/api/owners/**")
+    ));
+    public static final Set<MethodUri> CUSTOMER_URI = new HashSet<>(Arrays.asList(
+       new MethodUri(Method.ALL, "/api/customers/**")
+    ));
 }

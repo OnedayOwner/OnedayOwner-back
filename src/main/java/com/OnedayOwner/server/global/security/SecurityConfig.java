@@ -1,5 +1,6 @@
 package com.OnedayOwner.server.global.security;
 
+import com.OnedayOwner.server.platform.user.entity.Role;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +45,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(SecurityUtils.pathsSetToArray(SecurityConstant.EXCLUDED_URI)).permitAll()
+                                .requestMatchers(SecurityUtils.pathsSetToArray(SecurityConstant.OWNER_URI)).hasAuthority(Role.OWNER.toString())
+                                .requestMatchers(SecurityUtils.pathsSetToArray(SecurityConstant.CUSTOMER_URI)).hasAuthority(Role.CUSTOMER.toString())
                                 .anyRequest().authenticated()
                 );
 
