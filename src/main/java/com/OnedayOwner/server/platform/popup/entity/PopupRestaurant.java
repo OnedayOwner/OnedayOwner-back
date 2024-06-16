@@ -5,6 +5,7 @@ import com.OnedayOwner.server.platform.Address;
 import com.OnedayOwner.server.platform.place.entity.PlaceInfo;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
 import com.OnedayOwner.server.platform.user.entity.Owner;
+import com.OnedayOwner.server.platform.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -35,8 +36,8 @@ public class PopupRestaurant extends BaseTimeEntity {
     private List<Menu> menus = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
-    private Owner owner;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private Address address;
     private Boolean inBusiness;
@@ -68,11 +69,11 @@ public class PopupRestaurant extends BaseTimeEntity {
     }
 
     @Builder
-    public PopupRestaurant(String name, LocalDateTime startDateTime, LocalDateTime endDateTime, Owner owner, Address address, String description){
+    public PopupRestaurant(String name, LocalDateTime startDateTime, LocalDateTime endDateTime, User user, Address address, String description){
         this.name = name;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.owner = owner;
+        this.user = user;
         this.address = address;
 //        this.category = category;
         this.inBusiness = true;

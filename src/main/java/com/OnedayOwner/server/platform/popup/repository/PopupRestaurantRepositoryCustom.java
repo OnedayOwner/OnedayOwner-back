@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface PopupRestaurantRepositoryCustom {
 
-    Optional<PopupRestaurant> getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimes(Long id);
+    Optional<PopupRestaurant> getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimesByUserId(Long ownerId);
 
-    Optional<PopupRestaurant> getPopupRestaurantWithMenus(Long id);
+    Optional<PopupRestaurant> getPopupRestaurantWithMenusById(Long popupId);
 }
