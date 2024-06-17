@@ -223,4 +223,30 @@ public class PopupDto {
                     .build();
         }
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class PopupSummaryForCustomer{
+        private Long id;
+        private String name;
+        private AddressForm address;
+        private String description;
+        private LocalDateTime startDateTime;
+        private LocalDateTime endDateTime;
+        private Boolean inBusiness;
+
+        public PopupSummaryForCustomer(PopupRestaurant popupRestaurant) {
+            this.id = popupRestaurant.getId();
+            this.name = popupRestaurant.getName();
+            this.address = AddressForm.builder()
+                    .street(popupRestaurant.getAddress().getStreet())
+                    .zipcode(popupRestaurant.getAddress().getZipcode())
+                    .detail(popupRestaurant.getAddress().getDetail())
+                    .build();
+            this.description = popupRestaurant.getDescription();
+            this.startDateTime = popupRestaurant.getStartDateTime();
+            this.endDateTime = popupRestaurant.getEndDateTime();
+            this.inBusiness = popupRestaurant.getInBusiness();
+        }
+    }
 }

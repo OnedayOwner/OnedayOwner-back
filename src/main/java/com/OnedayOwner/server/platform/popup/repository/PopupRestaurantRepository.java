@@ -10,4 +10,5 @@ public interface PopupRestaurantRepository extends JpaRepository<PopupRestaurant
 
     Optional<PopupRestaurant> findByUserIdAndInBusiness(Long ownerId, Boolean inBusiness);
     List<PopupRestaurant> findAllByUserIdAndInBusiness(Long ownerId, Boolean inBusiness);
+    List<PopupRestaurant> findAllByInBusiness(Boolean inBusiness);
 }

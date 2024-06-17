@@ -1,15 +1,12 @@
 package com.OnedayOwner.server.platform.feedback.entity;
 
 import com.OnedayOwner.server.platform.popup.entity.Menu;
-import com.OnedayOwner.server.platform.user.entity.Customer;
-import com.OnedayOwner.server.platform.user.entity.Gender;
+import com.OnedayOwner.server.platform.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,20 +24,20 @@ public class Feedback {
     private Boolean show;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
     @Builder
-    public Feedback(String score, int desiredPrice ,String feedback, Boolean show, Customer customer, Menu menu) {
+    public Feedback(String score, int desiredPrice , String feedback, Boolean show, User user, Menu menu) {
         this.score = score;
         this.desiredPrice=desiredPrice;
         this.feedback=feedback;
         this.show=show;
-        this.customer=customer;
+        this.user = user;
         this.menu=menu;
     }
 }

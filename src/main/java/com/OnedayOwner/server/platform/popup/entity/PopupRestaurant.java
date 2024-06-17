@@ -2,9 +2,7 @@ package com.OnedayOwner.server.platform.popup.entity;
 
 import com.OnedayOwner.server.global.model.BaseTimeEntity;
 import com.OnedayOwner.server.platform.Address;
-import com.OnedayOwner.server.platform.place.entity.PlaceInfo;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
-import com.OnedayOwner.server.platform.user.entity.Owner;
 import com.OnedayOwner.server.platform.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

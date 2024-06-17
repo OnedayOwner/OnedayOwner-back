@@ -11,12 +11,14 @@ import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationMenuRepository;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationRepository;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationTimeRepository;
-import com.OnedayOwner.server.platform.user.repository.CustomerRepository;
+import com.OnedayOwner.server.platform.user.entity.Role;
+import com.OnedayOwner.server.platform.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +27,7 @@ public class ReservationService {
     private final PopupRestaurantRepository popupRestaurantRepository;
     private final ReservationRepository reservationRepository;
     private final ReservationTimeRepository reservationTimeRepository;
-    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
     private final ReservationMenuRepository reservationMenuRepository;
     private final MenuRepository menuRepository;
 
@@ -33,10 +35,11 @@ public class ReservationService {
     팝업의 예약 가능 일자 조회
      */
     @Transactional
-    public ReservationDto.ReservationTimesDto getReservationTimes(Long popupId){
-        return ReservationDto.ReservationTimesDto.builder()
-                .reservationTimes(reservationTimeRepository.getPossibleReservationTimes(popupId))
-                .build();
+    public List<ReservationDto.ReservationTimeDto> getReservationTimes(Long popupId){
+        return reservationTimeRepository.getPossibleReservationTimes(popupId)
+                .stream()
+                .map(ReservationDto.ReservationTimeDto::new)
+                .toList();
     }
 
     /*
@@ -57,7 +60,7 @@ public class ReservationService {
                 .popupRestaurant(popupRestaurantRepository.findById(reservationForm.getPopupId()).orElseThrow(
                         () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
                 ))
-                .customer(customerRepository.findById(customerId).orElseThrow(
+                .user(userRepository.findByIdAndRole(customerId, Role.CUSTOMER).orElseThrow(
                         () -> new BusinessException(ErrorCode.CUSTOMER_NOT_FOUND)
                 ))
                 .build());
@@ -99,17 +102,28 @@ public class ReservationService {
     예약 상세 조회-고객
      */
     @Transactional
-    public ReservationDto.ReservationDetail getReservationDetailByCustomer(Long reservationId, Long customerId) {
+    public ReservationDto.ReservationDetail getReservationDetailForCustomer(Long reservationId, Long customerId) {
         //조회하는 고객의 예약이 맞는지 체크
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
                 () -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND)
         );
-        if (!reservation.getCustomer().getId().equals(customerId)) {
+        if (!reservation.getUser().getId().equals(customerId)) {
             throw new BusinessException(ErrorCode.CANNOT_ACCESS_RESERVATION);
         }
 
         return ReservationDto.ReservationDetail.builder()
                 .reservation(reservation)
                 .build();
+    }
+
+    /*
+    예약 리스트 조회
+     */
+    @Transactional
+    public List<ReservationDto.ReservationSummary> getReservationsByCustomer(Long customerId) {
+        return reservationRepository.findAllByUserId(customerId)
+                .stream()
+                .map(ReservationDto.ReservationSummary::new)
+                .toList();
     }
 }

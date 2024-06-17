@@ -2,7 +2,6 @@ package com.OnedayOwner.server.platform.user.dto;
 
 import com.OnedayOwner.server.platform.Address;
 import com.OnedayOwner.server.platform.user.entity.Gender;
-import com.OnedayOwner.server.platform.user.entity.Owner;
 import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.entity.User;
 import lombok.*;
