@@ -23,7 +23,7 @@ public class AccessToken{
     private String token;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     private OffsetDateTime createdDateTime;

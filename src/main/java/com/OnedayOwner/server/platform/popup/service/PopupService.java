@@ -43,6 +43,7 @@ public class PopupService {
         //레스토랑 등록
         PopupRestaurant restaurant = popupRestaurantRepository.save(PopupRestaurant.builder()
                 .name(restaurantForm.getName())
+                .description(restaurantForm.getDescription())
                 .startDateTime(restaurantForm.getStartDateTime())
                 .endDateTime(restaurantForm.getEndDateTime())
                 .address(Address.builder()
