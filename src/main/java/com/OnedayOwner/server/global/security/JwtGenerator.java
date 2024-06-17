@@ -2,7 +2,7 @@ package com.OnedayOwner.server.global.security;
 
 import com.OnedayOwner.server.global.exception.BusinessException;
 import com.OnedayOwner.server.global.exception.ErrorCode;
-import com.OnedayOwner.server.platform.user.entity.Customer;
+import com.OnedayOwner.server.platform.user.entity.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -41,7 +41,7 @@ public class JwtGenerator {
         return token;
     }
 
-    public void verify(String token, Customer user){
+    public void verify(String token, User user){
 
         Algorithm algorithm = Algorithm.RSA256(rsaKeyProvider);
         algorithm.verify(JWT.decode(token));

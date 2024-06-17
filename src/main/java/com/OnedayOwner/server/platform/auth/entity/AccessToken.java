@@ -1,7 +1,5 @@
 package com.OnedayOwner.server.platform.auth.entity;
 
-import com.OnedayOwner.server.global.model.BaseTimeEntity;
-import com.OnedayOwner.server.platform.user.entity.Owner;
 import com.OnedayOwner.server.platform.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

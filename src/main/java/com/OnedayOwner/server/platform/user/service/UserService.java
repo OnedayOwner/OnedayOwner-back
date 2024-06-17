@@ -6,17 +6,13 @@ import com.OnedayOwner.server.platform.Address;
 import com.OnedayOwner.server.platform.auth.dto.VerificationDto;
 import com.OnedayOwner.server.platform.auth.service.AuthService;
 import com.OnedayOwner.server.platform.user.dto.UserDto;
-import com.OnedayOwner.server.platform.user.entity.Customer;
 import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.entity.User;
-import com.OnedayOwner.server.platform.user.repository.CustomerRepository;
 import com.OnedayOwner.server.platform.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

@@ -49,19 +49,6 @@ public class ReservationDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ReservationTimesDto {
-        private List<ReservationTimeDto> reservationTimes;
-
-        @Builder
-        public ReservationTimesDto(List<ReservationTime> reservationTimes) {
-            this.reservationTimes = reservationTimes.stream()
-                    .map(ReservationTimeDto::new)
-                    .toList();
-        }
-    }
-
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ReservationTimeDto{
         private Long id;
         private LocalDate reservationDate;

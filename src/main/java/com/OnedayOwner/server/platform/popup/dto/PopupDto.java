@@ -239,7 +239,6 @@ public class PopupDto {
             this.id = popupRestaurant.getId();
             this.name = popupRestaurant.getName();
             this.address = AddressForm.builder()
-                    .city(popupRestaurant.getAddress().getCity())
                     .street(popupRestaurant.getAddress().getStreet())
                     .zipcode(popupRestaurant.getAddress().getZipcode())
                     .detail(popupRestaurant.getAddress().getDetail())

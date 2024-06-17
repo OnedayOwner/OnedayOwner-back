@@ -1,7 +1,6 @@
 package com.OnedayOwner.server.platform.popup.entity;
 
 import com.OnedayOwner.server.global.model.BaseTimeEntity;
-import com.OnedayOwner.server.platform.user.entity.Customer;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

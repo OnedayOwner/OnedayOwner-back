@@ -1,7 +1,7 @@
 package com.OnedayOwner.server.platform.reservation.entity;
 
 import com.OnedayOwner.server.platform.popup.entity.PopupRestaurant;
-import com.OnedayOwner.server.platform.user.entity.Customer;
+import com.OnedayOwner.server.platform.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,18 +30,18 @@ public class Reservation {
     private PopupRestaurant popupRestaurant;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @OneToMany(mappedBy = "reservation")
     private List<ReservationMenu> reservationMenus = new ArrayList<>();
 
     @Builder
-    public Reservation(LocalDateTime reservationDateTime, int numberOfPeople , PopupRestaurant popupRestaurant, Customer customer) {
+    public Reservation(LocalDateTime reservationDateTime, int numberOfPeople , PopupRestaurant popupRestaurant, User user) {
         this.reservationDateTime = reservationDateTime;
         this.numberOfPeople=numberOfPeople;
         this.popupRestaurant=popupRestaurant;
-        this.customer=customer;
+        this.user = user;
     }
 
     public void addReservationMenu(ReservationMenu reservationMenu){

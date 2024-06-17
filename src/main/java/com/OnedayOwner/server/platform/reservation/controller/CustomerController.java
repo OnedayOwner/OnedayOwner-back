@@ -1,11 +1,13 @@
 package com.OnedayOwner.server.platform.reservation.controller;
 
+import com.OnedayOwner.server.global.security.SecurityUtils;
 import com.OnedayOwner.server.platform.popup.dto.PopupDto;
 import com.OnedayOwner.server.platform.popup.service.PopupService;
 import com.OnedayOwner.server.platform.reservation.dto.ReservationDto;
 import com.OnedayOwner.server.platform.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +24,7 @@ public class CustomerController {
     팝업의 예약 가능 일자 조회
      */
     @GetMapping("/schedule/{popupId}")
-    public ResponseEntity<ReservationDto.ReservationTimesDto> getPossibleTimesForReservation(
+    public ResponseEntity<List<ReservationDto.ReservationTimeDto>> getPossibleTimesForReservation(
             @PathVariable("popupId") Long popupId
     ) {
         return ResponseEntity.ok()
@@ -35,8 +37,9 @@ public class CustomerController {
     @PostMapping("/reservation/register")
     public ResponseEntity<ReservationDto.ReservationDetail> registerReservation(
             @RequestBody ReservationDto.ReservationForm reservationForm,
-            Long customerId
+            SecurityContextHolderAwareRequestWrapper request
     ) {
+        Long customerId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
                 .body(reservationService.registerReservation(reservationForm, customerId));
     }
@@ -47,8 +50,9 @@ public class CustomerController {
     @GetMapping("/reservation/{reservationId}")
     public ResponseEntity<ReservationDto.ReservationDetail> getReservationDetailForCustomer(
             @PathVariable("reservationId") Long reservationId,
-            Long customerId
+            SecurityContextHolderAwareRequestWrapper request
     ) {
+        Long customerId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
                 .body(reservationService.getReservationDetailForCustomer(reservationId, customerId));
     }
@@ -57,9 +61,7 @@ public class CustomerController {
     팝업 리스트 조회
      */
     @GetMapping("/popups")
-    public ResponseEntity<List<PopupDto.PopupSummaryForCustomer>> getPopupsInBusinessForCustomer(
-            Long customerId
-    ){
+    public ResponseEntity<List<PopupDto.PopupSummaryForCustomer>> getPopupsInBusinessForCustomer(){
         return  ResponseEntity.ok()
                 .body(popupService.getPopupsInBusinessForCustomer());
     }
@@ -69,8 +71,9 @@ public class CustomerController {
      */
     @GetMapping("/reservations")
     public ResponseEntity<List<ReservationDto.ReservationSummary>> getReservationsByCustomer(
-            Long customerId
+            SecurityContextHolderAwareRequestWrapper request
     ){
+        Long customerId = SecurityUtils.extractUserId(request);
         return  ResponseEntity.ok()
                 .body(reservationService.getReservationsByCustomer(customerId));
     }

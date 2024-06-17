@@ -5,10 +5,10 @@ import com.OnedayOwner.server.platform.popup.dto.PopupDto;
 import com.OnedayOwner.server.platform.popup.service.PopupService;
 import com.OnedayOwner.server.platform.reservation.dto.ReservationDto;
 import com.OnedayOwner.server.platform.reservation.service.ReservationService;
-import com.OnedayOwner.server.platform.user.entity.Customer;
-import com.OnedayOwner.server.platform.user.entity.Owner;
-import com.OnedayOwner.server.platform.user.repository.CustomerRepository;
-import com.OnedayOwner.server.platform.user.repository.OwnerRepository;
+import com.OnedayOwner.server.platform.user.entity.Gender;
+import com.OnedayOwner.server.platform.user.entity.Role;
+import com.OnedayOwner.server.platform.user.entity.User;
+import com.OnedayOwner.server.platform.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,9 +28,7 @@ public class ReservationTest {
     @Autowired
     ReservationService reservationService;
     @Autowired
-    OwnerRepository ownerRepository;
-    @Autowired
-    CustomerRepository customerRepository;
+    UserRepository userRepository;
     @Autowired
     PopupService popupService;
 
@@ -43,23 +41,29 @@ public class ReservationTest {
     @BeforeEach
     void initData(){
         //owner 생성
-        Owner owner = Owner.builder()
+        User owner = User.builder()
                 .email("owner@naver.com")
+                .gender(Gender.MALE)
+                .role(Role.OWNER)
                 .build();
 
-        ownerRepository.save(owner);
+        userRepository.save(owner);
         ownerId = owner.getId();
 
         //customer 생성
-        Customer customer1 = Customer.builder()
+        User customer1 = User.builder()
                 .email("customer1@naver.com")
+                .gender(Gender.MALE)
+                .role(Role.CUSTOMER)
                 .build();
-        Customer customer2 = Customer.builder()
+        User customer2 = User.builder()
                 .email("customer2@naver.com")
+                .gender(Gender.MALE)
+                .role(Role.CUSTOMER)
                 .build();
 
-        customerRepository.save(customer1);
-        customerRepository.save(customer2);
+        userRepository.save(customer1);
+        userRepository.save(customer2);
         customer1Id = customer1.getId();
         customer2Id = customer2.getId();
 
@@ -83,7 +87,6 @@ public class ReservationTest {
                 .build();
 
         PopupDto.AddressForm addressForm = PopupDto.AddressForm.builder()
-                .city("city1")
                 .street("street1")
                 .zipcode("zipcode1")
                 .detail("detail1")
@@ -107,10 +110,10 @@ public class ReservationTest {
     @Test
     public void 팝업_예약_가능_일자_조회() {
         //given, when
-        ReservationDto.ReservationTimesDto reservationTimes = reservationService.getReservationTimes(popupId);
+        List<ReservationDto.ReservationTimeDto> reservationTimes = reservationService.getReservationTimes(popupId);
 
         //then
-        Assertions.assertEquals(reservationTimes.getReservationTimes().size(), 15 * 4);
+        Assertions.assertEquals(reservationTimes.size(), 15 * 4);
     }
 
     @Test
@@ -128,7 +131,7 @@ public class ReservationTest {
                 .popupId(popupId)
                 .numberOfPeople(2)
                 .reservationMenus(reservationMenus)
-                .reservationTimeId(reservationService.getReservationTimes(popupId).getReservationTimes()
+                .reservationTimeId(reservationService.getReservationTimes(popupId)
                         .stream()
                         .findFirst()
                         .get()
@@ -143,7 +146,7 @@ public class ReservationTest {
         Assertions.assertEquals(reservationDetail.getReservationDateTime(), LocalDateTime.of(2025,1,1,11,0));
         Assertions.assertEquals(reservationDetail.getPopupSummaryForReservation().getId(), popupId);
         Assertions.assertEquals(reservationDetail.getReservationMenuDetails().size(), 2);
-        Assertions.assertEquals(reservationService.getReservationTimes(popupId).getReservationTimes()
+        Assertions.assertEquals(reservationService.getReservationTimes(popupId)
                 .stream()
                 .findFirst()
                 .get()
@@ -165,7 +168,7 @@ public class ReservationTest {
                 .popupId(popupId)
                 .numberOfPeople(11)
                 .reservationMenus(reservationMenus)
-                .reservationTimeId(reservationService.getReservationTimes(popupId).getReservationTimes()
+                .reservationTimeId(reservationService.getReservationTimes(popupId)
                         .stream()
                         .findFirst()
                         .get()
@@ -192,7 +195,7 @@ public class ReservationTest {
                 .popupId(popupId)
                 .numberOfPeople(2)
                 .reservationMenus(reservationMenus)
-                .reservationTimeId(reservationService.getReservationTimes(popupId).getReservationTimes()
+                .reservationTimeId(reservationService.getReservationTimes(popupId)
                         .stream()
                         .findFirst()
                         .get()
@@ -229,7 +232,7 @@ public class ReservationTest {
                     .popupId(popupId)
                     .numberOfPeople(2)
                     .reservationMenus(reservationMenus)
-                    .reservationTimeId(reservationService.getReservationTimes(popupId).getReservationTimes()
+                    .reservationTimeId(reservationService.getReservationTimes(popupId)
                             .get(i)
                             .getId())
                     .build();
