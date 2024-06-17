@@ -63,7 +63,7 @@ public class UserService {
                     .birth(joinDto.getBirth())
                     .email(joinDto.getEmail())
                     .gender(joinDto.getGender())
-                    .role(Role.OWNER)
+                    .role(Role.CUSTOMER)
                     .loginId(joinDto.getLoginId())
                     .phoneNumber(joinDto.getPhoneNumber())
                     .password(hashedPassword)
