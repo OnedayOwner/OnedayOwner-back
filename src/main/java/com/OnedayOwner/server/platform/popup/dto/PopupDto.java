@@ -97,6 +97,8 @@ public class PopupDto {
         private AddressForm address;
         private String description;
         private List<MenuDetail> menus;
+        private LocalDateTime startDateTime;
+        private LocalDateTime endDateTime;
 
 
         public PopupSummary(PopupRestaurant popupRestaurant) {
@@ -108,6 +110,8 @@ public class PopupDto {
                     .detail(popupRestaurant.getAddress().getDetail())
                     .build();
             this.description = popupRestaurant.getDescription();
+            this.startDateTime = popupRestaurant.getStartDateTime();
+            this.endDateTime = popupRestaurant.getEndDateTime();
 
             this.menus = popupRestaurant.getMenus().stream()
                     .map(MenuDetail::new)
