@@ -26,11 +26,7 @@ public class UserController {
             @RequestParam Role role
     ) {
         UserDto.UserInfo userDto = userService.join(joinDto, role);
-        AccessToken accessToken = authService
-                .createAccessTokenByLoginIdAndRole(joinDto.getLoginId(), role);
-        String bearerToken = jwtConfig.getPrefix() + accessToken.getToken();
         return ResponseEntity.ok()
-                .header(jwtConfig.getHeader(), bearerToken)
                 .body(userDto);
     }
 
