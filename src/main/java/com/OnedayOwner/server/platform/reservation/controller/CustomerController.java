@@ -58,12 +58,21 @@ public class CustomerController {
     }
 
     /*
-    팝업 리스트 조회
+    현재 진행중인 팝업 리스트 조회
      */
-    @GetMapping("/popups")
-    public ResponseEntity<List<PopupDto.PopupSummaryForCustomer>> getPopupsInBusinessForCustomer(){
+    @GetMapping("/popups/active")
+    public ResponseEntity<List<PopupDto.PopupSummaryForCustomer>> getActivePopupsInBusinessForCustomer(){
         return  ResponseEntity.ok()
-                .body(popupService.getPopupsInBusinessForCustomer());
+                .body(popupService.getActivePopupsInBusinessForCustomer());
+    }
+
+    /*
+    현재 진행중인 팝업 리스트 조회
+     */
+    @GetMapping("/popups/future")
+    public ResponseEntity<List<PopupDto.PopupSummaryForCustomer>> getFuturePopupsInBusinessForCustomer(){
+        return  ResponseEntity.ok()
+                .body(popupService.getFuturePopupsInBusinessForCustomer());
     }
 
     /*

@@ -238,6 +238,7 @@ public class PopupDto {
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
         private Boolean inBusiness;
+        private String menuImageUrl;
 
         public PopupSummaryForCustomer(PopupRestaurant popupRestaurant) {
             this.id = popupRestaurant.getId();
@@ -251,6 +252,9 @@ public class PopupDto {
             this.startDateTime = popupRestaurant.getStartDateTime();
             this.endDateTime = popupRestaurant.getEndDateTime();
             this.inBusiness = popupRestaurant.getInBusiness();
+            this.menuImageUrl = popupRestaurant.getMenus().stream().findFirst()
+                    .map(Menu::getImageUrl)
+                    .orElse(null);
         }
     }
 }

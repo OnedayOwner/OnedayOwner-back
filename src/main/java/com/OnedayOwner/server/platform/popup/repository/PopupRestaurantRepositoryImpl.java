@@ -8,6 +8,8 @@ import com.OnedayOwner.server.platform.reservation.entity.QReservationTime;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static com.OnedayOwner.server.platform.popup.entity.QBusinessTime.businessTime;
@@ -42,5 +44,32 @@ public class PopupRestaurantRepositoryImpl implements PopupRestaurantRepositoryC
                 .fetch().stream().findFirst();
     }
 
+    @Override
+    public List<PopupRestaurant> findActivePopupRestaurantsWithMenus() {
+        LocalDateTime now = LocalDateTime.now();
 
+        return jpaQueryFactory
+                .selectFrom(popupRestaurant)
+                .leftJoin(popupRestaurant.menus, menu).fetchJoin()
+                .where(
+                        popupRestaurant.startDateTime.loe(now)
+                                .and(popupRestaurant.endDateTime.goe(now))
+                                .and(popupRestaurant.inBusiness.isTrue())
+                )
+                .fetch();
+    }
+
+    @Override
+    public List<PopupRestaurant> findFuturePopupRestaurantsWithMenus() {
+        LocalDateTime now = LocalDateTime.now();
+
+        return jpaQueryFactory
+                .selectFrom(popupRestaurant)
+                .leftJoin(popupRestaurant.menus, menu).fetchJoin()
+                .where(
+                        popupRestaurant.startDateTime.goe(now)
+                                .and(popupRestaurant.inBusiness.isTrue())
+                )
+                .fetch();
+    }
 }

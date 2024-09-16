@@ -172,10 +172,19 @@ public class PopupService {
                 );
     }
 
-    //팝업 리스트 조회
+    //현재 진행중인 팝업 리스트 조회
     @Transactional
-    public List<PopupDto.PopupSummaryForCustomer> getPopupsInBusinessForCustomer(){
-        return popupRestaurantRepository.findAllByInBusiness(true)
+    public List<PopupDto.PopupSummaryForCustomer> getActivePopupsInBusinessForCustomer(){
+        return popupRestaurantRepository.findActivePopupRestaurantsWithMenus()
+                .stream()
+                .map(PopupDto.PopupSummaryForCustomer::new)
+                .toList();
+    }
+
+    //진행 예정인 팝업 리스트 조회
+    @Transactional
+    public List<PopupDto.PopupSummaryForCustomer> getFuturePopupsInBusinessForCustomer(){
+        return popupRestaurantRepository.findFuturePopupRestaurantsWithMenus()
                 .stream()
                 .map(PopupDto.PopupSummaryForCustomer::new)
                 .toList();
