@@ -85,7 +85,7 @@ public class TestSet {
 
         PopupDto.AddressForm addressForm = PopupDto.AddressForm.builder()
                 .street("서울시 강남구 강남대로 512")
-                .zipcode("12345")
+                .zipcode("06114")
                 .detail("3층")
                 .build();
 

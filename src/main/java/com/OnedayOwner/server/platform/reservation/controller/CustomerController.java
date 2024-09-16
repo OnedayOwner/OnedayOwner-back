@@ -86,4 +86,15 @@ public class CustomerController {
         return  ResponseEntity.ok()
                 .body(reservationService.getReservationsByCustomer(customerId));
     }
+
+    /*
+    팝업 상세 조회
+     */
+    @GetMapping("/popup/{popupId}")
+    public ResponseEntity<PopupDto.PopupDetailForCustomer> getPopupDetailForCustomer(
+            @PathVariable("popupId")Long popupId
+    ) {
+        return ResponseEntity.ok()
+                .body(popupService.getPopupDetailForCustomer(popupId));
+    }
 }

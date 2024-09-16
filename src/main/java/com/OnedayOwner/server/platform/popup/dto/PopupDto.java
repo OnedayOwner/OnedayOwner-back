@@ -257,4 +257,18 @@ public class PopupDto {
                     .orElse(null);
         }
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class PopupDetailForCustomer extends PopupSummary{
+        private List<BusinessTimeDto> businessTimes;
+
+        @Builder
+        public PopupDetailForCustomer(PopupRestaurant popupRestaurant) {
+            super(popupRestaurant);
+            this.businessTimes = popupRestaurant.getBusinessTimes().stream()
+                    .map(BusinessTimeDto::new)
+                    .toList();
+        }
+    }
 }
