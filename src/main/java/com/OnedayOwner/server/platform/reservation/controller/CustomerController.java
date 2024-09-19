@@ -23,12 +23,23 @@ public class CustomerController {
     /*
     팝업의 예약 가능 일자 조회
      */
-    @GetMapping("/schedule/{popupId}")
-    public ResponseEntity<List<ReservationDto.ReservationTimeDto>> getPossibleTimesForReservation(
+    @GetMapping("/info/{popupId}")
+    public ResponseEntity<ReservationDto.ReservationInfoDto> getReservationInfo(
             @PathVariable("popupId") Long popupId
     ) {
         return ResponseEntity.ok()
-                .body(reservationService.getReservationTimes(popupId));
+                .body(reservationService.getReservationInfo(popupId));
+    }
+
+    /*
+    팝업의 메뉴 조회
+     */
+    @GetMapping("/menu/{popupId}")
+    public ResponseEntity<ReservationDto.ReservationMenuDto> getReservationMenus(
+            @PathVariable("popupId") Long popupId
+    ) {
+        return ResponseEntity.ok()
+                .body(reservationService.getReservationMenus(popupId));
     }
 
     /*

@@ -5,9 +5,11 @@ import com.OnedayOwner.server.platform.popup.entity.QBusinessTime;
 import com.OnedayOwner.server.platform.popup.entity.QMenu;
 import com.OnedayOwner.server.platform.popup.entity.QPopupRestaurant;
 import com.OnedayOwner.server.platform.reservation.entity.QReservationTime;
+import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

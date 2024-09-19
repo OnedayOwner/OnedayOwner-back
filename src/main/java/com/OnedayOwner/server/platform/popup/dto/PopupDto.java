@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -196,6 +197,7 @@ public class PopupDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ReservationTimeDto{
         private Long id;
+        private LocalDate reservationDate;
         private LocalTime startTime;
         private LocalTime endTime;
         private int maxPeople;
@@ -203,6 +205,7 @@ public class PopupDto {
         @Builder
         public ReservationTimeDto(ReservationTime reservationTime) {
             this.id = reservationTime.getId();
+            this.reservationDate = reservationTime.getReservationDate();
             this.startTime = reservationTime.getStartTime();
             this.endTime = reservationTime.getEndTime();
             this.maxPeople = reservationTime.getMaxPeople();
