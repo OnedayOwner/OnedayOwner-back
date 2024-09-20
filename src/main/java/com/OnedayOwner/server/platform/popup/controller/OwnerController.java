@@ -1,9 +1,11 @@
 package com.OnedayOwner.server.platform.popup.controller;
 
+import com.OnedayOwner.server.global.exception.BusinessException;
 import com.OnedayOwner.server.global.security.SecurityUtils;
 import com.OnedayOwner.server.platform.popup.dto.PopupDto;
 import com.OnedayOwner.server.platform.popup.service.PopupService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +62,29 @@ public class OwnerController {
         Long ownerId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
             .body(popupService.getPopupHistoryByOwner(ownerId));
+    }
+
+
+    /**
+     * 팝업 삭제 API
+     * @param request
+     * @param popupId
+     * @return
+     */
+    @PostMapping("/popup/{popupId}/delete")
+    public ResponseEntity<?> deletePopup(
+            SecurityContextHolderAwareRequestWrapper request,
+            @PathVariable("popupId")Long popupId
+    ){
+        Long ownerId = SecurityUtils.extractUserId(request);
+        try{
+            popupService.deletePopup(ownerId,popupId);
+            return ResponseEntity.noContent().build();
+        } catch (BusinessException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+
     }
 
 }

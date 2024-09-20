@@ -15,6 +15,7 @@ import com.OnedayOwner.server.platform.reservation.repository.ReservationTimeRep
 import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -179,5 +180,20 @@ public class PopupService {
                 .stream()
                 .map(PopupDto.PopupSummaryForCustomer::new)
                 .toList();
+    }
+
+
+    @Transactional
+    public void deletePopup(Long userId, Long popupId){
+        PopupRestaurant popupRestaurant = popupRestaurantRepository.findById(popupId)
+                .orElseThrow(
+                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+                );
+
+        if(!popupRestaurant.getUser().getId().equals(userId)) {
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
+
+        popupRestaurantRepository.deleteByUserIdAndId(userId, popupId);
     }
 }

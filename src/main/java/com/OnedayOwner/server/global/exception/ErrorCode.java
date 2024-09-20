@@ -28,9 +28,10 @@ public enum ErrorCode {
     RESERVATION_NOT_FOUND(404, "C015", "Reservation not found"),
     CANNOT_ACCESS_RESERVATION(404, "C016", "해당 예약에 접근할 수 없습니다."),
     NUMBER_OF_PEOPLE_EXCEEDED(404, "C017", "예약 가능 인원을 초과하였습니다."),
+    POPUP_AND_USER_NOT_MATCH(404, "C018", "팝업 당사자가 아닙니다."),
 
     // Auth - Token
-    TOKEN_USER_NOT_MATCH(400, "C011", "토큰의 사용자 정보가 올바르지 않습니다."),
+    TOKEN_USER_NOT_MATCH(400, "JWT_000", "토큰의 사용자 정보가 올바르지 않습니다."),
     ACCESS_TOKEN_EXPIRED(401, "JWT_001", "Access Token Expired"),
     REFRESH_TOKEN_EXPIRED(403, "JWT_002", "Refresh Token Expired"),
     ACCESS_TOKEN_NOT_FOUND(404, "JWT_003", "토큰을 찾을 수 없습니다"),
