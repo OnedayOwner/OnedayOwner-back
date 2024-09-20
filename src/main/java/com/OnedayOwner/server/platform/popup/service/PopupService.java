@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -77,11 +78,15 @@ public class PopupService {
 
     @Transactional
     public PopupDto.PopupInBusinessDetail getPopupInBusinessDetail(Long ownerId){
-        return popupRestaurantRepository.getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimesByUserId(ownerId)
-                .map(PopupDto.PopupInBusinessDetail::new)
+        PopupRestaurant popupRestaurant = popupRestaurantRepository.getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimesByUserId(ownerId)
                 .orElseThrow(
-                        () -> new BusinessException(ErrorCode.IN_BUSINESS_POPUP_NOT_FOUND)
+                        ()-> new BusinessException(ErrorCode.IN_BUSINESS_POPUP_NOT_FOUND)
                 );
+        if (popupRestaurant.getEndDateTime().isBefore(LocalDateTime.now())){
+            popupRestaurant.close();
+            throw new BusinessException(ErrorCode.POPUP_CLOSED);
+        }
+        return new PopupDto.PopupInBusinessDetail(popupRestaurant);
     }
 
     @Transactional
@@ -163,14 +168,6 @@ public class PopupService {
                 .stream()
                 .map(PopupDto.PopupSummary::new)
                 .toList();
-    }
-
-    @Transactional
-    public PopupRestaurant getPopupInBusinessByOwner(Long ownerId){
-        return popupRestaurantRepository.findByUserIdAndInBusiness(ownerId, true)
-                .orElseThrow(
-                        () -> new BusinessException(ErrorCode.IN_BUSINESS_POPUP_NOT_FOUND)
-                );
     }
 
     //팝업 리스트 조회
