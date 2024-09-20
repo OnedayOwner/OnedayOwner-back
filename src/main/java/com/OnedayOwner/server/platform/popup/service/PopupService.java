@@ -76,7 +76,7 @@ public class PopupService {
 
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public PopupDto.PopupInBusinessDetail getPopupInBusinessDetail(Long ownerId){
         PopupRestaurant popupRestaurant = popupRestaurantRepository.getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimesByUserId(ownerId)
                 .orElseThrow(
