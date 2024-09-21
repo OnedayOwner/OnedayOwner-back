@@ -31,9 +31,8 @@ public class ReservationMenuRepositoryImpl implements ReservationMenuRepositoryC
                         reservationMenu.reservation.reservationDateTime.between(
                         date.atStartOfDay(), date.plusDays(1).atStartOfDay()
                 ))
-                .groupBy(reservationMenu.reservation.reservationDateTime
-                        ,reservationMenu.menu.name
-                        )
+                .groupBy(reservationMenu.reservation.reservationDateTime,
+                        reservationMenu.menu.name)
                 .fetch();
     }
 
