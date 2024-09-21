@@ -234,8 +234,8 @@ public class PopupService {
         for (Tuple tuple : results) {
             int dayOfMonth = tuple.get(reservation.reservationDateTime.dayOfMonth()); // "일(day)" 값
             LocalDate date = LocalDate.of(year, month, dayOfMonth);
-            long reservationCount = tuple.get(reservation.count()) != null ? tuple.get(reservation.count()) : 0; // 예약 수
-            long totalPeople = tuple.get(reservation.numberOfPeople.sum()) != null ? tuple.get(reservation.numberOfPeople.sum()) : 0; // 총 인원 수
+            long reservationCount = tuple.get(reservation.count()); // 예약 수
+            long totalPeople = tuple.get(reservation.numberOfPeople.sum()); // 총 인원 수
 
             info.add(new PopupDto.ReservationInfoForOwnerSummary(date, reservationCount, totalPeople));
         }
