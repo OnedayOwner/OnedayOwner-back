@@ -50,6 +50,10 @@ public class ReservationService {
             ReservationDto.ReservationForm reservationForm,
             Long customerId
     ) {
+        if(!reservationTimeRepository.findById(reservationForm.getReservationTimeId()).get()
+                .getPopupRestaurant().getId().equals(reservationForm.getPopupId())){
+            throw new BusinessException(ErrorCode.POPUP_NOT_MATCH);
+        }
         //예약 등록
         Reservation reservation = reservationRepository.save(Reservation.builder()
                 .reservationDateTime(validateReservation(reservationTimeRepository
