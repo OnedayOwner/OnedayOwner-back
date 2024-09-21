@@ -11,6 +11,7 @@ import com.OnedayOwner.server.platform.popup.repository.BusinessTimeRepository;
 import com.OnedayOwner.server.platform.popup.repository.MenuRepository;
 import com.OnedayOwner.server.platform.popup.repository.PopupRestaurantRepository;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
+import com.OnedayOwner.server.platform.reservation.repository.ReservationRepository;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationTimeRepository;
 import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.repository.UserRepository;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -36,6 +38,7 @@ public class PopupService {
     private final UserRepository userRepository;
     private final BusinessTimeRepository businessTimeRepository;
     private final ReservationTimeRepository reservationTimeRepository;
+    private final ReservationRepository reservationRepository;
 
 
     @Transactional
@@ -86,7 +89,13 @@ public class PopupService {
             popupRestaurant.close();
             throw new BusinessException(ErrorCode.POPUP_CLOSED);
         }
-        return new PopupDto.PopupInBusinessDetail(popupRestaurant);
+        List<Long[]> list = reservationRepository.sumNumberOfPeopleByPopupRestaurantId(popupRestaurant.getId());
+
+        Long[] result = list.get(0);
+        Long totalReservation = result[0];
+        Long totalReservationPeople = result[1];
+
+        return new PopupDto.PopupInBusinessDetail(popupRestaurant, totalReservation, totalReservationPeople);
     }
 
     @Transactional
@@ -179,18 +188,26 @@ public class PopupService {
                 .toList();
     }
 
-
+    /**
+     * 팝업 삭제
+     * @param ownerId
+     * @param popupId
+     */
     @Transactional
-    public void deletePopup(Long userId, Long popupId){
+    public void deletePopup(Long ownerId, Long popupId){
         PopupRestaurant popupRestaurant = popupRestaurantRepository.findById(popupId)
                 .orElseThrow(
                         () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
                 );
 
-        if(!popupRestaurant.getUser().getId().equals(userId)) {
+        if(!popupRestaurant.getUser().getId().equals(ownerId)) {
             throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
         }
 
-        popupRestaurantRepository.deleteByUserIdAndId(userId, popupId);
+        popupRestaurantRepository.deleteByUserIdAndId(ownerId, popupId);
     }
+
+//    @Transactional
+//    public List<>
+
 }

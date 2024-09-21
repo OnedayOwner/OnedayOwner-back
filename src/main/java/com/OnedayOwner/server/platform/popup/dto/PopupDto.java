@@ -134,9 +134,12 @@ public class PopupDto {
     public static class PopupInBusinessDetail extends PopupSummary{
         private List<ReservationTimeDto> reservationTimes;
         private List<BusinessTimeDto> businessTimes;
+        private Long totalReservation;
+        private Long totalReservationPeople;
 
         @Builder
-        public PopupInBusinessDetail(PopupRestaurant popupRestaurant) {
+        public PopupInBusinessDetail(PopupRestaurant popupRestaurant
+                , Long totalReservation, Long totalReservationPeople) {
             super(popupRestaurant);
             this.reservationTimes = popupRestaurant.getReservationTimes().stream()
                     .map(ReservationTimeDto::new)
@@ -145,6 +148,8 @@ public class PopupDto {
             this.businessTimes = popupRestaurant.getBusinessTimes().stream()
                     .map(BusinessTimeDto::new)
                     .toList();
+            this.totalReservation = totalReservation;
+            this.totalReservationPeople = totalReservationPeople;
         }
     }
 
