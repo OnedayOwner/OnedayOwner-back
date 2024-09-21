@@ -27,9 +27,10 @@ public enum ErrorCode {
     MENU_NOT_FOUND(404, "C014", "Menu not found"),
     RESERVATION_NOT_FOUND(404, "C015", "Reservation not found"),
     CANNOT_ACCESS_RESERVATION(404, "C016", "해당 예약에 접근할 수 없습니다."),
-    NUMBER_OF_PEOPLE_EXCEEDED(404, "C017", "예약 가능 인원을 초과하였습니다."),
-    POPUP_AND_USER_NOT_MATCH(404, "C018", "팝업 당사자가 아닙니다."),
+    NUMBER_OF_PEOPLE_EXCEEDED(400, "C017", "예약 가능 인원을 초과하였습니다."),
+    POPUP_AND_USER_NOT_MATCH(400, "C018", "팝업 당사자가 아닙니다."),
     POPUP_CLOSED(404, "C019", "팝업이 종료되었습니다."),
+    POPUP_NOT_MATCH(400, "C020", "예약시간아이디와 팝업이 매치되지 않습니다."),
 
     // Auth - Token
     TOKEN_USER_NOT_MATCH(400, "JWT_000", "토큰의 사용자 정보가 올바르지 않습니다."),
