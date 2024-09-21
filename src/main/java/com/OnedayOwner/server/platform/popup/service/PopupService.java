@@ -10,7 +10,9 @@ import com.OnedayOwner.server.platform.popup.entity.PopupRestaurant;
 import com.OnedayOwner.server.platform.popup.repository.BusinessTimeRepository;
 import com.OnedayOwner.server.platform.popup.repository.MenuRepository;
 import com.OnedayOwner.server.platform.popup.repository.PopupRestaurantRepository;
+import com.OnedayOwner.server.platform.reservation.entity.QReservationMenu;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
+import com.OnedayOwner.server.platform.reservation.repository.ReservationMenuRepository;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationRepository;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationTimeRepository;
 import com.OnedayOwner.server.platform.user.entity.Role;
@@ -32,6 +34,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.OnedayOwner.server.platform.reservation.entity.QReservation.reservation;
+import static com.OnedayOwner.server.platform.reservation.entity.QReservationMenu.reservationMenu;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +46,7 @@ public class PopupService {
     private final BusinessTimeRepository businessTimeRepository;
     private final ReservationTimeRepository reservationTimeRepository;
     private final ReservationRepository reservationRepository;
+    private final ReservationMenuRepository reservationMenuRepository;
 
 
     @Transactional(noRollbackFor = BusinessException.class)
@@ -246,6 +250,31 @@ public class PopupService {
         }
 
         return info;
+    }
+
+    @Transactional
+    public List<PopupDto.ReservationMenuCount> dailyReservationMenuCount(
+        Long ownerId,
+        Long popupId,
+        LocalDate date
+    ){
+        if(!popupRestaurantRepository.findById(popupId).orElseThrow(
+                () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+        ).getUser().getId().equals(ownerId)){
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
+
+        List<Tuple> results = reservationMenuRepository.getDailyMenuCountGroupByReservationTime(popupId,date);
+        List<PopupDto.ReservationMenuCount> menuCountList = new ArrayList<>();
+        for(Tuple tuple : results){
+            LocalDateTime dateTime = tuple.get(reservationMenu.reservation.reservationDateTime);
+            String menuName = tuple.get(reservationMenu.menu.name);
+            int quantity = tuple.get(reservationMenu.quantity.sum());
+
+            menuCountList.add(new PopupDto.ReservationMenuCount(dateTime, menuName, quantity));
+        }
+
+        return menuCountList;
     }
 
 }

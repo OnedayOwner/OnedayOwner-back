@@ -273,4 +273,18 @@ public class PopupDto {
             this.totalPeople = totalPeople;
         }
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ReservationMenuCount{
+        private LocalDateTime reservationTime;
+        private String menuName;
+        private int quantity;
+
+        public ReservationMenuCount(LocalDateTime reservationTime, String menuName, int quantity) {
+            this.reservationTime = reservationTime;
+            this.menuName = menuName;
+            this.quantity = quantity;
+        }
+    }
 }

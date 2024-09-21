@@ -11,6 +11,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -86,7 +87,7 @@ public class OwnerController {
         }
     }
 
-    @PostMapping("/popup/{popupId}/reservation")
+    @PostMapping("/popup/{popupId}/reservation/month")
     public ResponseEntity<List<PopupDto.ReservationInfoForOwnerSummary>> monthlyReservationInfo(
             SecurityContextHolderAwareRequestWrapper request,
             @PathVariable("popupId")Long popupId,
@@ -96,5 +97,20 @@ public class OwnerController {
         Long ownerId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
                 .body(popupService.monthlyReservationInfo(ownerId, popupId, year, month));
+    }
+
+    @PostMapping("/popup/{popupId}/reservation/day")
+    public ResponseEntity<List<PopupDto.ReservationMenuCount>> dailyMenuCount(
+        SecurityContextHolderAwareRequestWrapper request,
+        @PathVariable("popupId")Long popupId,
+        @RequestParam("year") int year,
+        @RequestParam("month") int month,
+        @RequestParam("day") int day
+    ){
+        Long ownerId = SecurityUtils.extractUserId(request);
+        LocalDate date = LocalDate.of(year, month, day);
+
+        return ResponseEntity.ok()
+                .body(popupService.dailyReservationMenuCount(ownerId, popupId, date));
     }
 }
