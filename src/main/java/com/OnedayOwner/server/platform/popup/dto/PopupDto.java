@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -19,7 +20,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class PopupRestaurantForm{
+    public static class PopupRestaurantForm {
         private String name;
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
@@ -44,7 +45,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class BusinessTimeForm{
+    public static class BusinessTimeForm {
         private LocalTime openTime;
         private LocalTime closeTime;
         private long reservationTimeUnit;
@@ -61,7 +62,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class AddressForm{
+    public static class AddressForm {
         private String street;
         private String zipcode;
         private String detail;
@@ -76,7 +77,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class MenuForm{
+    public static class MenuForm {
         private String name;
         private int price;
         private String description;
@@ -91,7 +92,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class PopupSummary{
+    public static class PopupSummary {
         private Long id;
         private String name;
         private AddressForm address;
@@ -121,7 +122,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class PopupHistoryDetail extends PopupSummary{
+    public static class PopupHistoryDetail extends PopupSummary {
 
         @Builder
         public PopupHistoryDetail(PopupRestaurant popupRestaurant) {
@@ -131,7 +132,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class PopupInBusinessDetail extends PopupSummary{
+    public static class PopupInBusinessDetail extends PopupSummary {
         private List<ReservationTimeDto> reservationTimes;
         private List<BusinessTimeDto> businessTimes;
         private Long totalReservation;
@@ -155,7 +156,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class MenuSummary{
+    public static class MenuSummary {
         private Long id;
         private String name;
         private int price;
@@ -172,7 +173,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class MenuDetail extends MenuSummary{
+    public static class MenuDetail extends MenuSummary {
         private String description;
 
         @Builder
@@ -184,7 +185,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class BusinessTimeDto{
+    public static class BusinessTimeDto {
         private Long id;
         private LocalTime openTime;
         private LocalTime closeTime;
@@ -199,7 +200,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ReservationTimeDto{
+    public static class ReservationTimeDto {
         private Long id;
         private LocalTime startTime;
         private LocalTime endTime;
@@ -216,7 +217,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class PopupSummaryForReservation{
+    public static class PopupSummaryForReservation {
         private Long id;
         private String name;
         private AddressForm address;
@@ -235,7 +236,7 @@ public class PopupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class PopupSummaryForCustomer{
+    public static class PopupSummaryForCustomer {
         private Long id;
         private String name;
         private AddressForm address;
@@ -256,6 +257,20 @@ public class PopupDto {
             this.startDateTime = popupRestaurant.getStartDateTime();
             this.endDateTime = popupRestaurant.getEndDateTime();
             this.inBusiness = popupRestaurant.getInBusiness();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ReservationInfoForOwnerSummary{
+        private LocalDate date;
+        private long totalReservation;
+        private long totalPeople;
+
+        public ReservationInfoForOwnerSummary(LocalDate date, long totalReservation, long totalPeople) {
+            this.date = date;
+            this.totalReservation = totalReservation;
+            this.totalPeople = totalPeople;
         }
     }
 }

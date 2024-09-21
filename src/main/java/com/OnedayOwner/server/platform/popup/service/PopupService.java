@@ -15,6 +15,7 @@ import com.OnedayOwner.server.platform.reservation.repository.ReservationReposit
 import com.OnedayOwner.server.platform.reservation.repository.ReservationTimeRepository;
 import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.repository.UserRepository;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static com.OnedayOwner.server.platform.reservation.entity.QReservation.reservation;
 
 @Service
 @RequiredArgsConstructor
@@ -216,7 +220,27 @@ public class PopupService {
         popupRestaurantRepository.deleteByUserIdAndId(ownerId, popupId);
     }
 
-//    @Transactional
-//    public List<>
+    @Transactional
+    public List<PopupDto.ReservationInfoForOwnerSummary> monthlyReservationInfo(
+            Long ownerId, Long popupId, int year, int month
+    ){
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+        List<Tuple> results = reservationRepository.getMonthlyReservationInfo(startDate, endDate, popupId);
+
+        List<PopupDto.ReservationInfoForOwnerSummary> info = new ArrayList<>();
+
+        for (Tuple tuple : results) {
+            int dayOfMonth = tuple.get(reservation.reservationDateTime.dayOfMonth()); // "일(day)" 값
+            LocalDate date = LocalDate.of(year, month, dayOfMonth);
+            long reservationCount = tuple.get(reservation.count()) != null ? tuple.get(reservation.count()) : 0; // 예약 수
+            long totalPeople = tuple.get(reservation.numberOfPeople.sum()) != null ? tuple.get(reservation.numberOfPeople.sum()) : 0; // 총 인원 수
+
+            info.add(new PopupDto.ReservationInfoForOwnerSummary(date, reservationCount, totalPeople));
+        }
+
+        return info;
+    }
 
 }

@@ -7,6 +7,7 @@ import com.OnedayOwner.server.platform.popup.service.PopupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,8 +84,17 @@ public class OwnerController {
         } catch (BusinessException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
-
     }
 
+    @PostMapping("/popup/{popupId}/reservation")
+    public ResponseEntity<List<PopupDto.ReservationInfoForOwnerSummary>> monthlyReservationInfo(
+            SecurityContextHolderAwareRequestWrapper request,
+            @PathVariable("popupId")Long popupId,
+            @RequestParam("year") int year,
+            @RequestParam("month") int month
+    ){
+        Long ownerId = SecurityUtils.extractUserId(request);
+        return ResponseEntity.ok()
+                .body(popupService.monthlyReservationInfo(ownerId, popupId, year, month));
+    }
 }
