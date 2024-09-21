@@ -32,6 +32,8 @@ public enum ErrorCode {
     POPUP_CLOSED(404, "C019", "팝업이 종료되었습니다."),
     POPUP_NOT_MATCH(400, "C020", "예약시간아이디와 팝업이 매치되지 않습니다."),
 
+    POPUP_ALREADY_IN_BUSINESS(400, "P021", "이미 팝업을 진행중입니다."),
+
     // Auth - Token
     TOKEN_USER_NOT_MATCH(400, "JWT_000", "토큰의 사용자 정보가 올바르지 않습니다."),
     ACCESS_TOKEN_EXPIRED(401, "JWT_001", "Access Token Expired"),

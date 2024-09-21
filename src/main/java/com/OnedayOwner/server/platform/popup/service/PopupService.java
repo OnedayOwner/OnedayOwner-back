@@ -41,10 +41,19 @@ public class PopupService {
     private final ReservationRepository reservationRepository;
 
 
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public PopupDto.PopupInBusinessDetail registerPopup(
             PopupDto.PopupRestaurantForm restaurantForm,
             Long ownerId){
+        Optional<PopupRestaurant> prevRestaurant = popupRestaurantRepository.findByUserIdAndInBusiness(ownerId, true);
+        if (prevRestaurant.isPresent()) {
+            if (prevRestaurant.get().getEndDateTime().isAfter(LocalDateTime.now())) {//아직 진행중인 팝업이 있는경우
+                throw new BusinessException(ErrorCode.POPUP_ALREADY_IN_BUSINESS);
+            }
+            else{
+                prevRestaurant.get().close();
+            }
+        }
         //레스토랑 등록
         PopupRestaurant restaurant = popupRestaurantRepository.save(PopupRestaurant.builder()
                 .name(restaurantForm.getName())
