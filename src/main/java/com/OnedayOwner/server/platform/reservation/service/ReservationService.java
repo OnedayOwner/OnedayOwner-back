@@ -130,11 +130,22 @@ public class ReservationService {
     }
 
     /*
-    예약 리스트 조회
+    방문 예정 예약 리스트 조회
      */
     @Transactional
-    public List<ReservationDto.ReservationSummary> getReservationsByCustomer(Long customerId) {
-        return reservationRepository.findAllByUserId(customerId)
+    public List<ReservationDto.ReservationSummary> getUpcomingReservations(Long customerId) {
+        return reservationRepository.findUpcomingReservationsByUserId(customerId)
+                .stream()
+                .map(ReservationDto.ReservationSummary::new)
+                .toList();
+    }
+
+    /*
+    방문 완료 예약 리스트 조회
+     */
+    @Transactional
+    public List<ReservationDto.ReservationSummary> getCompletedReservations(Long customerId) {
+        return reservationRepository.findCompletedReservationsByUserId(customerId)
                 .stream()
                 .map(ReservationDto.ReservationSummary::new)
                 .toList();

@@ -87,15 +87,27 @@ public class CustomerController {
     }
 
     /*
-    예약 리스트 조회
+    방문 예정 예약 리스트 조회
      */
-    @GetMapping("/reservations")
-    public ResponseEntity<List<ReservationDto.ReservationSummary>> getReservationsByCustomer(
+    @GetMapping("/reservations/upcoming")
+    public ResponseEntity<List<ReservationDto.ReservationSummary>> getUpcomingReservations(
             SecurityContextHolderAwareRequestWrapper request
     ){
         Long customerId = SecurityUtils.extractUserId(request);
         return  ResponseEntity.ok()
-                .body(reservationService.getReservationsByCustomer(customerId));
+                .body(reservationService.getUpcomingReservations(customerId));
+    }
+
+    /*
+    방문 완료 예약 리스트 조회
+     */
+    @GetMapping("/reservations/completed")
+    public ResponseEntity<List<ReservationDto.ReservationSummary>> getCompletedReservations(
+            SecurityContextHolderAwareRequestWrapper request
+    ){
+        Long customerId = SecurityUtils.extractUserId(request);
+        return  ResponseEntity.ok()
+                .body(reservationService.getCompletedReservations(customerId));
     }
 
     /*

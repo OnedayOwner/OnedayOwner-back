@@ -122,18 +122,23 @@ public class ReservationDto {
         private Long id;
         private int numberOfPeople;
         private String popupName;
+        private PopupDto.AddressForm address;
         private LocalDateTime reservationDateTime;
-        private List<ReservationMenuDetail> reservationMenuDetails;
+        private String menuImageUrl;
 
         public ReservationSummary(Reservation reservation) {
             this.id = reservation.getId();
             this.numberOfPeople = reservation.getNumberOfPeople();
             this.popupName = reservation.getPopupRestaurant().getName();
+            this.address = PopupDto.AddressForm.builder()
+                    .street(reservation.getPopupRestaurant().getAddress().getStreet())
+                    .zipcode(reservation.getPopupRestaurant().getAddress().getZipcode())
+                    .detail(reservation.getPopupRestaurant().getAddress().getDetail())
+                    .build();
             this.reservationDateTime = reservation.getReservationDateTime();
-            this.reservationMenuDetails = reservation.getReservationMenus()
-                    .stream()
-                    .map(ReservationMenuDetail::new)
-                    .toList();
+            this.menuImageUrl = reservation.getPopupRestaurant().getMenus().stream().findFirst()
+                    .map(Menu::getImageUrl)
+                    .orElse(null);
         }
     }
 }
