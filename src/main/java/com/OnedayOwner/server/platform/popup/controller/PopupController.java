@@ -97,6 +97,21 @@ public class PopupController {
         }
     }
 
+    @Operation(summary = "팝업 종료")
+    @PostMapping("/{popupId}/close")
+    public ResponseEntity<?> closePopup(
+            SecurityContextHolderAwareRequestWrapper request,
+            @PathVariable("popupId")Long popupId
+    ){
+        Long ownerId = SecurityUtils.extractUserId(request);
+        try{
+            popupService.closePopup(ownerId,popupId);
+            return ResponseEntity.noContent().build();
+        } catch (BusinessException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @Operation(summary = "월 날짜별 예약 정보",
             description = "팝업 정보에서 예약 정보 조회 시 월 날짜별 예약수, 예약인원수 반환")
     @PostMapping("/{popupId}/reservation/month")

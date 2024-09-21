@@ -225,6 +225,19 @@ public class PopupService {
     }
 
     @Transactional
+    public void closePopup(Long ownerId, Long popupId){
+        PopupRestaurant popupRestaurant = popupRestaurantRepository.findById(popupId)
+                .orElseThrow(
+                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+                );
+
+        if(!popupRestaurant.getUser().getId().equals(ownerId)) {
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
+        popupRestaurant.close();
+    }
+
+    @Transactional
     public List<PopupDto.ReservationInfoForOwnerSummary> monthlyReservationInfo(
             Long ownerId, Long popupId, int year, int month
     ){
