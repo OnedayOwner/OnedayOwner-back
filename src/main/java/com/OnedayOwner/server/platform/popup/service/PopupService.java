@@ -224,6 +224,11 @@ public class PopupService {
     public List<PopupDto.ReservationInfoForOwnerSummary> monthlyReservationInfo(
             Long ownerId, Long popupId, int year, int month
     ){
+        if(!popupRestaurantRepository.findById(popupId).orElseThrow(
+                () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+        ).getUser().getId().equals(ownerId)){
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
