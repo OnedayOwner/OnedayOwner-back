@@ -7,7 +7,6 @@ import com.OnedayOwner.server.platform.popup.service.PopupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +15,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/owners")
-public class OwnerController {
+@RequestMapping("/api/owners/popup")
+public class PopupController {
 
     private final PopupService popupService;
 
-    @PostMapping("/popup/register")
+    @PostMapping("/register")
     public ResponseEntity<PopupDto.PopupInBusinessDetail> registerPopup(
         @RequestBody PopupDto.PopupRestaurantForm form,
         SecurityContextHolderAwareRequestWrapper request
@@ -31,7 +30,7 @@ public class OwnerController {
             .body(popupService.registerPopup(form, ownerId));
     }
 
-    @PostMapping("/popup/{popupId}/menu")
+    @PostMapping("/{popupId}/menu")
     public ResponseEntity<PopupDto.MenuDetail> registerMenu(
         PopupDto.MenuForm form,
         @PathVariable("popupId")Long popupId
@@ -40,7 +39,7 @@ public class OwnerController {
             .body(popupService.registerMenu(form, popupId));
     }
 
-    @GetMapping("/popup")
+    @GetMapping("")
     public ResponseEntity<PopupDto.PopupInBusinessDetail> getPopupInBusiness(
             SecurityContextHolderAwareRequestWrapper request
     ) {
@@ -49,7 +48,7 @@ public class OwnerController {
             .body(popupService.getPopupInBusinessDetail(ownerId));
     }
 
-    @GetMapping("/popup/history/{popupId}")
+    @GetMapping("/history/{popupId}")
     public ResponseEntity<PopupDto.PopupHistoryDetail> getPopupDetail(
             @PathVariable("popupId")Long popupId
             ) {
@@ -73,7 +72,7 @@ public class OwnerController {
      * @param popupId
      * @return
      */
-    @PostMapping("/popup/{popupId}/delete")
+    @PostMapping("/{popupId}/delete")
     public ResponseEntity<?> deletePopup(
             SecurityContextHolderAwareRequestWrapper request,
             @PathVariable("popupId")Long popupId
@@ -87,7 +86,7 @@ public class OwnerController {
         }
     }
 
-    @PostMapping("/popup/{popupId}/reservation/month")
+    @PostMapping("/{popupId}/reservation/month")
     public ResponseEntity<List<PopupDto.ReservationInfoForOwnerSummary>> monthlyReservationInfo(
             SecurityContextHolderAwareRequestWrapper request,
             @PathVariable("popupId")Long popupId,
@@ -99,7 +98,7 @@ public class OwnerController {
                 .body(popupService.monthlyReservationInfo(ownerId, popupId, year, month));
     }
 
-    @PostMapping("/popup/{popupId}/reservation/day")
+    @PostMapping("/{popupId}/reservation/day")
     public ResponseEntity<List<PopupDto.ReservationMenuCount>> dailyMenuCount(
         SecurityContextHolderAwareRequestWrapper request,
         @PathVariable("popupId")Long popupId,
