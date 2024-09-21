@@ -1,4 +1,4 @@
-package com.OnedayOwner.server.platform.reservation.repository;
+package com.OnedayOwner.server.platform.reservation.repository.custom;
 
 import com.querydsl.core.Tuple;
 

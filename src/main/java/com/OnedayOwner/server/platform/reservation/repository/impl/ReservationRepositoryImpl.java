@@ -1,9 +1,7 @@
-package com.OnedayOwner.server.platform.reservation.repository;
+package com.OnedayOwner.server.platform.reservation.repository.impl;
 
-import com.OnedayOwner.server.platform.reservation.entity.QReservation;
+import com.OnedayOwner.server.platform.reservation.repository.custom.ReservationRepositoryCustom;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
@@ -12,7 +10,7 @@ import java.util.List;
 
 import static com.OnedayOwner.server.platform.reservation.entity.QReservation.reservation;
 
-public class ReservationRepositoryImpl implements ReservationRepositoryCustom{
+public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     public ReservationRepositoryImpl(EntityManager em) {
