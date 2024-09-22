@@ -32,14 +32,27 @@ public class ReservationService {
     private final MenuRepository menuRepository;
 
     /*
-    팝업의 예약 가능 일자 조회
+    팝업의 예약 가능 일자 및 정보 조회
      */
     @Transactional
-    public List<ReservationDto.ReservationTimeDto> getReservationTimes(Long popupId){
-        return reservationTimeRepository.getPossibleReservationTimes(popupId)
-                .stream()
-                .map(ReservationDto.ReservationTimeDto::new)
-                .toList();
+    public ReservationDto.ReservationInfoDto getReservationInfo(Long popupId){
+        return ReservationDto.ReservationInfoDto.builder()
+                .popupRestaurant(popupRestaurantRepository.findById(popupId).orElseThrow(
+                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+                ))
+                .reservationTimes(reservationTimeRepository.getPossibleReservationTimes(popupId))
+                .build();
+    }
+
+    /*
+    팝업의 메뉴 조회
+     */
+    public ReservationDto.ReservationMenuDto getReservationMenus(Long popupId){
+        return ReservationDto.ReservationMenuDto.builder()
+                .popupRestaurant(popupRestaurantRepository.getPopupRestaurantWithMenusById(popupId).orElseThrow(
+                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+                ))
+                .build();
     }
 
     /*
@@ -121,11 +134,22 @@ public class ReservationService {
     }
 
     /*
-    예약 리스트 조회
+    방문 예정 예약 리스트 조회
      */
     @Transactional
-    public List<ReservationDto.ReservationSummary> getReservationsByCustomer(Long customerId) {
-        return reservationRepository.findAllByUserId(customerId)
+    public List<ReservationDto.ReservationSummary> getUpcomingReservations(Long customerId) {
+        return reservationRepository.findUpcomingReservationsByUserId(customerId)
+                .stream()
+                .map(ReservationDto.ReservationSummary::new)
+                .toList();
+    }
+
+    /*
+    방문 완료 예약 리스트 조회
+     */
+    @Transactional
+    public List<ReservationDto.ReservationSummary> getCompletedReservations(Long customerId) {
+        return reservationRepository.findCompletedReservationsByUserId(customerId)
                 .stream()
                 .map(ReservationDto.ReservationSummary::new)
                 .toList();
