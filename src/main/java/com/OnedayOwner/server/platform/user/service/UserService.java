@@ -90,11 +90,16 @@ public class UserService {
             throw new BusinessException(ErrorCode.WRONG_ID_AND_PASSWORD);    
         }
 
-        if(userRepository.findByLoginIdAndRole(loginDto.getLoginId(), role).get().getRole() == Role.OWNER){
-            return new UserDto.OwnerInfo(userRepository.findByLoginId(loginDto.getLoginId()).get());
+        User user = userRepository.findByLoginIdAndRole(loginDto.getLoginId(), role)
+                .orElseThrow(
+                        () -> new BusinessException(ErrorCode.USER_NOT_FOUND)
+                );
+
+        if(user.getRole() == Role.OWNER){
+            return new UserDto.OwnerInfo(user);
         }
         else{
-            return new UserDto.UserInfo(userRepository.findByLoginId(loginDto.getLoginId()).get());
+            return new UserDto.UserInfo(user);
         }
     }
 }

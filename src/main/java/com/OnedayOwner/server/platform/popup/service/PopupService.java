@@ -10,11 +10,16 @@ import com.OnedayOwner.server.platform.popup.entity.PopupRestaurant;
 import com.OnedayOwner.server.platform.popup.repository.BusinessTimeRepository;
 import com.OnedayOwner.server.platform.popup.repository.MenuRepository;
 import com.OnedayOwner.server.platform.popup.repository.PopupRestaurantRepository;
+import com.OnedayOwner.server.platform.reservation.entity.QReservationMenu;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
+import com.OnedayOwner.server.platform.reservation.repository.ReservationMenuRepository;
+import com.OnedayOwner.server.platform.reservation.repository.ReservationRepository;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationTimeRepository;
 import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.repository.UserRepository;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +27,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
+
+import static com.OnedayOwner.server.platform.reservation.entity.QReservation.reservation;
+import static com.OnedayOwner.server.platform.reservation.entity.QReservationMenu.reservationMenu;
 
 @Service
 @RequiredArgsConstructor
@@ -34,12 +45,23 @@ public class PopupService {
     private final UserRepository userRepository;
     private final BusinessTimeRepository businessTimeRepository;
     private final ReservationTimeRepository reservationTimeRepository;
+    private final ReservationRepository reservationRepository;
+    private final ReservationMenuRepository reservationMenuRepository;
 
 
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public PopupDto.PopupInBusinessDetail registerPopup(
             PopupDto.PopupRestaurantForm restaurantForm,
             Long ownerId){
+        Optional<PopupRestaurant> prevRestaurant = popupRestaurantRepository.findByUserIdAndInBusiness(ownerId, true);
+        if (prevRestaurant.isPresent()) {
+            if (prevRestaurant.get().getEndDateTime().isAfter(LocalDateTime.now())) {//아직 진행중인 팝업이 있는경우
+                throw new BusinessException(ErrorCode.POPUP_ALREADY_IN_BUSINESS);
+            }
+            else{
+                prevRestaurant.get().close();
+            }
+        }
         //레스토랑 등록
         PopupRestaurant restaurant = popupRestaurantRepository.save(PopupRestaurant.builder()
                 .name(restaurantForm.getName())
@@ -74,13 +96,23 @@ public class PopupService {
 
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public PopupDto.PopupInBusinessDetail getPopupInBusinessDetail(Long ownerId){
-        return popupRestaurantRepository.getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimesByUserId(ownerId)
-                .map(PopupDto.PopupInBusinessDetail::new)
+        PopupRestaurant popupRestaurant = popupRestaurantRepository.getInBusinessPopupRestaurantWithMenusAndReservationTimesAndBusinessTimesByUserId(ownerId)
                 .orElseThrow(
-                        () -> new BusinessException(ErrorCode.IN_BUSINESS_POPUP_NOT_FOUND)
+                        ()-> new BusinessException(ErrorCode.IN_BUSINESS_POPUP_NOT_FOUND)
                 );
+        if (popupRestaurant.getEndDateTime().isBefore(LocalDateTime.now())){
+            popupRestaurant.close();
+            throw new BusinessException(ErrorCode.POPUP_CLOSED);
+        }
+        List<Long[]> list = reservationRepository.sumNumberOfPeopleByPopupRestaurantId(popupRestaurant.getId());
+
+        Long[] result = list.get(0);
+        Long totalReservation = result[0];
+        Long totalReservationPeople = result[1];
+
+        return new PopupDto.PopupInBusinessDetail(popupRestaurant, totalReservation, totalReservationPeople);
     }
 
     @Transactional
@@ -164,6 +196,8 @@ public class PopupService {
                 .toList();
     }
 
+
+    //팝업 리스트 조회
     @Transactional
     public PopupRestaurant getPopupInBusinessByOwner(Long ownerId){
         return popupRestaurantRepository.findByUserIdAndInBusiness(ownerId, true)
@@ -181,6 +215,93 @@ public class PopupService {
                 .toList();
     }
 
+
+    /**
+     * 팝업 삭제
+     * @param ownerId
+     * @param popupId
+     */
+    @Transactional
+    public void deletePopup(Long ownerId, Long popupId){
+        PopupRestaurant popupRestaurant = popupRestaurantRepository.findById(popupId)
+                .orElseThrow(
+                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+                );
+
+        if(!popupRestaurant.getUser().getId().equals(ownerId)) {
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
+
+        popupRestaurantRepository.deleteByUserIdAndId(ownerId, popupId);
+    }
+
+    @Transactional
+    public void closePopup(Long ownerId, Long popupId){
+        PopupRestaurant popupRestaurant = popupRestaurantRepository.findById(popupId)
+                .orElseThrow(
+                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+                );
+
+        if(!popupRestaurant.getUser().getId().equals(ownerId)) {
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
+        popupRestaurant.close();
+    }
+
+    @Transactional
+    public List<PopupDto.ReservationInfoForOwnerSummary> monthlyReservationInfo(
+            Long ownerId, Long popupId, int year, int month
+    ){
+        if(!popupRestaurantRepository.findById(popupId).orElseThrow(
+                () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+        ).getUser().getId().equals(ownerId)){
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+        List<Tuple> results = reservationRepository.getMonthlyReservationInfo(startDate, endDate, popupId);
+
+        List<PopupDto.ReservationInfoForOwnerSummary> info = new ArrayList<>();
+
+        for (Tuple tuple : results) {
+            int dayOfMonth = tuple.get(reservation.reservationDateTime.dayOfMonth()); // "일(day)" 값
+            LocalDate date = LocalDate.of(year, month, dayOfMonth);
+            long reservationCount = tuple.get(reservation.count()); // 예약 수
+            long totalPeople = tuple.get(reservation.numberOfPeople.sum()); // 총 인원 수
+
+            info.add(new PopupDto.ReservationInfoForOwnerSummary(date, reservationCount, totalPeople));
+        }
+
+        return info;
+    }
+
+    @Transactional
+    public List<PopupDto.ReservationMenuCount> dailyReservationMenuCount(
+        Long ownerId,
+        Long popupId,
+        LocalDate date
+    ){
+        if(!popupRestaurantRepository.findById(popupId).orElseThrow(
+                () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+        ).getUser().getId().equals(ownerId)){
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
+
+        List<Tuple> results = reservationMenuRepository.getDailyMenuCountGroupByReservationTime(popupId,date);
+        List<PopupDto.ReservationMenuCount> menuCountList = new ArrayList<>();
+        for(Tuple tuple : results){
+            LocalDateTime dateTime = tuple.get(reservationMenu.reservation.reservationDateTime);
+            String menuName = tuple.get(reservationMenu.menu.name);
+            int quantity = tuple.get(reservationMenu.quantity.sum());
+
+            menuCountList.add(new PopupDto.ReservationMenuCount(dateTime, menuName, quantity));
+        }
+
+        return menuCountList;
+    }
+
+  
     //고객의 진행 예정인 팝업 리스트 조회
     @Transactional
     public List<PopupDto.PopupSummaryForCustomer> getFuturePopupsInBusinessForCustomer(){
@@ -199,4 +320,5 @@ public class PopupService {
                         () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
                 );
     }
+
 }

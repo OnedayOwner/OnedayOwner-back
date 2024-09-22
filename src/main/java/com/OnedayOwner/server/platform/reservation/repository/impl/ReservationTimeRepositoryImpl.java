@@ -1,6 +1,7 @@
-package com.OnedayOwner.server.platform.reservation.repository;
+package com.OnedayOwner.server.platform.reservation.repository.impl;
 
 import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
+import com.OnedayOwner.server.platform.reservation.repository.custom.ReservationTimeRepositoryCustom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
