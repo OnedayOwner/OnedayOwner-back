@@ -1,6 +1,8 @@
 package com.OnedayOwner.server.platform.reservation.dto;
 
 import com.OnedayOwner.server.platform.popup.dto.PopupDto;
+import com.OnedayOwner.server.platform.popup.entity.Menu;
+import com.OnedayOwner.server.platform.popup.entity.PopupRestaurant;
 import com.OnedayOwner.server.platform.reservation.entity.Reservation;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationMenu;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
@@ -9,9 +11,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReservationDto {
@@ -49,20 +50,34 @@ public class ReservationDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ReservationTimeDto{
-        private Long id;
-        private LocalDate reservationDate;
-        private LocalTime startTime;
-        private LocalTime endTime;
-        private int maxPeople;
-
+    public static class ReservationInfoDto{
+        private Long popupId;
+        private String popupName;
+        private List<PopupDto.ReservationTimeDto> reservationTimes;
         @Builder
-        public ReservationTimeDto(ReservationTime reservationTime) {
-            this.id = reservationTime.getId();
-            this.reservationDate = reservationTime.getReservationDate();
-            this.startTime = reservationTime.getStartTime();
-            this.endTime = reservationTime.getEndTime();
-            this.maxPeople = reservationTime.getMaxPeople();
+        public ReservationInfoDto(PopupRestaurant popupRestaurant, List<ReservationTime> reservationTimes) {
+            this.popupId = popupRestaurant.getId();
+            this.popupName = popupRestaurant.getName();
+            this.reservationTimes = reservationTimes.stream()
+                    .map(PopupDto.ReservationTimeDto::new)
+                    .toList();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ReservationMenuDto{
+        private Long popupId;
+        private String popupName;
+        private List<PopupDto.MenuDetail> menus;
+        @Builder
+        public ReservationMenuDto(PopupRestaurant popupRestaurant) {
+            this.popupId = popupRestaurant.getId();
+            this.popupName = popupRestaurant.getName();
+            this.menus = popupRestaurant.getMenus()
+                    .stream()
+                    .map(PopupDto.MenuDetail::new)
+                    .toList();
         }
     }
 
@@ -107,18 +122,23 @@ public class ReservationDto {
         private Long id;
         private int numberOfPeople;
         private String popupName;
+        private PopupDto.AddressForm address;
         private LocalDateTime reservationDateTime;
-        private List<ReservationMenuDetail> reservationMenuDetails;
+        private String menuImageUrl;
 
         public ReservationSummary(Reservation reservation) {
             this.id = reservation.getId();
             this.numberOfPeople = reservation.getNumberOfPeople();
             this.popupName = reservation.getPopupRestaurant().getName();
+            this.address = PopupDto.AddressForm.builder()
+                    .street(reservation.getPopupRestaurant().getAddress().getStreet())
+                    .zipcode(reservation.getPopupRestaurant().getAddress().getZipcode())
+                    .detail(reservation.getPopupRestaurant().getAddress().getDetail())
+                    .build();
             this.reservationDateTime = reservation.getReservationDateTime();
-            this.reservationMenuDetails = reservation.getReservationMenus()
-                    .stream()
-                    .map(ReservationMenuDetail::new)
-                    .toList();
+            this.menuImageUrl = reservation.getPopupRestaurant().getMenus().stream().findFirst()
+                    .map(Menu::getImageUrl)
+                    .orElse(null);
         }
     }
 }

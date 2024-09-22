@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -196,6 +197,7 @@ public class PopupDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ReservationTimeDto{
         private Long id;
+        private LocalDate reservationDate;
         private LocalTime startTime;
         private LocalTime endTime;
         private int maxPeople;
@@ -203,6 +205,7 @@ public class PopupDto {
         @Builder
         public ReservationTimeDto(ReservationTime reservationTime) {
             this.id = reservationTime.getId();
+            this.reservationDate = reservationTime.getReservationDate();
             this.startTime = reservationTime.getStartTime();
             this.endTime = reservationTime.getEndTime();
             this.maxPeople = reservationTime.getMaxPeople();
@@ -238,6 +241,7 @@ public class PopupDto {
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
         private Boolean inBusiness;
+        private String menuImageUrl;
 
         public PopupSummaryForCustomer(PopupRestaurant popupRestaurant) {
             this.id = popupRestaurant.getId();
@@ -251,6 +255,23 @@ public class PopupDto {
             this.startDateTime = popupRestaurant.getStartDateTime();
             this.endDateTime = popupRestaurant.getEndDateTime();
             this.inBusiness = popupRestaurant.getInBusiness();
+            this.menuImageUrl = popupRestaurant.getMenus().stream().findFirst()
+                    .map(Menu::getImageUrl)
+                    .orElse(null);
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class PopupDetailForCustomer extends PopupSummary{
+        private List<BusinessTimeDto> businessTimes;
+
+        @Builder
+        public PopupDetailForCustomer(PopupRestaurant popupRestaurant) {
+            super(popupRestaurant);
+            this.businessTimes = popupRestaurant.getBusinessTimes().stream()
+                    .map(BusinessTimeDto::new)
+                    .toList();
         }
     }
 }

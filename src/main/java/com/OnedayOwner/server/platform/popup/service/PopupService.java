@@ -172,12 +172,31 @@ public class PopupService {
                 );
     }
 
-    //팝업 리스트 조회
+    //고객의 현재 진행중인 팝업 리스트 조회
     @Transactional
-    public List<PopupDto.PopupSummaryForCustomer> getPopupsInBusinessForCustomer(){
-        return popupRestaurantRepository.findAllByInBusiness(true)
+    public List<PopupDto.PopupSummaryForCustomer> getActivePopupsInBusinessForCustomer(){
+        return popupRestaurantRepository.findActivePopupRestaurantsWithMenus()
                 .stream()
                 .map(PopupDto.PopupSummaryForCustomer::new)
                 .toList();
+    }
+
+    //고객의 진행 예정인 팝업 리스트 조회
+    @Transactional
+    public List<PopupDto.PopupSummaryForCustomer> getFuturePopupsInBusinessForCustomer(){
+        return popupRestaurantRepository.findFuturePopupRestaurantsWithMenus()
+                .stream()
+                .map(PopupDto.PopupSummaryForCustomer::new)
+                .toList();
+    }
+
+    //고객의 팝업 상세 조회
+    @Transactional
+    public PopupDto.PopupDetailForCustomer getPopupDetailForCustomer(Long popupId){
+        return popupRestaurantRepository.getPopupRestaurantWithMenusById(popupId)
+                .map(PopupDto.PopupDetailForCustomer::new)
+                .orElseThrow(
+                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
+                );
     }
 }

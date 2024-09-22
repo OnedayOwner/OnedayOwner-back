@@ -36,4 +36,8 @@ public class Menu extends BaseTimeEntity {
         this.popupRestaurant = popupRestaurant;
         popupRestaurant.addMenu(this);
     }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
