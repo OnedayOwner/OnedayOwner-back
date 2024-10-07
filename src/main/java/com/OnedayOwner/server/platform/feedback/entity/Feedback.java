@@ -1,6 +1,7 @@
 package com.OnedayOwner.server.platform.feedback.entity;
 
 import com.OnedayOwner.server.platform.popup.entity.Menu;
+import com.OnedayOwner.server.platform.reservation.entity.ReservationMenu;
 import com.OnedayOwner.server.platform.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,17 +28,17 @@ public class Feedback {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_menu_id")
+    private ReservationMenu reservationMenu;
 
     @Builder
-    public Feedback(String score, int desiredPrice , String feedback, Boolean show, User user, Menu menu) {
+    public Feedback(String score, int desiredPrice , String feedback, Boolean show, User user, ReservationMenu reservationMenu) {
         this.score = score;
-        this.desiredPrice=desiredPrice;
-        this.feedback=feedback;
-        this.show=show;
+        this.desiredPrice = desiredPrice;
+        this.feedback = feedback;
+        this.show = show;
         this.user = user;
-        this.menu=menu;
+        this.reservationMenu = reservationMenu;
     }
 }
