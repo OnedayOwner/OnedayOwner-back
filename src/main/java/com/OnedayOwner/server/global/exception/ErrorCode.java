@@ -26,6 +26,7 @@ public enum ErrorCode {
     CUSTOMER_NOT_FOUND(404, "C013", "Customer not found"),
     MENU_NOT_FOUND(404, "C014", "Menu not found"),
     RESERVATION_NOT_FOUND(404, "C015", "Reservation not found"),
+    RESERVATION_MENU_NOT_FOUND(404, "C015", "Reservation Menu not found"),
     CANNOT_ACCESS_RESERVATION(404, "C016", "해당 예약에 접근할 수 없습니다."),
     NUMBER_OF_PEOPLE_EXCEEDED(400, "C017", "예약 가능 인원을 초과하였습니다."),
     POPUP_AND_USER_NOT_MATCH(400, "C018", "팝업 당사자가 아닙니다."),
