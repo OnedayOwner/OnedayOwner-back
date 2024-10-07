@@ -1,6 +1,5 @@
 package com.OnedayOwner.server.platform.feedback.entity;
 
-import com.OnedayOwner.server.platform.popup.entity.Menu;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationMenu;
 import com.OnedayOwner.server.platform.user.entity.User;
 import jakarta.persistence.*;
@@ -12,33 +11,30 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Feedback {
+public class MenuFeedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "feedback_id")
+    @Column(name = "menu_feedback_id")
     private Long id;
 
-    private String score;
+    private int score;
     private int desiredPrice;
-    private String feedback;
-    private Boolean show;
+    private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "reservation_feedback_id")
+    private ReservationFeedback reservationFeedback;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_menu_id")
     private ReservationMenu reservationMenu;
 
     @Builder
-    public Feedback(String score, int desiredPrice , String feedback, Boolean show, User user, ReservationMenu reservationMenu) {
+    public MenuFeedback(int score, int desiredPrice , String comment, ReservationMenu reservationMenu) {
         this.score = score;
         this.desiredPrice = desiredPrice;
-        this.feedback = feedback;
-        this.show = show;
-        this.user = user;
+        this.comment = comment;
         this.reservationMenu = reservationMenu;
     }
 }
