@@ -14,7 +14,7 @@ import java.util.List;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Transactional
+//@Transactional
 public class FeedbackTest {
 
     @Autowired

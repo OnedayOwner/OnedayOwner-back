@@ -91,9 +91,13 @@ public class FeedbackService {
     }
 
     @Transactional
-    public FeedbackDto.FeedbackDetail getFeedbackDetail(Long userId, Long feedbackId){
-        return new FeedbackDto.FeedbackDetail(feedbackRepository.findById(feedbackId).orElseThrow(
-                ()-> new BusinessException(ErrorCode.FEEDBACK_NOT_FOUND)));
+    public FeedbackDto.FeedbackDetail getFeedbackDetail(Long ownerId, Long feedbackId){
+        Feedback feedback = feedbackRepository.findByIdFetchJoin(feedbackId).orElseThrow(
+                () -> new BusinessException(ErrorCode.FEEDBACK_NOT_FOUND));
+        if(!feedback.getReservation().getPopupRestaurant().getUser().getId().equals(ownerId)){
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
+        return new FeedbackDto.FeedbackDetail(feedback);
     }
 
     @Transactional
