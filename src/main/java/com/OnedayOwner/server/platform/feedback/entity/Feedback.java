@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,7 +33,7 @@ public class Feedback {
     private Reservation reservation;
 
     @OneToMany(targetEntity = MenuFeedback.class, cascade = CascadeType.ALL, mappedBy = "feedback")
-    private List<MenuFeedback> menuFeedbacks;
+    private List<MenuFeedback> menuFeedbacks = new ArrayList<>();
 
     public MenuFeedback addMenuFeedback(MenuFeedback menuFeedback){
         this.menuFeedbacks.add(menuFeedback);

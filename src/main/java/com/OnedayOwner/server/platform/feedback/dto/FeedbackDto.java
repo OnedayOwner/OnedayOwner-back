@@ -3,6 +3,7 @@ package com.OnedayOwner.server.platform.feedback.dto;
 
 import com.OnedayOwner.server.platform.feedback.entity.MenuFeedback;
 import com.OnedayOwner.server.platform.feedback.entity.Feedback;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class FeedbackDto {
 
     @Getter
     @NoArgsConstructor(access = PROTECTED)
+    @AllArgsConstructor
     public static class MenuFeedBackForm{
         private Long reservationMenuId;
         private int score;
@@ -26,6 +28,7 @@ public class FeedbackDto {
 
     @Getter
     @NoArgsConstructor(access = PROTECTED)
+    @AllArgsConstructor
     public static class FeedbackForm {
         private int score;
         private String comment;

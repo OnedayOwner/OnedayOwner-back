@@ -59,5 +59,13 @@ public class FeedbackService {
 
         return new FeedbackDto.FeedbackDetail(feedback);
     }
+
+//    @Transactional
+//    public FeedbackDto.FeedbackDetail getFeedbackByMenu (Long userId, Long menuId){
+//
+//        menuFeedbackRepository.findBy
+//    }
+
+
 }
 

@@ -105,7 +105,7 @@ public class ReservationService {
         LocalDateTime reservationDateTime = reservationTime.getReservationDate().atTime(reservationTime.getStartTime());
         //예약 시간이 현재 이후인지 검사
         if(reservationDateTime.isBefore(LocalDateTime.now())){
-            throw new BusinessException(ErrorCode.CAN_NOT_RESERVE_DURING_THAT_TIME);
+//            throw new BusinessException(ErrorCode.CAN_NOT_RESERVE_DURING_THAT_TIME);
         }
         //예약 가능 인원을 초과하진 않는지 검사
         if(reservationTime.getMaxPeople() < numberOfPeople){
