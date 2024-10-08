@@ -58,6 +58,7 @@ public enum ErrorCode {
     FREQUENT_SMS_REQUEST(400, "C024", "Wait for new sms request"),
     WRONG_ID_AND_PASSWORD(400, "C025", "Id and password not match"),
 
+    FEEDBACK_NOT_FOUND(404, "F001", "피드백을 찾을 수 없습니다."),
     ;
 
     private final String code;
