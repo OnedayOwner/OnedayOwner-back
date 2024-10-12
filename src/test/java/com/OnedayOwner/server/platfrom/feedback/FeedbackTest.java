@@ -1,5 +1,6 @@
 package com.OnedayOwner.server.platfrom.feedback;
 
+import com.OnedayOwner.server.global.exception.BusinessException;
 import com.OnedayOwner.server.platform.feedback.dto.FeedbackDto;
 import com.OnedayOwner.server.platform.feedback.service.FeedbackService;
 import com.OnedayOwner.server.platform.reservation.dto.ReservationDto;
@@ -179,4 +180,26 @@ public class FeedbackTest {
                 }
         );
     }
+
+    @Test
+    @Order(6)
+    public void t5_getMyFeedbackList() {
+        List<FeedbackDto.FeedbackSummary> myFeedbacks = feedbackService.getMyFeedbackList(2L);
+
+        myFeedbacks.forEach(
+                feedbackSummary -> {
+                    System.out.println("feedbackSummary = " + feedbackSummary.getComment());
+                }
+        );
+    }
+    @Test
+    @Order(6)
+    public void t6_getMyFeedback() {
+        FeedbackDto.FeedbackSummary myFeedback = feedbackService.getMyFeedback(2L, 1L);
+
+        System.out.println("myFeedbacks = " + myFeedback.getComment());
+
+        Assertions.assertThrows(BusinessException.class, () -> feedbackService.getMyFeedback(3L,1L));
+    }
+
 }

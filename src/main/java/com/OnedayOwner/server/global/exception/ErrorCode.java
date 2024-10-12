@@ -66,6 +66,7 @@ public enum ErrorCode {
 
     //Feedback
     FEEDBACK_NOT_FOUND(404, "F001", "피드백을 찾을 수 없습니다."),
+    FEEDBACK_USER_NOT_MATCH(403, "F002", "해당 고객의 피드백이 아닙니다."),
     ;
 
     private final String code;

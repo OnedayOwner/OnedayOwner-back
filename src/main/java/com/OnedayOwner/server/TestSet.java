@@ -34,6 +34,7 @@ public class TestSet {
         // 사용자 생성
         User owner = createUser("김은학", "acky529@gmail.com", Gender.MALE, Role.OWNER, "acky529", "01098765432");
         User customer = createUser("김은학", "529acky@naver.com", Gender.MALE, Role.CUSTOMER, "529acky", "01012345678");
+        User customer2 = createUser("김은학2", "529acky2@naver.com", Gender.MALE, Role.CUSTOMER, "529acky2", "01012345672");
 
         // 현재 진행 중인 팝업 3개 생성
         createPopupRestaurant(owner, "스타벅스 논현점", LocalDateTime.now().minusDays(3), LocalDateTime.now().plusDays(3));

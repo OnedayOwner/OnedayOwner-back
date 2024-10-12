@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -66,6 +68,25 @@ public class FeedbackService {
                         }
                 );
         feedbackRepository.save(feedback);
+
+        return new FeedbackDto.FeedbackDetail(feedback);
+    }
+
+    @Transactional
+    public List<FeedbackDto.FeedbackSummary> getMyFeedbackList(Long customerId){
+        return feedbackRepository.findByUserId(customerId)
+                .stream().map(FeedbackDto.FeedbackSummary::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public FeedbackDto.FeedbackDetail getMyFeedback(Long customerId, Long feedbackId) {
+        Feedback feedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.FEEDBACK_NOT_FOUND));
+
+        if(!feedback.getUser().getId().equals(customerId)){
+            throw new BusinessException(ErrorCode.FEEDBACK_USER_NOT_MATCH);
+        }
 
         return new FeedbackDto.FeedbackDetail(feedback);
     }
