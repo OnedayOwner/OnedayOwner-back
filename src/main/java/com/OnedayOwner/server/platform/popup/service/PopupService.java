@@ -116,12 +116,13 @@ public class PopupService {
     }
 
     @Transactional
-    public PopupDto.PopupHistoryDetail getPopupHistoryDetail(Long popupId){
-        return popupRestaurantRepository.getPopupRestaurantWithMenusById(popupId)
-                .map(PopupDto.PopupHistoryDetail::new)
-                .orElseThrow(
-                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
-                );
+    public PopupDto.PopupHistoryDetail getPopupHistoryDetail(Long ownerId, Long popupId){
+        PopupRestaurant popupRestaurant = popupRestaurantRepository.getPopupRestaurantWithMenusById(popupId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.POPUP_NOT_FOUND));
+        if (!popupRestaurant.getUser().getId().equals(ownerId)) {
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
+        return new PopupDto.PopupHistoryDetail(popupRestaurant);
     }
 
     @Transactional
@@ -160,14 +161,17 @@ public class PopupService {
     }
 
     @Transactional
-    public PopupDto.MenuDetail registerMenu(PopupDto.MenuForm menuForm, Long popupId){
+    public PopupDto.MenuDetail registerMenu(Long ownerId, PopupDto.MenuForm menuForm, Long popupId){
+        PopupRestaurant popupRestaurant = popupRestaurantRepository.findById(popupId).orElseThrow(
+                () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND));
+        if (!popupRestaurant.getUser().getId().equals(ownerId)) {
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
         return new PopupDto.MenuDetail(menuRepository.save(Menu.builder()
                 .name(menuForm.getName())
                 .price(menuForm.getPrice())
                 .description(menuForm.getDescription())
-                .popupRestaurant(popupRestaurantRepository.findById(popupId).orElseThrow(
-                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
-                ))
+                .popupRestaurant(popupRestaurant)
                 .build()));
     }
 
