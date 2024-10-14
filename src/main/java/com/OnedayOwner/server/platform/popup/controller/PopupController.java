@@ -57,7 +57,7 @@ public class PopupController {
     }
 
     @Operation(summary = "과거 팝업 상세 조회",
-            description = "과거 진행 팝업 list에서 팝업 선택 시 세부정보(detail) qksghks")
+            description = "과거 진행 팝업 list에서 팝업 선택 시 세부정보(detail) 반환")
     @GetMapping("/history/{popupId}")
     public ResponseEntity<PopupDto.PopupHistoryDetail> getPopupDetail(
             @PathVariable("popupId")Long popupId,
