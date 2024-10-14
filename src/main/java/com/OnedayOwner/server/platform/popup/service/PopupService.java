@@ -62,6 +62,9 @@ public class PopupService {
                 prevRestaurant.get().close();
             }
         }
+        if (restaurantForm.getStartDateTime().isBefore(LocalDateTime.now())) {
+            throw new BusinessException(ErrorCode.POPUP_START_DATETIME_INVALID);
+        }
         //레스토랑 등록
         PopupRestaurant restaurant = popupRestaurantRepository.save(PopupRestaurant.builder()
                 .name(restaurantForm.getName())

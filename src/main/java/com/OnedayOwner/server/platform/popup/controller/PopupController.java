@@ -70,7 +70,7 @@ public class PopupController {
 
     @Operation(summary = "과거 팝업 조회",
             description = "과거 진행 팝업 summary 정보 반환")
-    @GetMapping("/popup/history/list")
+    @GetMapping("/history/list")
     public ResponseEntity<List<PopupDto.PopupSummary>> getPopupHistory(
             SecurityContextHolderAwareRequestWrapper request
     ) {

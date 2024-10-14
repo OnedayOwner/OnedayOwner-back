@@ -18,21 +18,42 @@ public enum ErrorCode {
     NULL_POINT_ERROR(404, "C005", "Null Point Exception"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
     INTERNAL_SERVER_ERROR(500, "C007", "Internal Server Error"),
-    OWNER_NOT_FOUND(404, "C008", "Owner not found"),
-    POPUP_NOT_FOUND(404, "C009", "Popup not found"),
-    IN_BUSINESS_POPUP_NOT_FOUND(404, "C010", "진행중인 팝업식당이 없습니다."),
-    RESERVATION_TIME_NOT_FOUND(404, "C011", "설정된 예약 시간이 없습니다."),
-    CAN_NOT_RESERVE_DURING_THAT_TIME(404, "C012", "해당 시간에 예약이 불가합니다."),
-    CUSTOMER_NOT_FOUND(404, "C013", "Customer not found"),
-    MENU_NOT_FOUND(404, "C014", "Menu not found"),
-    RESERVATION_NOT_FOUND(404, "C015", "Reservation not found"),
-    CANNOT_ACCESS_RESERVATION(404, "C016", "해당 예약에 접근할 수 없습니다."),
-    NUMBER_OF_PEOPLE_EXCEEDED(400, "C017", "예약 가능 인원을 초과하였습니다."),
-    POPUP_AND_USER_NOT_MATCH(400, "C018", "팝업 당사자가 아닙니다."),
-    POPUP_CLOSED(404, "C019", "팝업이 종료되었습니다."),
-    POPUP_NOT_MATCH(400, "C020", "예약시간아이디와 팝업이 매치되지 않습니다."),
 
-    POPUP_ALREADY_IN_BUSINESS(400, "P021", "이미 팝업을 진행중입니다."),
+    // Join flow
+    VERIFICATION_CODE_NOT_FOUND(404, "C010", "Verification code not found"),
+    EXPIRED_VERIFICATION_CODE(403, "C011", "Verification code expired"),
+    USER_ALREADY_EXIST(403, "C012", "User already exist"),
+    VERIFICATION_CODE_NOT_MATCH(403, "C013", "Verification code not match"),
+    DUPLICATE_ID(400, "C014","Id already exist"),
+    INVALID_PHONE_NUMBER(400, "C015", "PhoneNumber is invalid"),
+    FREQUENT_SMS_REQUEST(400, "C016", "Wait for new sms request"),
+    WRONG_ID_AND_PASSWORD(400, "C017", "Id and password not match"),
+
+    //User
+    OWNER_NOT_FOUND(404, "U001", "Owner not found"),
+    CUSTOMER_NOT_FOUND(404, "U002", "Customer not found"),
+    USER_NOT_FOUND(404, "U003", "User not found"),
+
+    //Popup
+    POPUP_NOT_FOUND(404, "P001", "Popup not found"),
+    IN_BUSINESS_POPUP_NOT_FOUND(404, "P002", "진행중인 팝업식당이 없습니다."),
+    POPUP_ALREADY_IN_BUSINESS(400, "P003", "이미 팝업을 진행중입니다."),
+    POPUP_CLOSED(404, "P004", "팝업이 종료되었습니다."),
+    POPUP_NOT_MATCH(400, "P005", "예약시간아이디와 팝업이 매치되지 않습니다."),
+    POPUP_AND_USER_NOT_MATCH(400, "P006", "팝업 당사자가 아닙니다."),
+    POPUP_START_DATETIME_INVALID(400, "P007", "팝업 시작 일시가 유효하지 않습니다."),
+
+    //Reservation
+    RESERVATION_TIME_NOT_FOUND(404, "R001", "설정된 예약 시간이 없습니다."),
+    CAN_NOT_RESERVE_DURING_THAT_TIME(404, "R002", "해당 시간에 예약이 불가합니다."),
+    RESERVATION_NOT_FOUND(404, "R003", "Reservation not found"),
+    RESERVATION_MENU_NOT_FOUND(404, "R004", "Reservation Menu not found"),
+    CANNOT_ACCESS_RESERVATION(404, "R005", "해당 예약에 접근할 수 없습니다."),
+    NUMBER_OF_PEOPLE_EXCEEDED(400, "R006", "예약 가능 인원을 초과하였습니다."),
+
+    MENU_NOT_FOUND(404, "M001", "Menu not found"),
+
+
 
     // Auth - Token
     TOKEN_USER_NOT_MATCH(400, "JWT_000", "토큰의 사용자 정보가 올바르지 않습니다."),
@@ -42,21 +63,11 @@ public enum ErrorCode {
     INVALID_TOKEN_SIGNATURE(403, "JWT_004", "Invalid Token"),
     INVALID_CLAIM(401, "JWT_005", "Invalid Claim"),
 
-    USER_NOT_FOUND(404, "C008", "User not found"),
 
-    VERIFICATION_CODE_NOT_FOUND(404, "C018", "Verification code not found"),
-    EXPIRED_VERIFICATION_CODE(403, "C019", "Verification code expired"),
 
-    USER_ALREADY_EXIST(403, "C020", "User already exist"),
-
-    VERIFICATION_CODE_NOT_MATCH(403, "C021", "Verification code not match"),
-
-    DUPLICATE_ID(400, "C022","Id already exist"),
-
-    INVALID_PHONE_NUMBER(400, "C023", "PhoneNumber is invalid"),
-    FREQUENT_SMS_REQUEST(400, "C024", "Wait for new sms request"),
-    WRONG_ID_AND_PASSWORD(400, "C025", "Id and password not match"),
-
+    //Feedback
+    FEEDBACK_NOT_FOUND(404, "F001", "피드백을 찾을 수 없습니다."),
+    FEEDBACK_USER_NOT_MATCH(403, "F002", "해당 고객의 피드백이 아닙니다."),
     ;
 
     private final String code;
