@@ -62,6 +62,9 @@ public class PopupService {
                 prevRestaurant.get().close();
             }
         }
+        if (restaurantForm.getStartDateTime().isBefore(LocalDateTime.now())) {
+            throw new BusinessException(ErrorCode.POPUP_START_DATETIME_INVALID);
+        }
         //레스토랑 등록
         PopupRestaurant restaurant = popupRestaurantRepository.save(PopupRestaurant.builder()
                 .name(restaurantForm.getName())
@@ -116,12 +119,13 @@ public class PopupService {
     }
 
     @Transactional
-    public PopupDto.PopupHistoryDetail getPopupHistoryDetail(Long popupId){
-        return popupRestaurantRepository.getPopupRestaurantWithMenusById(popupId)
-                .map(PopupDto.PopupHistoryDetail::new)
-                .orElseThrow(
-                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
-                );
+    public PopupDto.PopupHistoryDetail getPopupHistoryDetail(Long ownerId, Long popupId){
+        PopupRestaurant popupRestaurant = popupRestaurantRepository.getPopupRestaurantWithMenusById(popupId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.POPUP_NOT_FOUND));
+        if (!popupRestaurant.getUser().getId().equals(ownerId)) {
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
+        return new PopupDto.PopupHistoryDetail(popupRestaurant);
     }
 
     @Transactional
@@ -160,14 +164,17 @@ public class PopupService {
     }
 
     @Transactional
-    public PopupDto.MenuDetail registerMenu(PopupDto.MenuForm menuForm, Long popupId){
+    public PopupDto.MenuDetail registerMenu(Long ownerId, PopupDto.MenuForm menuForm, Long popupId){
+        PopupRestaurant popupRestaurant = popupRestaurantRepository.findById(popupId).orElseThrow(
+                () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND));
+        if (!popupRestaurant.getUser().getId().equals(ownerId)) {
+            throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
+        }
         return new PopupDto.MenuDetail(menuRepository.save(Menu.builder()
                 .name(menuForm.getName())
                 .price(menuForm.getPrice())
                 .description(menuForm.getDescription())
-                .popupRestaurant(popupRestaurantRepository.findById(popupId).orElseThrow(
-                        () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
-                ))
+                .popupRestaurant(popupRestaurant)
                 .build()));
     }
 

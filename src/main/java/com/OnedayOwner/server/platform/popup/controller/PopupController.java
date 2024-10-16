@@ -35,11 +35,13 @@ public class PopupController {
     @Operation(summary = "팝업 메뉴 등록")
     @PostMapping("/{popupId}/menu")
     public ResponseEntity<PopupDto.MenuDetail> registerMenu(
-        PopupDto.MenuForm form,
-        @PathVariable("popupId")Long popupId
+            SecurityContextHolderAwareRequestWrapper request,
+            PopupDto.MenuForm form,
+            @PathVariable("popupId")Long popupId
     ) {
+        Long ownerId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
-            .body(popupService.registerMenu(form, popupId));
+            .body(popupService.registerMenu(ownerId, form, popupId));
     }
 
     @Operation(summary = "팝업 조회",
@@ -55,18 +57,20 @@ public class PopupController {
     }
 
     @Operation(summary = "과거 팝업 상세 조회",
-            description = "과거 진행 팝업 list에서 팝업 선택 시 세부정보(detail) qksghks")
+            description = "과거 진행 팝업 list에서 팝업 선택 시 세부정보(detail) 반환")
     @GetMapping("/history/{popupId}")
     public ResponseEntity<PopupDto.PopupHistoryDetail> getPopupDetail(
-            @PathVariable("popupId")Long popupId
+            @PathVariable("popupId")Long popupId,
+            SecurityContextHolderAwareRequestWrapper request
             ) {
+        Long ownerId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
-            .body(popupService.getPopupHistoryDetail(popupId));
+            .body(popupService.getPopupHistoryDetail(ownerId, popupId));
     }
 
     @Operation(summary = "과거 팝업 조회",
             description = "과거 진행 팝업 summary 정보 반환")
-    @GetMapping("/popup/history/list")
+    @GetMapping("/history/list")
     public ResponseEntity<List<PopupDto.PopupSummary>> getPopupHistory(
             SecurityContextHolderAwareRequestWrapper request
     ) {
