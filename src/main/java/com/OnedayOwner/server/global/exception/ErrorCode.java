@@ -41,6 +41,7 @@ public enum ErrorCode {
     POPUP_CLOSED(404, "P004", "팝업이 종료되었습니다."),
     POPUP_NOT_MATCH(400, "P005", "예약시간아이디와 팝업이 매치되지 않습니다."),
     POPUP_AND_USER_NOT_MATCH(400, "P006", "팝업 당사자가 아닙니다."),
+    POPUP_START_DATETIME_INVALID(400, "P007", "팝업 시작 일시가 유효하지 않습니다."),
 
     //Reservation
     RESERVATION_TIME_NOT_FOUND(404, "R001", "설정된 예약 시간이 없습니다."),
