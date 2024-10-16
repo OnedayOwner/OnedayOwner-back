@@ -44,6 +44,9 @@ public class FeedbackService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND));
+        if(feedbackRepository.findByReservationId(reservationId).isPresent()){
+            throw new BusinessException(ErrorCode.FEEDBACK_ALREADY_EXIST);
+        }
 
         Feedback feedback = Feedback.builder()
                 .reservation(reservation)
