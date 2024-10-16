@@ -119,11 +119,13 @@ public class ReservationDto {
     @Getter
     @NoArgsConstructor(access = PROTECTED)
     public static class ReservationMenuDetail{
+        private Long id;
         private int quantity;
         private String menuName;
 
         @Builder
         public ReservationMenuDetail(ReservationMenu reservationMenu) {
+            this.id = reservationMenu.getId();
             this.quantity = reservationMenu.getQuantity();
             this.menuName = reservationMenu.getMenu().getName();
         }
