@@ -44,6 +44,9 @@ public class FeedbackService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND));
+        if(!reservation.getUser().equals(user)){
+            throw new BusinessException(ErrorCode.RESERVATION_USER_NOT_MATCH);
+        }
         if(feedbackRepository.findByReservationId(reservationId).isPresent()){
             throw new BusinessException(ErrorCode.FEEDBACK_ALREADY_EXIST);
         }
@@ -73,6 +76,34 @@ public class FeedbackService {
         feedbackRepository.save(feedback);
 
         return new FeedbackDto.FeedbackDetail(feedback);
+    }
+
+    @Transactional
+    public FeedbackDto.MenuFeedbackSummary registerMenuFeedback(Long userId, Long reservationId, FeedbackDto.MenuFeedBackForm form) {
+        User user = userRepository.findByIdAndRole(userId, Role.CUSTOMER)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND));
+        if (!reservation.getUser().equals(user)) {
+            throw new BusinessException(ErrorCode.RESERVATION_USER_NOT_MATCH);
+        }
+        if(feedbackRepository.findByReservationId(reservationId).isEmpty()){
+            throw new BusinessException(ErrorCode.REGISTER_FEEDBACK_FIRST);
+        }
+
+        MenuFeedback menuFeedback = MenuFeedback.builder()
+                .score(form.getScore())
+                .comment(form.getComment())
+                .reservationMenu(reservationMenuRepository.findById(
+                        form.getReservationMenuId()).orElseThrow(
+                        () -> new BusinessException(ErrorCode.RESERVATION_MENU_NOT_FOUND)
+                ))
+                .desiredPrice(form.getDesiredPrice())
+                .build();
+
+        menuFeedbackRepository.save(menuFeedback);
+
+        return new FeedbackDto.MenuFeedbackSummary(menuFeedback);
     }
 
     @Transactional

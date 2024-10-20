@@ -33,6 +33,7 @@ public enum ErrorCode {
     OWNER_NOT_FOUND(404, "U001", "Owner not found"),
     CUSTOMER_NOT_FOUND(404, "U002", "Customer not found"),
     USER_NOT_FOUND(404, "U003", "User not found"),
+    USER_NOT_MATCH(404, "U003", "User not match"),
 
     //Popup
     POPUP_NOT_FOUND(404, "P001", "Popup not found"),
@@ -50,6 +51,7 @@ public enum ErrorCode {
     RESERVATION_MENU_NOT_FOUND(404, "R004", "Reservation Menu not found"),
     CANNOT_ACCESS_RESERVATION(404, "R005", "해당 예약에 접근할 수 없습니다."),
     NUMBER_OF_PEOPLE_EXCEEDED(400, "R006", "예약 가능 인원을 초과하였습니다."),
+    RESERVATION_USER_NOT_MATCH(400, "R007", "예약과 회원이 매치되지 않습니다."),
 
     MENU_NOT_FOUND(404, "M001", "Menu not found"),
 
@@ -69,6 +71,7 @@ public enum ErrorCode {
     FEEDBACK_NOT_FOUND(404, "F001", "피드백을 찾을 수 없습니다."),
     FEEDBACK_USER_NOT_MATCH(403, "F002", "해당 고객의 피드백이 아닙니다."),
     FEEDBACK_ALREADY_EXIST(403, "F003", "이미 피드백을 작성했습니다."),
+    REGISTER_FEEDBACK_FIRST(403, "F004", "매장 피드백을 먼저 작성해주세요"),
     ;
 
     private final String code;

@@ -28,6 +28,17 @@ public class CustomerFeedbackController {
                 .body(feedbackService.registerFeedback(customerId, reservationId, form));
     }
 
+    @PostMapping("{reservationId}/")
+    public ResponseEntity<FeedbackDto.MenuFeedbackSummary> registerMenuFeedback(
+            @RequestBody FeedbackDto.MenuFeedBackForm form,
+            @PathVariable("reservationId")Long reservationId,
+            SecurityContextHolderAwareRequestWrapper request
+    ){
+        Long customerId = SecurityUtils.extractUserId(request);
+        return ResponseEntity.ok()
+                .body(feedbackService.registerMenuFeedback(customerId, reservationId, form));
+    }
+
     @GetMapping("list")
     public ResponseEntity<List<FeedbackDto.FeedbackSummary>> getMyFeedbackList(
             SecurityContextHolderAwareRequestWrapper request
