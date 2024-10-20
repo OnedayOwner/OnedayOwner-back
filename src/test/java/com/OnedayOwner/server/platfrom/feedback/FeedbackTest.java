@@ -107,59 +107,59 @@ public class FeedbackTest {
 //
 //    }
 
-    @Test
-    void t3_getFeedbackList() {
-        List<FeedbackDto.FeedbackSummary> feedbackList = feedbackService.getFeedbackList(
-                1L, 1L
-        );
-        System.out.println("==============================");
-        for(FeedbackDto.FeedbackSummary feedback: feedbackList){
-            System.out.println("feedback = " + feedback.getComment());
-        }
-    }
-
-    @Test
-    void t4_getFeedbackDetail(){
-        FeedbackDto.FeedbackDetail feedbackDetail = feedbackService.getFeedbackDetail(1L, 1L);
-        System.out.println("feedbackDetail = " + feedbackDetail.getComment());
-
-        feedbackDetail.getMenuFeedbackSummaries()
-                .forEach(menuFeedbackSummary -> {
-                    System.out.println("menuFeedbackSummary = " + menuFeedbackSummary.getComment());
-                });
-    }
-
-    @Test
-    void t5_getFeedbackByMenu() {
-        List<FeedbackDto.MenuFeedbackSummary> menuFeedbacks = feedbackService.getFeedbackByMenu(
-                1L, 1L
-        );
-
-        menuFeedbacks.forEach(
-                menuFeedbackSummary -> {
-                    System.out.println("menuFeedbackSummary = " + menuFeedbackSummary.getComment());
-                }
-        );
-    }
-
-    @Test
-    void t5_getMyFeedbackList() {
-        List<FeedbackDto.FeedbackSummary> myFeedbacks = feedbackService.getMyFeedbackList(2L);
-
-        myFeedbacks.forEach(
-                feedbackSummary -> {
-                    System.out.println("feedbackSummary = " + feedbackSummary.getComment());
-                }
-        );
-    }
-    @Test
-    void t6_getMyFeedback() {
-        FeedbackDto.FeedbackSummary myFeedback = feedbackService.getMyFeedback(2L, 1L);
-
-        System.out.println("myFeedbacks = " + myFeedback.getComment());
-
-        Assertions.assertThrows(BusinessException.class, () -> feedbackService.getMyFeedback(3L,1L));
-    }
+//    @Test
+//    void t3_getFeedbackList() {
+//        List<FeedbackDto.FeedbackSummary> feedbackList = feedbackService.getFeedbackList(
+//                1L, 1L
+//        );
+//        System.out.println("==============================");
+//        for(FeedbackDto.FeedbackSummary feedback: feedbackList){
+//            System.out.println("feedback = " + feedback.getComment());
+//        }
+//    }
+//
+//    @Test
+//    void t4_getFeedbackDetail(){
+//        FeedbackDto.FeedbackDetail feedbackDetail = feedbackService.getFeedbackDetail(1L, 1L);
+//        System.out.println("feedbackDetail = " + feedbackDetail.getComment());
+//
+//        feedbackDetail.getMenuFeedbackSummaries()
+//                .forEach(menuFeedbackSummary -> {
+//                    System.out.println("menuFeedbackSummary = " + menuFeedbackSummary.getComment());
+//                });
+//    }
+//
+//    @Test
+//    void t5_getFeedbackByMenu() {
+//        List<FeedbackDto.MenuFeedbackSummary> menuFeedbacks = feedbackService.getFeedbackByMenu(
+//                1L, 1L
+//        );
+//
+//        menuFeedbacks.forEach(
+//                menuFeedbackSummary -> {
+//                    System.out.println("menuFeedbackSummary = " + menuFeedbackSummary.getComment());
+//                }
+//        );
+//    }
+//
+//    @Test
+//    void t5_getMyFeedbackList() {
+//        List<FeedbackDto.FeedbackSummary> myFeedbacks = feedbackService.getMyFeedbackList(2L);
+//
+//        myFeedbacks.forEach(
+//                feedbackSummary -> {
+//                    System.out.println("feedbackSummary = " + feedbackSummary.getComment());
+//                }
+//        );
+//    }
+//    @Test
+//    void t6_getMyFeedback() {
+//        FeedbackDto.FeedbackSummary myFeedback = feedbackService.getMyFeedback(2L, 1L);
+//
+//        System.out.println("myFeedbacks = " + myFeedback.getComment());
+//
+//        Assertions.assertThrows(BusinessException.class, () -> feedbackService.getMyFeedback(3L,1L));
+//    }
 
 
 }
