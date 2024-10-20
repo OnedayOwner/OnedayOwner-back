@@ -28,7 +28,7 @@ public class CustomerFeedbackController {
                 .body(feedbackService.registerFeedback(customerId, reservationId, form));
     }
 
-    @PostMapping("{reservationId}/")
+    @PostMapping("{reservationId}/menuFeedback")
     public ResponseEntity<FeedbackDto.MenuFeedbackSummary> registerMenuFeedback(
             @RequestBody FeedbackDto.MenuFeedBackForm form,
             @PathVariable("reservationId")Long reservationId,
