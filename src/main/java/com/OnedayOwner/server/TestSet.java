@@ -98,7 +98,7 @@ public class TestSet {
         reservationDetail1.getReservationMenuDetails().forEach(rmd -> {
             FeedbackDto.MenuFeedBackForm mfb = new FeedbackDto.MenuFeedBackForm(
                     rmd.getId(),
-                    4,
+                    4.0,
                     10000,
                     "맛있어요."
             );
@@ -106,7 +106,7 @@ public class TestSet {
         });
 
         FeedbackDto.FeedbackForm form = new FeedbackDto.FeedbackForm(
-                4,
+                4.0,
                 "맛있어요.",
                 mfbList1
         );
@@ -116,14 +116,14 @@ public class TestSet {
         reservationDetail2.getReservationMenuDetails().forEach(rmd -> {
             FeedbackDto.MenuFeedBackForm mfb = new FeedbackDto.MenuFeedBackForm(
                     rmd.getId(),
-                    4,
+                    4.0,
                     10000,
                     "맛있어요."
             );
             mfbList2.add(mfb);
         });
         FeedbackDto.FeedbackForm form2 = new FeedbackDto.FeedbackForm(
-                4,
+                4.0,
                 "굿.",
                 mfbList2
         );

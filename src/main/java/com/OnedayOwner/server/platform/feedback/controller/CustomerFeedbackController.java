@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/owners/feedbacks")
+@RequestMapping("/api/customer/feedbacks")
 public class CustomerFeedbackController {
 
     private final FeedbackService feedbackService;
