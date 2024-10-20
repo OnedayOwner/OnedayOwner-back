@@ -17,7 +17,7 @@ public class MenuFeedback {
     @Column(name = "menu_feedback_id")
     private Long id;
 
-    private int score;
+    private Double score;
     private int desiredPrice;
     private String comment;
 
@@ -34,7 +34,7 @@ public class MenuFeedback {
     }
 
     @Builder
-    public MenuFeedback(int score, int desiredPrice , String comment, ReservationMenu reservationMenu) {
+    public MenuFeedback(Double score, int desiredPrice , String comment, ReservationMenu reservationMenu) {
         this.score = score;
         this.desiredPrice = desiredPrice;
         this.comment = comment;

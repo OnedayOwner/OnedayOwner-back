@@ -51,6 +51,11 @@ public class FeedbackService {
             throw new BusinessException(ErrorCode.FEEDBACK_ALREADY_EXIST);
         }
 
+        if(form.getScore() % 0.5 != 0 || form.getScore() < 0 || form.getScore() > 5){
+            throw new BusinessException(ErrorCode.INVALID_SCORE);
+        }
+
+
         Feedback feedback = Feedback.builder()
                 .reservation(reservation)
                 .score(form.getScore())
@@ -61,6 +66,15 @@ public class FeedbackService {
         form.getMenuFeedBackForms()
                 .forEach(
                         menuFeedBackForm -> {
+
+                            if(menuFeedBackForm.getScore() % 0.5 != 0
+                                    || menuFeedBackForm.getScore() < 0
+                                    || menuFeedBackForm.getScore() > 5){
+                                throw new BusinessException(ErrorCode.INVALID_SCORE);
+                            }
+                            if(menuFeedBackForm.getDesiredPrice() < 0){
+                                throw new BusinessException(ErrorCode.INVALID_DESIRED_PRICE);
+                            }
                             MenuFeedback menuFeedback = MenuFeedback.builder()
                                     .score(menuFeedBackForm.getScore())
                                     .comment(menuFeedBackForm.getComment())
@@ -89,6 +103,14 @@ public class FeedbackService {
         }
         if(feedbackRepository.findByReservationId(reservationId).isEmpty()){
             throw new BusinessException(ErrorCode.REGISTER_FEEDBACK_FIRST);
+        }
+
+        if(form.getScore() % 0.5 != 0 || form.getScore() < 0 || form.getScore() > 5){
+            throw new BusinessException(ErrorCode.INVALID_SCORE);
+        }
+
+        if(form.getDesiredPrice() < 0){
+            throw new BusinessException(ErrorCode.INVALID_DESIRED_PRICE);
         }
 
         MenuFeedback menuFeedback = MenuFeedback.builder()

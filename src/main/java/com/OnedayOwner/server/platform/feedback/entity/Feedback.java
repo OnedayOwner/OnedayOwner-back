@@ -25,7 +25,7 @@ public class Feedback {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private int score;
+    private Double score;
     private String comment;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -42,7 +42,7 @@ public class Feedback {
     }
 
     @Builder
-    public Feedback(User user, int score, String comment, Reservation reservation) {
+    public Feedback(User user, Double score, String comment, Reservation reservation) {
         this.user = user;
         this.score = score;
         this.comment = comment;

@@ -72,6 +72,8 @@ public enum ErrorCode {
     FEEDBACK_USER_NOT_MATCH(403, "F002", "해당 고객의 피드백이 아닙니다."),
     FEEDBACK_ALREADY_EXIST(403, "F003", "이미 피드백을 작성했습니다."),
     REGISTER_FEEDBACK_FIRST(403, "F004", "매장 피드백을 먼저 작성해주세요"),
+    INVALID_SCORE(403, "F005", "점수가 올바르지 않습니다."),
+    INVALID_DESIRED_PRICE(403, "F006", "희망 가격이 올바르지 않습니다."),
     ;
 
     private final String code;

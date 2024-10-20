@@ -21,7 +21,7 @@ public class FeedbackDto {
     @AllArgsConstructor
     public static class MenuFeedBackForm{
         private Long reservationMenuId;
-        private int score;
+        private Double score;
         private int desiredPrice;
         private String comment;
     }
@@ -30,7 +30,7 @@ public class FeedbackDto {
     @NoArgsConstructor(access = PROTECTED)
     @AllArgsConstructor
     public static class FeedbackForm {
-        private int score;
+        private Double score;
         private String comment;
 
         private List<MenuFeedBackForm> menuFeedBackForms = new ArrayList<>();
@@ -41,7 +41,7 @@ public class FeedbackDto {
     public static class MenuFeedbackSummary{
         private Long menuFeedbackId;
         private Long reservationMenuId;
-        private int score;
+        private Double score;
         private int desiredPrice;
         private String comment;
 
@@ -59,7 +59,7 @@ public class FeedbackDto {
     @NoArgsConstructor(access = PROTECTED)
     public static class FeedbackSummary{
         private Long feedbackId;
-        private int score;
+        private Double score;
         private String comment;
 
         public FeedbackSummary(Feedback feedback) {
