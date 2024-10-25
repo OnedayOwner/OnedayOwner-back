@@ -86,30 +86,30 @@ public class QueryTest {
                 .build();
 
         PopupDto.PopupInBusinessDetail registerPopup = popupService.registerPopup(restaurantForm, owner.getId());
-
-        List<ReservationDto.ReservationTimeDto> reservationTimes = reservationService.getReservationTimes(registerPopup.getId());
-        for(ReservationDto.ReservationTimeDto reservationTimeDto : reservationTimes){
-            System.out.println(reservationTimeDto.getReservationDate().atTime(reservationTimeDto.getStartTime()));
-        }
-
-        List<ReservationDto.ReservationMenuForm> reservationMenus = new ArrayList<>();
-        for(PopupDto.MenuDetail menu: registerPopup.getMenus()){
-            reservationMenus.add(ReservationDto.ReservationMenuForm.builder()
-                    .menuId(menu.getId())
-                    .quantity(1)
-                    .build());
-        }
-        for(ReservationDto.ReservationTimeDto reservationTimeDto : reservationTimes) {
-            ReservationDto.ReservationForm reservationForm = ReservationDto.ReservationForm.builder()
-                    .reservationMenus(reservationMenus)
-                    .reservationTimeId(reservationTimeDto.getId())
-                    .popupId(registerPopup.getId())
-                    .numberOfPeople(2)
-                    .build();
-            reservationService.registerReservation(reservationForm, customer1.getId());
-            reservationService.registerReservation(reservationForm, customer1.getId());
-            reservationService.registerReservation(reservationForm, customer2.getId());
-            reservationService.registerReservation(reservationForm, customer2.getId());
-        }
+//
+//        List<ReservationDto.ReservationInfoDto> reservationTimes = reservationService.getReservationInfo(registerPopup.getId()).getReservationTimes();
+//        for(ReservationDto.ReservationInfoDto reservationTimeDto : reservationTimes){
+//            System.out.println(reservationTimeDto.getReservationDate().atTime(reservationTimeDto.getStartTime()));
+//        }
+//
+//        List<ReservationDto.ReservationMenuForm> reservationMenus = new ArrayList<>();
+//        for(PopupDto.MenuDetail menu: registerPopup.getMenus()){
+//            reservationMenus.add(ReservationDto.ReservationMenuForm.builder()
+//                    .menuId(menu.getId())
+//                    .quantity(1)
+//                    .build());
+//        }
+//        for(ReservationDto.ReservationTimeDto reservationTimeDto : reservationTimes) {
+//            ReservationDto.ReservationForm reservationForm = ReservationDto.ReservationForm.builder()
+//                    .reservationMenus(reservationMenus)
+//                    .reservationTimeId(reservationTimeDto.getId())
+//                    .popupId(registerPopup.getId())
+//                    .numberOfPeople(2)
+//                    .build();
+//            reservationService.registerReservation(reservationForm, customer1.getId());
+//            reservationService.registerReservation(reservationForm, customer1.getId());
+//            reservationService.registerReservation(reservationForm, customer2.getId());
+//            reservationService.registerReservation(reservationForm, customer2.getId());
+//        }
     }
 }

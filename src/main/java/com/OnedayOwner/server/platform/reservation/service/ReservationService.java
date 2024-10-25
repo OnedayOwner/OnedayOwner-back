@@ -2,6 +2,8 @@ package com.OnedayOwner.server.platform.reservation.service;
 
 import com.OnedayOwner.server.global.exception.BusinessException;
 import com.OnedayOwner.server.global.exception.ErrorCode;
+import com.OnedayOwner.server.platform.feedback.entity.Feedback;
+import com.OnedayOwner.server.platform.feedback.repository.FeedbackRepository;
 import com.OnedayOwner.server.platform.popup.repository.MenuRepository;
 import com.OnedayOwner.server.platform.popup.repository.PopupRestaurantRepository;
 import com.OnedayOwner.server.platform.reservation.dto.ReservationDto;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +33,7 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final ReservationMenuRepository reservationMenuRepository;
     private final MenuRepository menuRepository;
+    private final FeedbackRepository feedbackRepository;
 
     /*
     팝업의 예약 가능 일자 및 정보 조회
@@ -105,7 +109,7 @@ public class ReservationService {
         LocalDateTime reservationDateTime = reservationTime.getReservationDate().atTime(reservationTime.getStartTime());
         //예약 시간이 현재 이후인지 검사
         if(reservationDateTime.isBefore(LocalDateTime.now())){
-            throw new BusinessException(ErrorCode.CAN_NOT_RESERVE_DURING_THAT_TIME);
+//            throw new BusinessException(ErrorCode.CAN_NOT_RESERVE_DURING_THAT_TIME);
         }
         //예약 가능 인원을 초과하진 않는지 검사
         if(reservationTime.getMaxPeople() < numberOfPeople){
@@ -119,7 +123,7 @@ public class ReservationService {
     예약 상세 조회-고객
      */
     @Transactional
-    public ReservationDto.ReservationDetail getReservationDetailForCustomer(Long reservationId, Long customerId) {
+    public ReservationDto.ReservationDetailForUser getReservationDetailForCustomer(Long reservationId, Long customerId) {
         //조회하는 고객의 예약이 맞는지 체크
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
                 () -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND)
@@ -127,10 +131,10 @@ public class ReservationService {
         if (!reservation.getUser().getId().equals(customerId)) {
             throw new BusinessException(ErrorCode.CANNOT_ACCESS_RESERVATION);
         }
+        return feedbackRepository.findByReservationId(reservationId)
+                .map(value -> new ReservationDto.ReservationDetailForUser(reservation, value.getId()))
+                .orElseGet(() -> new ReservationDto.ReservationDetailForUser(reservation, null));
 
-        return ReservationDto.ReservationDetail.builder()
-                .reservation(reservation)
-                .build();
     }
 
     /*

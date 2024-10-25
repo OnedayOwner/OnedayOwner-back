@@ -59,7 +59,7 @@ public class CustomerController {
     예약 상세 조회
      */
     @GetMapping("/reservation/{reservationId}")
-    public ResponseEntity<ReservationDto.ReservationDetail> getReservationDetailForCustomer(
+    public ResponseEntity<ReservationDto.ReservationDetailForUser> getReservationDetailForCustomer(
             @PathVariable("reservationId") Long reservationId,
             SecurityContextHolderAwareRequestWrapper request
     ) {

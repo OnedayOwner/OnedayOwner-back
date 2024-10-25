@@ -1,6 +1,6 @@
 package com.OnedayOwner.server.platform.feedback.entity;
 
-import com.OnedayOwner.server.platform.popup.entity.Menu;
+import com.OnedayOwner.server.platform.reservation.entity.Reservation;
 import com.OnedayOwner.server.platform.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,36 +8,44 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Feedback {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "feedback_id")
     private Long id;
-
-    private String score;
-    private int desiredPrice;
-    private String feedback;
-    private Boolean show;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    private Double score;
+    private String comment;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
+
+    @OneToMany(targetEntity = MenuFeedback.class, cascade = CascadeType.ALL, mappedBy = "feedback")
+    private List<MenuFeedback> menuFeedbacks = new ArrayList<>();
+
+    public MenuFeedback addMenuFeedback(MenuFeedback menuFeedback){
+        this.menuFeedbacks.add(menuFeedback);
+        menuFeedback.setFeedback(this);
+        return menuFeedback;
+    }
 
     @Builder
-    public Feedback(String score, int desiredPrice , String feedback, Boolean show, User user, Menu menu) {
-        this.score = score;
-        this.desiredPrice=desiredPrice;
-        this.feedback=feedback;
-        this.show=show;
+    public Feedback(User user, Double score, String comment, Reservation reservation) {
         this.user = user;
-        this.menu=menu;
+        this.score = score;
+        this.comment = comment;
+        this.reservation = reservation;
     }
 }

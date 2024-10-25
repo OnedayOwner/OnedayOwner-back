@@ -15,10 +15,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static lombok.AccessLevel.PROTECTED;
+
 public class ReservationDto {
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = PROTECTED)
     public static class ReservationForm{
         private Long popupId;
         private Long reservationTimeId;
@@ -37,7 +39,7 @@ public class ReservationDto {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = PROTECTED)
     public static class ReservationMenuForm{
         private int quantity;
         private Long menuId;
@@ -49,7 +51,7 @@ public class ReservationDto {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = PROTECTED)
     public static class ReservationInfoDto{
         private Long popupId;
         private String popupName;
@@ -65,7 +67,7 @@ public class ReservationDto {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = PROTECTED)
     public static class ReservationMenuDto{
         private Long popupId;
         private String popupName;
@@ -82,7 +84,7 @@ public class ReservationDto {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = PROTECTED)
     public static class ReservationDetail {
         private Long Id;
         private LocalDateTime reservationDateTime;
@@ -104,20 +106,33 @@ public class ReservationDto {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = PROTECTED)
+    public static class ReservationDetailForUser extends ReservationDetail {
+        private Long feedbackId;
+
+        public ReservationDetailForUser(Reservation reservation, Long feedbackId) {
+            super(reservation);
+            this.feedbackId = feedbackId;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = PROTECTED)
     public static class ReservationMenuDetail{
+        private Long id;
         private int quantity;
         private String menuName;
 
         @Builder
         public ReservationMenuDetail(ReservationMenu reservationMenu) {
+            this.id = reservationMenu.getId();
             this.quantity = reservationMenu.getQuantity();
             this.menuName = reservationMenu.getMenu().getName();
         }
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = PROTECTED)
     public static class ReservationSummary{
         private Long id;
         private int numberOfPeople;
