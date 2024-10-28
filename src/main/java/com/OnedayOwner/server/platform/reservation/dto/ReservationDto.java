@@ -86,14 +86,14 @@ public class ReservationDto {
     @Getter
     @NoArgsConstructor(access = PROTECTED)
     public static class ReservationDetail {
-        private Long Id;
+        private Long id;
         private LocalDateTime reservationDateTime;
         private int numberOfPeople;
         private PopupDto.PopupSummaryForReservation popupSummaryForReservation;
         private List<ReservationMenuDetail> reservationMenuDetails;
         @Builder
         public ReservationDetail(Reservation reservation) {
-            this.Id = reservation.getId();
+            this.id = reservation.getId();
             this.reservationDateTime = reservation.getReservationDateTime();
             this.numberOfPeople = reservation.getNumberOfPeople();
             this.popupSummaryForReservation = PopupDto.PopupSummaryForReservation.builder()
@@ -108,26 +108,33 @@ public class ReservationDto {
     @Getter
     @NoArgsConstructor(access = PROTECTED)
     public static class ReservationDetailForUser extends ReservationDetail {
-        private Long feedbackId;
+        private int totalPrice;
+        private Boolean isFeedbackEnabled;
 
         public ReservationDetailForUser(Reservation reservation, Long feedbackId) {
             super(reservation);
-            this.feedbackId = feedbackId;
+            this.totalPrice = 0;
+            reservation.getReservationMenus().forEach(reservationMenu -> {
+                totalPrice += reservationMenu.getMenu().getPrice() * reservationMenu.getQuantity();
+            });
+            this.isFeedbackEnabled = LocalDateTime.now().isAfter(reservation.getReservationDateTime()) && feedbackId != null;
         }
     }
 
     @Getter
-    @NoArgsConstructor(access = PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ReservationMenuDetail{
-        private Long id;
         private int quantity;
-        private String menuName;
+        private String name;
+        private int price;
+        private String imageUrl;
 
         @Builder
         public ReservationMenuDetail(ReservationMenu reservationMenu) {
-            this.id = reservationMenu.getId();
             this.quantity = reservationMenu.getQuantity();
-            this.menuName = reservationMenu.getMenu().getName();
+            this.name = reservationMenu.getMenu().getName();
+            this.price = reservationMenu.getMenu().getPrice();
+            this.imageUrl = reservationMenu.getMenu().getImageUrl();
         }
     }
 

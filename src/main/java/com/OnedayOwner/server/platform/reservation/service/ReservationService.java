@@ -125,7 +125,7 @@ public class ReservationService {
     @Transactional
     public ReservationDto.ReservationDetailForUser getReservationDetailForCustomer(Long reservationId, Long customerId) {
         //조회하는 고객의 예약이 맞는지 체크
-        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
+        Reservation reservation = reservationRepository.findReservationWithDetails(reservationId).orElseThrow(
                 () -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND)
         );
         if (!reservation.getUser().getId().equals(customerId)) {

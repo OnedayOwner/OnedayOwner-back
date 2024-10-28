@@ -1,15 +1,8 @@
 package com.OnedayOwner.server;
 
-import com.OnedayOwner.server.global.exception.BusinessException;
-import com.OnedayOwner.server.global.exception.ErrorCode;
-import com.OnedayOwner.server.platform.feedback.dto.FeedbackDto;
-import com.OnedayOwner.server.platform.feedback.service.FeedbackService;
 import com.OnedayOwner.server.platform.popup.dto.PopupDto;
 import com.OnedayOwner.server.platform.popup.repository.MenuRepository;
 import com.OnedayOwner.server.platform.popup.service.PopupService;
-import com.OnedayOwner.server.platform.reservation.dto.ReservationDto;
-import com.OnedayOwner.server.platform.reservation.entity.Reservation;
-import com.OnedayOwner.server.platform.reservation.service.ReservationService;
 import com.OnedayOwner.server.platform.user.entity.Gender;
 import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.entity.User;
@@ -23,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -35,106 +27,30 @@ public class TestSet {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final MenuRepository menuRepository;
-    private final FeedbackService feedbackService;
-    private final ReservationService reservationService;
 
     @Transactional
     @PostConstruct
     public void setUp() {
-        // 사용자 생성
-        User owner = createUser("김은학", "acky529@gmail.com", Gender.MALE, Role.OWNER, "acky529", "01098765432");
-        User customer = createUser("김은학", "529acky@naver.com", Gender.MALE, Role.CUSTOMER, "529acky", "01012345678");
-        User customer2 = createUser("김은학2", "529acky2@naver.com", Gender.MALE, Role.CUSTOMER, "529acky2", "01012345672");
+        // 6명의 서로 다른 오너 생성
+        User owner1 = createUser("owner1", "owner1@gmail.com", Gender.MALE, Role.OWNER, "owner1", "01098765431");
+        User owner2 = createUser("owner2", "owner2@gmail.com", Gender.MALE, Role.OWNER, "owner2", "01098765432");
+        User owner3 = createUser("owner3", "owner3@gmail.com", Gender.MALE, Role.OWNER, "owner3", "01098765433");
+        User owner4 = createUser("owner4", "owner4@gmail.com", Gender.MALE, Role.OWNER, "owner4", "01098765434");
+        User owner5 = createUser("owner5", "owner5@gmail.com", Gender.MALE, Role.OWNER, "owner5", "01098765435");
+        User owner6 = createUser("owner6", "owner6@gmail.com", Gender.MALE, Role.OWNER, "owner6", "01098765436");
 
-        // 현재 진행 중인 팝업 3개 생성
-//        createPopupRestaurant(owner, "스타벅스 논현점", LocalDateTime.now().minusDays(3), LocalDateTime.now().plusDays(3));
-//        createPopupRestaurant(owner, "홍콩반점 역삼점", LocalDateTime.now().minusDays(2), LocalDateTime.now().plusDays(5));
-//        createPopupRestaurant(owner, "요아정 서초점", LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(7));
+        // 고객 생성 (기존 고객 유지)
+        User customer = createUser("customer", "customer@naver.com", Gender.MALE, Role.CUSTOMER, "customer", "01012345678");
 
-        // 진행 예정인 팝업 3개 생성
-        createPopupRestaurant(owner, "이디야 이태원점", LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(10));
-//        createPopupRestaurant(owner, "설빙 명동점", LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(12));
-//        createPopupRestaurant(owner, "버거킹 종로점", LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(15));
-        reservation_and_feedback();
-    }
+//        // 각 오너별로 현재 진행 중인 팝업 생성
+//        createPopupRestaurant(owner1, "스타벅스 논현점", LocalDateTime.now().minusDays(3), LocalDateTime.now().plusDays(3));
+//        createPopupRestaurant(owner2, "홍콩반점 역삼점", LocalDateTime.now().minusDays(2), LocalDateTime.now().plusDays(5));
+//        createPopupRestaurant(owner3, "요아정 서초점", LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(7));
 
-    private void reservation_and_feedback(){
-        List<ReservationDto.ReservationMenuForm> menuList = new ArrayList<>();
-        ReservationDto.ReservationMenuForm menuForm = new ReservationDto.ReservationMenuForm(1,1L);
-        ReservationDto.ReservationMenuForm menuForm2 = new ReservationDto.ReservationMenuForm(2,2L);
-
-        User user = userRepository.findByPhoneNumber("01012345678").orElseThrow(
-                ()->new BusinessException(ErrorCode.USER_NOT_FOUND)
-        );
-
-        menuList.add(menuForm);
-        menuList.add(menuForm2);
-
-        ReservationDto.ReservationForm rform = ReservationDto.ReservationForm.builder()
-                .popupId(1L)
-                .reservationTimeId(1L)
-                .numberOfPeople(2)
-                .reservationMenus(menuList)
-                .build();
-        ReservationDto.ReservationForm rform2 = ReservationDto.ReservationForm.builder()
-                .popupId(1L)
-                .reservationTimeId(2L)
-                .numberOfPeople(2)
-                .reservationMenus(menuList)
-                .build();
-        ReservationDto.ReservationForm rform3 = ReservationDto.ReservationForm.builder()
-                .popupId(1L)
-                .reservationTimeId(3L)
-                .numberOfPeople(2)
-                .reservationMenus(menuList)
-                .build();
-
-        ReservationDto.ReservationDetail reservationDetail1 = reservationService.registerReservation(rform, user.getId());
-        ReservationDto.ReservationDetail reservationDetail2 = reservationService.registerReservation(rform2, user.getId());
-        ReservationDto.ReservationDetail reservationDetail3 = reservationService.registerReservation(rform3, user.getId());
-
-        List<FeedbackDto.MenuFeedBackForm> mfbList1 = new ArrayList<>();
-
-        reservationDetail1.getReservationMenuDetails().forEach(rmd -> {
-            FeedbackDto.MenuFeedBackForm mfb = new FeedbackDto.MenuFeedBackForm(
-                    rmd.getId(),
-                    4.0,
-                    10000,
-                    "맛있어요."
-            );
-            mfbList1.add(mfb);
-        });
-
-        FeedbackDto.FeedbackForm form = new FeedbackDto.FeedbackForm(
-                4.0,
-                "맛있어요.",
-                mfbList1
-        );
-
-        List<FeedbackDto.MenuFeedBackForm> mfbList2 = new ArrayList<>();
-
-        reservationDetail2.getReservationMenuDetails().forEach(rmd -> {
-            FeedbackDto.MenuFeedBackForm mfb = new FeedbackDto.MenuFeedBackForm(
-                    rmd.getId(),
-                    4.0,
-                    10000,
-                    "맛있어요."
-            );
-            mfbList2.add(mfb);
-        });
-        FeedbackDto.FeedbackForm form2 = new FeedbackDto.FeedbackForm(
-                4.0,
-                "굿.",
-                mfbList2
-        );
-
-        FeedbackDto.FeedbackDetail fb = feedbackService.registerFeedback(
-                user.getId(), reservationDetail1.getId(), form
-        );
-        FeedbackDto.FeedbackDetail fb2 = feedbackService.registerFeedback(
-                user.getId(), reservationDetail2.getId(), form2
-        );
-
+        // 각 오너별로 진행 예정인 팝업 생성
+        createPopupRestaurant(owner4, "이디야 이태원점", LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(10));
+        createPopupRestaurant(owner5, "설빙 명동점", LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(12));
+        createPopupRestaurant(owner6, "버거킹 종로점", LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(15));
     }
 
     private User createUser(String name, String email, Gender gender, Role role, String loginId, String phoneNumber) {
@@ -309,3 +225,4 @@ public class TestSet {
         }
     }
 }
+
