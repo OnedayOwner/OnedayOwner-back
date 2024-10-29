@@ -15,6 +15,5 @@ public interface ReservationRepositoryCustom {
     public List<Reservation> findUpcomingReservationsByUserId(Long userId);
     public List<Reservation> findCompletedReservationsByUserId(Long userId);
     public Optional<Reservation> findReservationWithDetails(Long reservationId);
-    List<Reservation> findCompletedReservationsWithoutFeedbackByUserId(Long userId);
     List<Reservation> findUnreviewedReservationsByUserId(Long customerId);
 }

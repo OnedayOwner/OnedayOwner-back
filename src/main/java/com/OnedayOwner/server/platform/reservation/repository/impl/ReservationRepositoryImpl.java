@@ -74,17 +74,6 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     }
 
     @Override
-    public List<Reservation> findCompletedReservationsWithoutFeedbackByUserId(Long userId) {
-        return jpaQueryFactory.selectFrom(reservation)
-                .leftJoin(feedback).on(feedback.reservation.eq(reservation))
-                .where(
-                        reservation.user.id.eq(userId),
-                        reservation.reservationDateTime.before(LocalDateTime.now()),
-                        feedback.isNull()
-                )
-                .fetch();          
-
-    @Override
     public List<Reservation> findUnreviewedReservationsByUserId(Long customerId) {
         return jpaQueryFactory.selectFrom(reservation)
                 .join(reservation.popupRestaurant, popupRestaurant).fetchJoin()
@@ -95,5 +84,6 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                         feedback.id.isNull()
                 )
                 .fetch();
+
     }
 }
