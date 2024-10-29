@@ -123,7 +123,7 @@ public class ReservationService {
     @Transactional
     public ReservationDto.ReservationDetailForUser getReservationDetailForCustomer(Long reservationId, Long customerId) {
         //조회하는 고객의 예약이 맞는지 체크
-        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
+        Reservation reservation = reservationRepository.findReservationWithDetails(reservationId).orElseThrow(
                 () -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND)
         );
         if (!reservation.getUser().getId().equals(customerId)) {
@@ -156,6 +156,16 @@ public class ReservationService {
                 .map(ReservationDto.ReservationSummary::new)
                 .toList();
     }
+
+    /*
+    방문 완료했지만 피드백은 작성하지 않은 리스트 조회
+     */
+    @Transactional
+    public List<ReservationDto.ReservationSummary> getCompletedReservationsWithoutFeedback(Long customerId) {
+        return reservationRepository.findCompletedReservationsWithoutFeedbackByUserId(customerId)
+                .stream()
+                .map(ReservationDto.ReservationSummary::new)
+                .toList();          
 
     /**
      * 방문 완료 했지만 피드백 작성하지 않은 예약 리스트 반환
