@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;
@@ -129,22 +131,32 @@ public class FeedbackService {
     }
 
     @Transactional
-    public List<FeedbackDto.FeedbackSummary> getMyFeedbackList(Long customerId){
-        return feedbackRepository.findByUserId(customerId)
-                .stream().map(FeedbackDto.FeedbackSummary::new)
-                .collect(Collectors.toList());
+    public List<FeedbackDto.FeedbackSummaryForCustomer> getMyFeedbackList(Long customerId){
+        List<Feedback> feedbackList = feedbackRepository.findByUserIdFetchJoin(customerId);
+        List<FeedbackDto.FeedbackSummaryForCustomer> summaryForCustomerList = new ArrayList<>();
+        feedbackList.forEach(feedback -> summaryForCustomerList
+                .add(new FeedbackDto.FeedbackSummaryForCustomer(
+                                feedback,
+                                feedback.getReservation().getPopupRestaurant().getName(),
+                                feedback.getReservation().getReservationDateTime())
+                ));
+
+        return summaryForCustomerList;
     }
 
     @Transactional
-    public FeedbackDto.FeedbackDetail getMyFeedback(Long customerId, Long feedbackId) {
-        Feedback feedback = feedbackRepository.findById(feedbackId)
+    public FeedbackDto.FeedbackDetailForCustomer getMyFeedback(Long customerId, Long feedbackId) {
+        Feedback feedback = feedbackRepository.findByIdFetchJoin(feedbackId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.FEEDBACK_NOT_FOUND));
+
+        String popupName = feedback.getReservation().getPopupRestaurant().getName();
+        LocalDateTime visitedTime = feedback.getReservation().getReservationDateTime();
 
         if(!feedback.getUser().getId().equals(customerId)){
             throw new BusinessException(ErrorCode.FEEDBACK_USER_NOT_MATCH);
         }
 
-        return new FeedbackDto.FeedbackDetail(feedback);
+        return new FeedbackDto.FeedbackDetailForCustomer(feedback, popupName, visitedTime);
     }
 
     @Transactional

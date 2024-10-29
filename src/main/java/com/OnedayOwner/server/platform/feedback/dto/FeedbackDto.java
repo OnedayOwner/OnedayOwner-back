@@ -3,11 +3,14 @@ package com.OnedayOwner.server.platform.feedback.dto;
 
 import com.OnedayOwner.server.platform.feedback.entity.MenuFeedback;
 import com.OnedayOwner.server.platform.feedback.entity.Feedback;
+import com.OnedayOwner.server.platform.popup.entity.PopupRestaurant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,6 +81,41 @@ public class FeedbackDto {
         @Builder
         public FeedbackDetail(Feedback feedback){
             super(feedback);
+            this.menuFeedbackSummaries = feedback
+                    .getMenuFeedbacks()
+                    .stream()
+                    .map(MenuFeedbackSummary::new)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = PROTECTED)
+    public static class FeedbackSummaryForCustomer {
+        private Long feedbackId;
+        private Double score;
+        private String comment;
+        private String popupName;
+        private LocalDateTime visitedTime;
+
+        public FeedbackSummaryForCustomer(Feedback feedback, String popupName, LocalDateTime visitedTime) {
+            this.feedbackId = feedback.getId();
+            this.score = feedback.getScore();
+            this.comment = feedback.getComment();
+            this.popupName = popupName;
+            this.visitedTime = visitedTime;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = PROTECTED)
+    public static class FeedbackDetailForCustomer extends FeedbackSummaryForCustomer{
+
+        private List<MenuFeedbackSummary> menuFeedbackSummaries;
+
+        @Builder
+        public FeedbackDetailForCustomer(Feedback feedback, String popupName, LocalDateTime visitedTime){
+            super(feedback, popupName, visitedTime);
             this.menuFeedbackSummaries = feedback
                     .getMenuFeedbacks()
                     .stream()

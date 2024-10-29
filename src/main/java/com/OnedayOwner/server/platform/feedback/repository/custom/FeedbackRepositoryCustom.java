@@ -10,6 +10,8 @@ public interface FeedbackRepositoryCustom {
 
     Optional<Feedback> findByIdFetchJoin(Long feedbackId);
 
+    List<Feedback> findByUserIdFetchJoin(Long customerId);
+
     List<Feedback> findByPopupId(Long popupId);
 
 }
