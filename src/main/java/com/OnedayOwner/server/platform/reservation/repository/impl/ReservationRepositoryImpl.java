@@ -67,13 +67,8 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .join(popupRestaurant.menus, menu).fetchJoin()
                 .leftJoin(feedback).on(feedback.reservation.id.eq(reservation.id))
                 .where(
-                        reservation.reservationDateTime.before(LocalDateTime.now())
-//                        , reservation.id.notIn(
-//                                jpaQueryFactory.select(feedback.id)
-//                                        .from(feedback)
-//                                        .where(feedback.user.id.eq(customerId))
-//                                        .fetch()
-//                        )
+                        reservation.reservationDateTime.before(LocalDateTime.now()),
+                        feedback.id.isNull()
                 )
                 .fetch();
     }
