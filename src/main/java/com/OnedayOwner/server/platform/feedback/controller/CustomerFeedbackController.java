@@ -40,7 +40,7 @@ public class CustomerFeedbackController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<List<FeedbackDto.FeedbackSummary>> getMyFeedbackList(
+    public ResponseEntity<List<FeedbackDto.FeedbackSummaryForCustomer>> getMyFeedbackList(
             SecurityContextHolderAwareRequestWrapper request
     ){
         Long userId = SecurityUtils.extractUserId(request);
@@ -49,7 +49,7 @@ public class CustomerFeedbackController {
     }
 
     @GetMapping("{reservationId}")
-    public ResponseEntity<FeedbackDto.FeedbackSummary> getMyFeedback(
+    public ResponseEntity<FeedbackDto.FeedbackDetailForCustomer> getMyFeedback(
             @PathVariable("reservationId")Long reservationId,
             SecurityContextHolderAwareRequestWrapper request
     ){

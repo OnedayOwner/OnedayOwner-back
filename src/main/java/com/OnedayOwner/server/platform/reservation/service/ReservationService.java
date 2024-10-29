@@ -2,7 +2,6 @@ package com.OnedayOwner.server.platform.reservation.service;
 
 import com.OnedayOwner.server.global.exception.BusinessException;
 import com.OnedayOwner.server.global.exception.ErrorCode;
-import com.OnedayOwner.server.platform.feedback.entity.Feedback;
 import com.OnedayOwner.server.platform.feedback.repository.FeedbackRepository;
 import com.OnedayOwner.server.platform.popup.repository.MenuRepository;
 import com.OnedayOwner.server.platform.popup.repository.PopupRestaurantRepository;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -154,6 +152,19 @@ public class ReservationService {
     @Transactional
     public List<ReservationDto.ReservationSummary> getCompletedReservations(Long customerId) {
         return reservationRepository.findCompletedReservationsByUserId(customerId)
+                .stream()
+                .map(ReservationDto.ReservationSummary::new)
+                .toList();
+    }
+
+    /**
+     * 방문 완료 했지만 피드백 작성하지 않은 예약 리스트 반환
+     * @param customerId
+     * @return
+     */
+    @Transactional
+    public List<ReservationDto.ReservationSummary> getUnreviewedReservations(Long customerId) {
+        return reservationRepository.findUnreviewedReservationsByUserId(customerId)
                 .stream()
                 .map(ReservationDto.ReservationSummary::new)
                 .toList();
