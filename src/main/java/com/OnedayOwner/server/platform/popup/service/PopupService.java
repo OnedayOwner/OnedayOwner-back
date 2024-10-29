@@ -3,6 +3,7 @@ package com.OnedayOwner.server.platform.popup.service;
 import com.OnedayOwner.server.global.exception.BusinessException;
 import com.OnedayOwner.server.global.exception.ErrorCode;
 import com.OnedayOwner.server.platform.Address;
+import com.OnedayOwner.server.platform.feedback.repository.FeedbackRepository;
 import com.OnedayOwner.server.platform.popup.dto.PopupDto;
 import com.OnedayOwner.server.platform.popup.entity.BusinessTime;
 import com.OnedayOwner.server.platform.popup.entity.Menu;
@@ -47,6 +48,7 @@ public class PopupService {
     private final ReservationTimeRepository reservationTimeRepository;
     private final ReservationRepository reservationRepository;
     private final ReservationMenuRepository reservationMenuRepository;
+    private final FeedbackRepository feedbackRepository;
 
 
     @Transactional(noRollbackFor = BusinessException.class)
@@ -63,7 +65,7 @@ public class PopupService {
             }
         }
         if (restaurantForm.getStartDateTime().isBefore(LocalDateTime.now())) {
-            throw new BusinessException(ErrorCode.POPUP_START_DATETIME_INVALID);
+//            throw new BusinessException(ErrorCode.POPUP_START_DATETIME_INVALID);
         }
         //레스토랑 등록
         PopupRestaurant restaurant = popupRestaurantRepository.save(PopupRestaurant.builder()
@@ -125,7 +127,16 @@ public class PopupService {
         if (!popupRestaurant.getUser().getId().equals(ownerId)) {
             throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
         }
-        return new PopupDto.PopupHistoryDetail(popupRestaurant);
+        List<Long[]> list = reservationRepository.sumNumberOfPeopleByPopupRestaurantId(popupRestaurant.getId());
+
+        Long[] result = list.get(0);
+        Long totalReservation = result[0];
+        Long totalReservationPeople = result[1];
+
+        Long totalFeedback = feedbackRepository.countByPopupId(popupId);
+
+        return new PopupDto.PopupHistoryDetail(
+                popupRestaurant, totalReservation, totalReservationPeople, totalFeedback);
     }
 
     @Transactional
