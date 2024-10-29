@@ -138,7 +138,8 @@ public class FeedbackService {
                 .add(new FeedbackDto.FeedbackSummaryForCustomer(
                                 feedback,
                                 feedback.getReservation().getPopupRestaurant().getName(),
-                                feedback.getReservation().getReservationDateTime())
+                                feedback.getReservation().getReservationDateTime(),
+                                feedback.getReservation().getNumberOfPeople())
                 ));
 
         return summaryForCustomerList;
@@ -151,12 +152,13 @@ public class FeedbackService {
 
         String popupName = feedback.getReservation().getPopupRestaurant().getName();
         LocalDateTime visitedTime = feedback.getReservation().getReservationDateTime();
+        int numberOfPeople = feedback.getReservation().getNumberOfPeople();
 
         if(!feedback.getUser().getId().equals(customerId)){
             throw new BusinessException(ErrorCode.FEEDBACK_USER_NOT_MATCH);
         }
 
-        return new FeedbackDto.FeedbackDetailForCustomer(feedback, popupName, visitedTime);
+        return new FeedbackDto.FeedbackDetailForCustomer(feedback, popupName, visitedTime, numberOfPeople);
     }
 
     @Transactional

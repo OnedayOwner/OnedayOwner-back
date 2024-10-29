@@ -97,13 +97,18 @@ public class FeedbackDto {
         private String comment;
         private String popupName;
         private LocalDateTime visitedTime;
+        private int numberOfPeople;
 
-        public FeedbackSummaryForCustomer(Feedback feedback, String popupName, LocalDateTime visitedTime) {
+        public FeedbackSummaryForCustomer(Feedback feedback,
+                                          String popupName,
+                                          LocalDateTime visitedTime,
+                                          int numberOfPeople) {
             this.feedbackId = feedback.getId();
             this.score = feedback.getScore();
             this.comment = feedback.getComment();
             this.popupName = popupName;
             this.visitedTime = visitedTime;
+            this.numberOfPeople = numberOfPeople;
         }
     }
 
@@ -114,8 +119,11 @@ public class FeedbackDto {
         private List<MenuFeedbackSummary> menuFeedbackSummaries;
 
         @Builder
-        public FeedbackDetailForCustomer(Feedback feedback, String popupName, LocalDateTime visitedTime){
-            super(feedback, popupName, visitedTime);
+        public FeedbackDetailForCustomer(Feedback feedback,
+                                         String popupName,
+                                         LocalDateTime visitedTime,
+                                         int numberOfPeople){
+            super(feedback, popupName, visitedTime, numberOfPeople);
             this.menuFeedbackSummaries = feedback
                     .getMenuFeedbacks()
                     .stream()
