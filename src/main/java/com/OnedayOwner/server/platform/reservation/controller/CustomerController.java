@@ -111,6 +111,18 @@ public class CustomerController {
     }
 
     /*
+    방문 완료 예약 리스트 조회
+     */
+    @GetMapping("/reservations/writable")
+    public ResponseEntity<List<ReservationDto.ReservationSummary>> getCompletedReservationsWithoutFeedback(
+            SecurityContextHolderAwareRequestWrapper request
+    ){
+        Long customerId = SecurityUtils.extractUserId(request);
+        return  ResponseEntity.ok()
+                .body(reservationService.getCompletedReservationsWithoutFeedback(customerId));
+    }
+
+    /*
     팝업 상세 조회
      */
     @GetMapping("/popup/{popupId}")

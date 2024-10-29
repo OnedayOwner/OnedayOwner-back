@@ -158,4 +158,15 @@ public class ReservationService {
                 .map(ReservationDto.ReservationSummary::new)
                 .toList();
     }
+
+    /*
+    방문 완료했지만 피드백은 작성하지 않은 리스트 조회
+     */
+    @Transactional
+    public List<ReservationDto.ReservationSummary> getCompletedReservationsWithoutFeedback(Long customerId) {
+        return reservationRepository.findCompletedReservationsWithoutFeedbackByUserId(customerId)
+                .stream()
+                .map(ReservationDto.ReservationSummary::new)
+                .toList();
+    }
 }

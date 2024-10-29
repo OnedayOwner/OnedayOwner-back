@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.OnedayOwner.server.platform.feedback.entity.QFeedback.feedback;
 import static com.OnedayOwner.server.platform.popup.entity.QMenu.menu;
 import static com.OnedayOwner.server.platform.popup.entity.QPopupRestaurant.popupRestaurant;
 import static com.OnedayOwner.server.platform.reservation.entity.QReservation.reservation;
@@ -67,5 +68,17 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .leftJoin(reservationMenu.menu, menu).fetchJoin()
                 .where(reservation.id.eq(reservationId))
                 .fetch().stream().findFirst();
+    }
+
+    @Override
+    public List<Reservation> findCompletedReservationsWithoutFeedbackByUserId(Long userId) {
+        return jpaQueryFactory.selectFrom(reservation)
+                .leftJoin(feedback).on(feedback.reservation.eq(reservation))
+                .where(
+                        reservation.user.id.eq(userId),
+                        reservation.reservationDateTime.before(LocalDateTime.now()),
+                        feedback.isNull()
+                )
+                .fetch();
     }
 }
