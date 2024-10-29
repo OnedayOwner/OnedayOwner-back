@@ -36,9 +36,28 @@ public class FeedbackRepositoryImpl implements FeedbackRepositoryCustom {
     }
 
     @Override
+    public List<Feedback> findByUserIdFetchJoin(Long customerId){
+
+        return jpaQueryFactory.select(QFeedback.feedback)
+                .from(QFeedback.feedback)
+                .join(QFeedback.feedback.reservation, reservation).fetchJoin()
+                .join(reservation.popupRestaurant, popupRestaurant).fetchJoin()
+                .join(popupRestaurant.user, user).fetchJoin()
+                .where(QFeedback.feedback.user.id.eq(customerId))
+                .fetch();
+    }
+
+    @Override
     public List<Feedback> findByPopupId(Long popupId) {
         return jpaQueryFactory.selectFrom(feedback)
                 .where(feedback.reservation.popupRestaurant.id.eq(popupId))
                 .fetch();
+    }
+
+    @Override
+    public Long countByPopupId(Long popupId) {
+        return jpaQueryFactory.selectFrom(feedback)
+                .where(feedback.reservation.popupRestaurant.id.eq(popupId))
+                .stream().count();
     }
 }

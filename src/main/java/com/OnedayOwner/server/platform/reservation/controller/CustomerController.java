@@ -5,6 +5,7 @@ import com.OnedayOwner.server.platform.popup.dto.PopupDto;
 import com.OnedayOwner.server.platform.popup.service.PopupService;
 import com.OnedayOwner.server.platform.reservation.dto.ReservationDto;
 import com.OnedayOwner.server.platform.reservation.service.ReservationService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
@@ -108,6 +109,17 @@ public class CustomerController {
         Long customerId = SecurityUtils.extractUserId(request);
         return  ResponseEntity.ok()
                 .body(reservationService.getCompletedReservations(customerId));
+    }
+
+    @Operation(summary = "피드백 작성하지 않은 예약 리스트",
+            description = "방문했지만 피드백 작성하지 않은 예약 리스트")
+    @GetMapping("/reservations/completed/unreviewed")
+    public ResponseEntity<List<ReservationDto.ReservationSummary>> getUnreviewedReservations(
+            SecurityContextHolderAwareRequestWrapper request
+    ){
+        Long customerId = SecurityUtils.extractUserId(request);
+        return  ResponseEntity.ok()
+                .body(reservationService.getUnreviewedReservations(customerId));
     }
 
     /*

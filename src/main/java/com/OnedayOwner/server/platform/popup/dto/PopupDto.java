@@ -123,10 +123,22 @@ public class PopupDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class PopupHistoryDetail extends PopupSummary {
-
+        private List<BusinessTimeDto> businessTimes;
+        private Long totalReservation;
+        private Long totalReservationPeople;
+        private Long totalFeedback;
         @Builder
-        public PopupHistoryDetail(PopupRestaurant popupRestaurant) {
+        public PopupHistoryDetail(PopupRestaurant popupRestaurant,
+                                  Long totalReservation,
+                                  Long totalReservationPeople,
+                                  Long totalFeedback) {
             super(popupRestaurant);
+            this.businessTimes = popupRestaurant.getBusinessTimes().stream()
+                    .map(BusinessTimeDto::new)
+                    .toList();
+            this.totalReservation = totalReservation;
+            this.totalReservationPeople = totalReservationPeople;
+            this.totalFeedback = totalFeedback;
         }
     }
 
