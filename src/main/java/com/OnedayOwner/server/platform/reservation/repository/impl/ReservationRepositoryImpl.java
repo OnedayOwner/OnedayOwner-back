@@ -1,5 +1,6 @@
 package com.OnedayOwner.server.platform.reservation.repository.impl;
 
+import com.OnedayOwner.server.platform.feedback.entity.QFeedback;
 import com.OnedayOwner.server.platform.reservation.entity.Reservation;
 import com.OnedayOwner.server.platform.reservation.repository.custom.ReservationRepositoryCustom;
 import com.querydsl.core.Tuple;
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.OnedayOwner.server.platform.feedback.entity.QFeedback.feedback;
 import static com.OnedayOwner.server.platform.popup.entity.QPopupRestaurant.popupRestaurant;
 import static com.OnedayOwner.server.platform.reservation.entity.QReservation.reservation;
 
@@ -52,6 +54,21 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .join(reservation.popupRestaurant, popupRestaurant).fetchJoin()
                 .where(reservation.user.id.eq(userId)
                         .and(reservation.reservationDateTime.before(LocalDateTime.now())))
+                .fetch();
+    }
+
+    @Override
+    public List<Reservation> findUnreviewedReservationsByUserId(Long customerId) {
+        return jpaQueryFactory.selectFrom(reservation)
+                .where(
+                        reservation.reservationDateTime.before(LocalDateTime.now()),
+                        reservation.id.notIn(
+                                jpaQueryFactory.select(feedback.id)
+                                        .from(feedback)
+                                        .where(feedback.user.id.eq(customerId))
+                                        .fetch()
+                        )
+                )
                 .fetch();
     }
 }
