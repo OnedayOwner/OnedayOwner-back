@@ -53,4 +53,11 @@ public class FeedbackRepositoryImpl implements FeedbackRepositoryCustom {
                 .where(feedback.reservation.popupRestaurant.id.eq(popupId))
                 .fetch();
     }
+
+    @Override
+    public Long countByPopupId(Long popupId) {
+        return jpaQueryFactory.selectFrom(feedback)
+                .where(feedback.reservation.popupRestaurant.id.eq(popupId))
+                .stream().count();
+    }
 }

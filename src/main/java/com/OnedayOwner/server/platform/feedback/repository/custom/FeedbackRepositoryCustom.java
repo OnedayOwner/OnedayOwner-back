@@ -14,4 +14,6 @@ public interface FeedbackRepositoryCustom {
 
     List<Feedback> findByPopupId(Long popupId);
 
+    Long countByPopupId(Long popupId);
+
 }
