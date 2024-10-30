@@ -48,14 +48,14 @@ public class CustomerFeedbackController {
                 .body(feedbackService.getMyFeedbackList(userId));
     }
 
-    @GetMapping("{reservationId}")
+    @GetMapping("{feedbackId}")
     public ResponseEntity<FeedbackDto.FeedbackDetailForCustomer> getMyFeedback(
-            @PathVariable("reservationId")Long reservationId,
+            @PathVariable("feedbackId")Long feedbackId,
             SecurityContextHolderAwareRequestWrapper request
     ){
         Long userId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
-                .body(feedbackService.getMyFeedback(userId, reservationId));
+                .body(feedbackService.getMyFeedback(userId, feedbackId));
     }
 
 }
