@@ -27,15 +27,15 @@ public class FeedbackRepositoryImpl implements FeedbackRepositoryCustom {
     }
 
     @Override
-    public Optional<Feedback> findByIdFetchJoin(Long feedbackId){
+    public Optional<Feedback> findByIdFetchJoin(Long feedbackId) {
         Feedback feedback = jpaQueryFactory.select(QFeedback.feedback)
                 .from(QFeedback.feedback)
                 .join(QFeedback.feedback.reservation, reservation).fetchJoin()
                 .join(reservation.popupRestaurant, popupRestaurant).fetchJoin()
                 .join(popupRestaurant.user, user).fetchJoin()
-                .join(QFeedback.feedback.menuFeedbacks, menuFeedback).fetchJoin()
-                .join(menuFeedback.reservationMenu, reservationMenu).fetchJoin()
-                .join(reservationMenu.menu, menu).fetchJoin()
+                .leftJoin(QFeedback.feedback.menuFeedbacks, menuFeedback).fetchJoin()
+                .leftJoin(menuFeedback.reservationMenu, reservationMenu).fetchJoin()
+                .leftJoin(reservationMenu.menu, menu).fetchJoin()
                 .where(QFeedback.feedback.id.eq(feedbackId))
                 .fetchOne();
 
