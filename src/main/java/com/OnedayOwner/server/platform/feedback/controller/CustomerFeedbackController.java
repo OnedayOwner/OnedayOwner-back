@@ -17,7 +17,7 @@ public class CustomerFeedbackController {
 
     private final FeedbackService feedbackService;
 
-    @PostMapping("{reservationId}")
+    @PostMapping("/{reservationId}")
     public ResponseEntity<FeedbackDto.FeedbackDetail> registerFeedback(
             @RequestBody FeedbackDto.FeedbackForm form,
             @PathVariable("reservationId")Long reservationId,
@@ -28,7 +28,7 @@ public class CustomerFeedbackController {
                 .body(feedbackService.registerFeedback(customerId, reservationId, form));
     }
 
-    @PostMapping("{reservationId}/menuFeedback")
+    @PostMapping("/{reservationId}/menuFeedback")
     public ResponseEntity<FeedbackDto.MenuFeedbackSummary> registerMenuFeedback(
             @RequestBody FeedbackDto.MenuFeedBackForm form,
             @PathVariable("reservationId")Long reservationId,
@@ -39,7 +39,7 @@ public class CustomerFeedbackController {
                 .body(feedbackService.registerMenuFeedback(customerId, reservationId, form));
     }
 
-    @GetMapping("list")
+    @GetMapping("/list")
     public ResponseEntity<List<FeedbackDto.FeedbackSummaryForCustomer>> getMyFeedbackList(
             SecurityContextHolderAwareRequestWrapper request
     ){
@@ -48,7 +48,7 @@ public class CustomerFeedbackController {
                 .body(feedbackService.getMyFeedbackList(userId));
     }
 
-    @GetMapping("{feedbackId}")
+    @GetMapping("/{feedbackId}")
     public ResponseEntity<FeedbackDto.FeedbackDetailForCustomer> getMyFeedback(
             @PathVariable("feedbackId")Long feedbackId,
             SecurityContextHolderAwareRequestWrapper request
