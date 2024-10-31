@@ -124,6 +124,7 @@ public class ReservationDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ReservationMenuDetail{
+        private Long id;
         private int quantity;
         private String name;
         private int price;
@@ -131,6 +132,7 @@ public class ReservationDto {
 
         @Builder
         public ReservationMenuDetail(ReservationMenu reservationMenu) {
+            this.id = reservationMenu.getId();
             this.quantity = reservationMenu.getQuantity();
             this.name = reservationMenu.getMenu().getName();
             this.price = reservationMenu.getMenu().getPrice();

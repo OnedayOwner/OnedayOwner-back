@@ -2,6 +2,7 @@ package com.OnedayOwner.server.platform.feedback.repository.impl;
 
 import com.OnedayOwner.server.platform.feedback.entity.Feedback;
 import com.OnedayOwner.server.platform.feedback.entity.QFeedback;
+import com.OnedayOwner.server.platform.feedback.entity.QMenuFeedback;
 import com.OnedayOwner.server.platform.feedback.repository.custom.FeedbackRepositoryCustom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -10,8 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.OnedayOwner.server.platform.feedback.entity.QFeedback.feedback;
+import static com.OnedayOwner.server.platform.feedback.entity.QMenuFeedback.menuFeedback;
+import static com.OnedayOwner.server.platform.popup.entity.QMenu.menu;
 import static com.OnedayOwner.server.platform.popup.entity.QPopupRestaurant.popupRestaurant;
 import static com.OnedayOwner.server.platform.reservation.entity.QReservation.*;
+import static com.OnedayOwner.server.platform.reservation.entity.QReservationMenu.reservationMenu;
 import static com.OnedayOwner.server.platform.user.entity.QUser.user;
 
 public class FeedbackRepositoryImpl implements FeedbackRepositoryCustom {
@@ -23,12 +27,15 @@ public class FeedbackRepositoryImpl implements FeedbackRepositoryCustom {
     }
 
     @Override
-    public Optional<Feedback> findByIdFetchJoin(Long feedbackId){
+    public Optional<Feedback> findByIdFetchJoin(Long feedbackId) {
         Feedback feedback = jpaQueryFactory.select(QFeedback.feedback)
                 .from(QFeedback.feedback)
                 .join(QFeedback.feedback.reservation, reservation).fetchJoin()
                 .join(reservation.popupRestaurant, popupRestaurant).fetchJoin()
                 .join(popupRestaurant.user, user).fetchJoin()
+                .leftJoin(QFeedback.feedback.menuFeedbacks, menuFeedback).fetchJoin()
+                .leftJoin(menuFeedback.reservationMenu, reservationMenu).fetchJoin()
+                .leftJoin(reservationMenu.menu, menu).fetchJoin()
                 .where(QFeedback.feedback.id.eq(feedbackId))
                 .fetchOne();
 

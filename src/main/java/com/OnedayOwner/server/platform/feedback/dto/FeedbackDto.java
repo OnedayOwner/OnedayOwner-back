@@ -47,6 +47,9 @@ public class FeedbackDto {
         private Double score;
         private int desiredPrice;
         private String comment;
+        private String name;
+        private String imageUrl;
+        private int price;
 
 
         public MenuFeedbackSummary(MenuFeedback menuFeedback) {
@@ -55,6 +58,9 @@ public class FeedbackDto {
             this.score = menuFeedback.getScore();
             this.desiredPrice = menuFeedback.getDesiredPrice();
             this.comment = menuFeedback.getComment();
+            this.name = menuFeedback.getReservationMenu().getMenu().getName();
+            this.imageUrl = menuFeedback.getReservationMenu().getMenu().getImageUrl();
+            this.price = menuFeedback.getReservationMenu().getMenu().getPrice();
         }
     }
 
