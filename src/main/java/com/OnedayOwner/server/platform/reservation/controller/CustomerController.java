@@ -4,6 +4,7 @@ import com.OnedayOwner.server.global.security.SecurityUtils;
 import com.OnedayOwner.server.platform.popup.dto.PopupDto;
 import com.OnedayOwner.server.platform.popup.service.PopupService;
 import com.OnedayOwner.server.platform.reservation.dto.ReservationDto;
+import com.OnedayOwner.server.platform.reservation.service.ReservationFacade;
 import com.OnedayOwner.server.platform.reservation.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/customers")
 public class CustomerController {
 
+    private final ReservationFacade reservationFacade;
     private final ReservationService reservationService;
     private final PopupService popupService;
 
@@ -48,7 +50,7 @@ public class CustomerController {
     ) {
         Long customerId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
-                .body(reservationService.registerReservation(reservationForm, customerId));
+                .body(reservationFacade.registerReservation(reservationForm, customerId));
     }
 
     @Operation(summary = "예약 상세 조회")

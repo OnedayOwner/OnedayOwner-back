@@ -70,53 +70,12 @@ public class ReservationService {
     }
 
     /**
-     * 예약 등록 (예약의 동시성 제어를 위해서 Redisson을 활용, 본 메소드에서는 동시성 제어만)
-     * @param reservationForm 예약 등록 DTO
-     * @param customerId 고객 ID
-     * @return 예약 정보를 담은 DTO
-     */
-    public ReservationDto.ReservationDetail registerReservation(
-            ReservationDto.ReservationForm reservationForm,
-            Long customerId
-    ) {
-        RLock lock = redissonClient.getLock(reservationForm.getReservationTimeId().toString());
-        boolean available = false;
-        try {
-            // 락 대기 시간 5초, 락 유지 시간 5초 설정
-            available = lock.tryLock(5, 5, TimeUnit.SECONDS);
-            if (!available) {
-                log.info("Redisson GetLock Timeout {}", reservationForm.getReservationTimeId());
-                throw new BusinessException(ErrorCode.RESERVATION_TIME_OUT);
-            }
-
-            log.info("Redisson GetLock {}", reservationForm.getReservationTimeId());
-
-            // 수동으로 트랜잭션 시작
-            return transactionTemplate.execute(status -> {
-                try {
-                    return executeReservation(reservationForm, customerId);
-                } catch (Exception e) {
-                    status.setRollbackOnly();
-                    throw e;
-                }
-            });
-
-        } catch (InterruptedException e) {
-            throw new BusinessException(ErrorCode.RESERVATION_TIME_OUT);
-        } finally {
-            if (available) {
-                lock.unlock();
-                log.info("Redisson UnLock {}", reservationForm.getReservationTimeId());
-            }
-        }
-    }
-
-    /**
      * 실제 예약을 등록하는 로직
      * @param reservationForm 예약 등록 DTO
      * @param customerId 고객 ID
      * @return 예약 정보를 담은 DTO
      */
+    @Transactional
     protected ReservationDto.ReservationDetail executeReservation(
             ReservationDto.ReservationForm reservationForm,
             Long customerId
@@ -128,6 +87,7 @@ public class ReservationService {
             throw new BusinessException(ErrorCode.POPUP_NOT_MATCH);
         }
 
+        //예약 등록
         Reservation reservation = reservationRepository.save(Reservation.builder()
                 .reservationDateTime(validateReservation(reservationTime, reservationForm.getNumberOfPeople()))
                 .numberOfPeople(reservationForm.getNumberOfPeople())
@@ -139,6 +99,7 @@ public class ReservationService {
                 ))
                 .build());
 
+        //예약 메뉴 등록
         reservationForm.getReservationMenus().forEach(o -> {
             reservationMenuRepository.save(ReservationMenu.builder()
                     .reservation(reservation)
