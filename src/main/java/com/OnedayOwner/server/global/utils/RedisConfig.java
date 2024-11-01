@@ -1,10 +1,11 @@
 package com.OnedayOwner.server.global.utils;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 @EnableRedisRepositories
@@ -17,8 +18,13 @@ public class RedisConfig {
     @Value("${spring.datasource.redis.port}")
     private int redisPort;
 
+    private static final String REDISSON_HOST_PREFIX = "redis://";
+
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(redisHost, redisPort);
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer()
+                .setAddress(REDISSON_HOST_PREFIX + redisHost + ":" + redisPort);
+        return Redisson.create(config);
     }
 }
