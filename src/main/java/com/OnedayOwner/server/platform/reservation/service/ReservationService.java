@@ -33,8 +33,10 @@ public class ReservationService {
     private final MenuRepository menuRepository;
     private final FeedbackRepository feedbackRepository;
 
-    /*
-    팝업의 예약 가능 일자 및 정보 조회
+    /**
+     * 팝업 예약 정보 조회
+     * @param popupId 팝업 ID
+     * @return 팝업 예약 가능 일자 및 시간, 예약 가능 인원 등을 담은 DTO
      */
     @Transactional
     public ReservationDto.ReservationInfoDto getReservationInfo(Long popupId){
@@ -46,8 +48,10 @@ public class ReservationService {
                 .build();
     }
 
-    /*
-    팝업의 메뉴 조회
+    /**
+     * 팝업 메뉴 조회
+     * @param popupId 팝업 ID
+     * @return 팝업의 메뉴 정보를 담은 DTO
      */
     public ReservationDto.ReservationMenuDto getReservationMenus(Long popupId){
         return ReservationDto.ReservationMenuDto.builder()
@@ -57,8 +61,11 @@ public class ReservationService {
                 .build();
     }
 
-    /*
-    예약 생성
+    /**
+     * 예약 등록
+     * @param reservationForm 예약 등록 DTO
+     * @param customerId 고객 ID
+     * @return 예약 정보를 담은 DTO
      */
     @Transactional
     public ReservationDto.ReservationDetail registerReservation(
@@ -100,8 +107,11 @@ public class ReservationService {
                 .build();
     }
 
-    /*
-    예약 검증
+    /**
+     * 예약 검증 (예약 시간 및 예약 인원 검증)
+     * @param reservationTime 예약 시간
+     * @param numberOfPeople 예약 인원
+     * @return 예약 가능하다면 예약 시간을 반환 불가능 하다면 에러를 던짐
      */
     private LocalDateTime validateReservation(ReservationTime reservationTime, int numberOfPeople){
         LocalDateTime reservationDateTime = reservationTime.getReservationDate().atTime(reservationTime.getStartTime());
@@ -117,12 +127,15 @@ public class ReservationService {
         return  reservationDateTime;
     }
 
-    /*
-    예약 상세 조회-고객
+    /**
+     * 예약 상세 조회
+     * @param reservationId 예약 ID
+     * @param customerId 고객 ID
+     * @return 예약 상세 DTO
      */
     @Transactional
     public ReservationDto.ReservationDetailForUser getReservationDetailForCustomer(Long reservationId, Long customerId) {
-        //조회하는 고객의 예약이 맞는지 체크
+        //조회하는 고객의 예약이 맞는지 검증
         Reservation reservation = reservationRepository.findReservationWithDetails(reservationId).orElseThrow(
                 () -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND)
         );
@@ -135,8 +148,10 @@ public class ReservationService {
 
     }
 
-    /*
-    방문 예정 예약 리스트 조회
+    /**
+     * 방문 예정 예약 조회
+     * @param customerId 고객 ID
+     * @return 예약 요약 DTO 리스트
      */
     @Transactional
     public List<ReservationDto.ReservationSummary> getUpcomingReservations(Long customerId) {
@@ -146,8 +161,10 @@ public class ReservationService {
                 .toList();
     }
 
-    /*
-    방문 완료 예약 리스트 조회
+    /**
+     * 방문 완료 예약 조회
+     * @param customerId 고객 ID
+     * @return 예약 요약 DTO 리스트
      */
     @Transactional
     public List<ReservationDto.ReservationSummary> getCompletedReservations(Long customerId) {
@@ -159,8 +176,8 @@ public class ReservationService {
 
     /**
      * 방문 완료 했지만 피드백 작성하지 않은 예약 리스트 반환
-     * @param customerId
-     * @return
+     * @param customerId 고객 ID
+     * @return 예약 요약 DTO 리스트
      */
     @Transactional
     public List<ReservationDto.ReservationSummary> getUnreviewedReservations(Long customerId) {

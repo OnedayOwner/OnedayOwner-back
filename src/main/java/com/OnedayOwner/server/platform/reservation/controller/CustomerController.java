@@ -21,9 +21,8 @@ public class CustomerController {
     private final ReservationService reservationService;
     private final PopupService popupService;
 
-    /*
-    팝업의 예약 가능 일자 조회
-     */
+    @Operation(summary = "팝업 예약 정보 조회",
+        description = "팝업 예약 가능 일자 및 시간 조회")
     @GetMapping("/info/{popupId}")
     public ResponseEntity<ReservationDto.ReservationInfoDto> getReservationInfo(
             @PathVariable("popupId") Long popupId
@@ -32,9 +31,7 @@ public class CustomerController {
                 .body(reservationService.getReservationInfo(popupId));
     }
 
-    /*
-    팝업의 메뉴 조회
-     */
+    @Operation(summary = "팝업 메뉴 조회")
     @GetMapping("/menu/{popupId}")
     public ResponseEntity<ReservationDto.ReservationMenuDto> getReservationMenus(
             @PathVariable("popupId") Long popupId
@@ -43,9 +40,7 @@ public class CustomerController {
                 .body(reservationService.getReservationMenus(popupId));
     }
 
-    /*
-    새로운 예약 등록
-     */
+    @Operation(summary = "예약 등록")
     @PostMapping("/reservation/register")
     public ResponseEntity<ReservationDto.ReservationDetail> registerReservation(
             @RequestBody ReservationDto.ReservationForm reservationForm,
@@ -56,9 +51,7 @@ public class CustomerController {
                 .body(reservationService.registerReservation(reservationForm, customerId));
     }
 
-    /*
-    예약 상세 조회
-     */
+    @Operation(summary = "예약 상세 조회")
     @GetMapping("/reservation/{reservationId}")
     public ResponseEntity<ReservationDto.ReservationDetailForUser> getReservationDetailForCustomer(
             @PathVariable("reservationId") Long reservationId,
@@ -69,27 +62,21 @@ public class CustomerController {
                 .body(reservationService.getReservationDetailForCustomer(reservationId, customerId));
     }
 
-    /*
-    현재 진행중인 팝업 리스트 조회
-     */
+    @Operation(summary = "진행중인 팝업 조회")
     @GetMapping("/popups/active")
     public ResponseEntity<List<PopupDto.PopupSummaryForCustomer>> getActivePopupsInBusinessForCustomer(){
         return  ResponseEntity.ok()
                 .body(popupService.getActivePopupsInBusinessForCustomer());
     }
 
-    /*
-    현재 진행중인 팝업 리스트 조회
-     */
+    @Operation(summary = "진행 예정 팝업 조회")
     @GetMapping("/popups/future")
     public ResponseEntity<List<PopupDto.PopupSummaryForCustomer>> getFuturePopupsInBusinessForCustomer(){
         return  ResponseEntity.ok()
                 .body(popupService.getFuturePopupsInBusinessForCustomer());
     }
 
-    /*
-    방문 예정 예약 리스트 조회
-     */
+    @Operation(summary = "방문 예정 예약 조회")
     @GetMapping("/reservations/upcoming")
     public ResponseEntity<List<ReservationDto.ReservationSummary>> getUpcomingReservations(
             SecurityContextHolderAwareRequestWrapper request
@@ -99,9 +86,8 @@ public class CustomerController {
                 .body(reservationService.getUpcomingReservations(customerId));
     }
 
-    /*
-    방문 완료 예약 리스트 조회
-     */
+    @Operation(summary = "방문 완료 예약 조회",
+            description = "")
     @GetMapping("/reservations/completed")
     public ResponseEntity<List<ReservationDto.ReservationSummary>> getCompletedReservations(
             SecurityContextHolderAwareRequestWrapper request
@@ -111,7 +97,7 @@ public class CustomerController {
                 .body(reservationService.getCompletedReservations(customerId));
     }
 
-    @Operation(summary = "피드백 작성하지 않은 예약 리스트",
+    @Operation(summary = "피드백 작성하지 않은 예약 조회",
             description = "방문했지만 피드백 작성하지 않은 예약 리스트")
     @GetMapping("/reservations/completed/unreviewed")
     public ResponseEntity<List<ReservationDto.ReservationSummary>> getUnreviewedReservations(
@@ -122,9 +108,7 @@ public class CustomerController {
                 .body(reservationService.getUnreviewedReservations(customerId));
     }
 
-    /*
-    팝업 상세 조회
-     */
+    @Operation(summary = "팝업 상세 조회")
     @GetMapping("/popup/{popupId}")
     public ResponseEntity<PopupDto.PopupDetailForCustomer> getPopupDetailForCustomer(
             @PathVariable("popupId")Long popupId
