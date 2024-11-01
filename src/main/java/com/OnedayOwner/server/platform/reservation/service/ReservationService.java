@@ -15,12 +15,18 @@ import com.OnedayOwner.server.platform.reservation.repository.ReservationTimeRep
 import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
@@ -32,6 +38,8 @@ public class ReservationService {
     private final ReservationMenuRepository reservationMenuRepository;
     private final MenuRepository menuRepository;
     private final FeedbackRepository feedbackRepository;
+    private final RedissonClient redissonClient;
+    private final TransactionTemplate transactionTemplate;
 
     /**
      * 팝업 예약 정보 조회
@@ -62,26 +70,57 @@ public class ReservationService {
     }
 
     /**
-     * 예약 등록
+     * 예약 등록 (예약의 동시성 제어를 위해서 Redisson을 활용, 본 메소드에서는 동시성 제어만)
      * @param reservationForm 예약 등록 DTO
      * @param customerId 고객 ID
      * @return 예약 정보를 담은 DTO
      */
-    @Transactional
     public ReservationDto.ReservationDetail registerReservation(
             ReservationDto.ReservationForm reservationForm,
             Long customerId
     ) {
-        if(!reservationTimeRepository.findById(reservationForm.getReservationTimeId()).get()
-                .getPopupRestaurant().getId().equals(reservationForm.getPopupId())){
+        RLock lock = redissonClient.getLock(customerId.toString());
+        boolean available = false;
+        try {
+            available = lock.tryLock(5, 3, TimeUnit.SECONDS);
+            if (!available) {
+                log.info("Redisson GetLock Timeout {}", customerId);
+                throw new BusinessException(ErrorCode.RESERVATION_TIME_OUT);
+            }
+
+            log.info("Redisson GetLock {}", customerId);
+
+            return transactionTemplate.execute(status -> executeReservation(reservationForm, customerId));
+
+        } catch (InterruptedException e) {
+            throw new BusinessException(ErrorCode.RESERVATION_TIME_OUT);
+        } finally {
+            if (available) {
+                lock.unlock();
+                log.info("Redisson UnLock {}", customerId);
+            }
+        }
+    }
+
+    /**
+     * 실제 예약을 등록하는 로직
+     * @param reservationForm 예약 등록 DTO
+     * @param customerId 고객 ID
+     * @return 예약 정보를 담은 DTO
+     */
+    private ReservationDto.ReservationDetail executeReservation(
+            ReservationDto.ReservationForm reservationForm,
+            Long customerId
+    ) {
+        ReservationTime reservationTime = reservationTimeRepository.findById(reservationForm.getReservationTimeId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_TIME_NOT_FOUND));
+
+        if (!reservationTime.getPopupRestaurant().getId().equals(reservationForm.getPopupId())) {
             throw new BusinessException(ErrorCode.POPUP_NOT_MATCH);
         }
-        //예약 등록
+
         Reservation reservation = reservationRepository.save(Reservation.builder()
-                .reservationDateTime(validateReservation(reservationTimeRepository
-                        .findById(reservationForm.getReservationTimeId()).orElseThrow(
-                                () -> new BusinessException(ErrorCode.RESERVATION_TIME_NOT_FOUND)
-                        ), reservationForm.getNumberOfPeople()))
+                .reservationDateTime(validateReservation(reservationTime, reservationForm.getNumberOfPeople()))
                 .numberOfPeople(reservationForm.getNumberOfPeople())
                 .popupRestaurant(popupRestaurantRepository.findById(reservationForm.getPopupId()).orElseThrow(
                         () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
@@ -91,14 +130,13 @@ public class ReservationService {
                 ))
                 .build());
 
-        //예약 메뉴 등록
         reservationForm.getReservationMenus().forEach(o -> {
             reservationMenuRepository.save(ReservationMenu.builder()
-                            .reservation(reservation)
-                            .quantity(o.getQuantity())
-                            .menu(menuRepository.findById(o.getMenuId()).orElseThrow(
-                                    () -> new BusinessException(ErrorCode.MENU_NOT_FOUND)
-                            ))
+                    .reservation(reservation)
+                    .quantity(o.getQuantity())
+                    .menu(menuRepository.findById(o.getMenuId()).orElseThrow(
+                            () -> new BusinessException(ErrorCode.MENU_NOT_FOUND)
+                    ))
                     .build());
         });
 
@@ -117,7 +155,7 @@ public class ReservationService {
         LocalDateTime reservationDateTime = reservationTime.getReservationDate().atTime(reservationTime.getStartTime());
         //예약 시간이 현재 이후인지 검사
         if(reservationDateTime.isBefore(LocalDateTime.now())){
-//            throw new BusinessException(ErrorCode.CAN_NOT_RESERVE_DURING_THAT_TIME);
+            throw new BusinessException(ErrorCode.CAN_NOT_RESERVE_DURING_THAT_TIME);
         }
         //예약 가능 인원을 초과하진 않는지 검사
         if(reservationTime.getMaxPeople() < numberOfPeople){
