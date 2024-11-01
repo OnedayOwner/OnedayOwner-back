@@ -26,7 +26,6 @@ dependencies {
 
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-crypto'
@@ -59,6 +58,10 @@ dependencies {
 	implementation ("com.sun.xml.bind:jaxb-core:4.0.1")
 	// javax.xml.bind
 	implementation ("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
+
+	//Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation group: 'org.redisson', name: 'redisson', version: '3.38.0'
 }
 
 tasks.named('test') {
