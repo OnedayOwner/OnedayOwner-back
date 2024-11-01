@@ -79,25 +79,34 @@ public class ReservationService {
             ReservationDto.ReservationForm reservationForm,
             Long customerId
     ) {
-        RLock lock = redissonClient.getLock(customerId.toString());
+        RLock lock = redissonClient.getLock(reservationForm.getReservationTimeId().toString());
         boolean available = false;
         try {
-            available = lock.tryLock(5, 3, TimeUnit.SECONDS);
+            // 락 대기 시간 5초, 락 유지 시간 5초 설정
+            available = lock.tryLock(5, 5, TimeUnit.SECONDS);
             if (!available) {
-                log.info("Redisson GetLock Timeout {}", customerId);
+                log.info("Redisson GetLock Timeout {}", reservationForm.getReservationTimeId());
                 throw new BusinessException(ErrorCode.RESERVATION_TIME_OUT);
             }
 
-            log.info("Redisson GetLock {}", customerId);
+            log.info("Redisson GetLock {}", reservationForm.getReservationTimeId());
 
-            return transactionTemplate.execute(status -> executeReservation(reservationForm, customerId));
+            // 수동으로 트랜잭션 시작
+            return transactionTemplate.execute(status -> {
+                try {
+                    return executeReservation(reservationForm, customerId);
+                } catch (Exception e) {
+                    status.setRollbackOnly();
+                    throw e;
+                }
+            });
 
         } catch (InterruptedException e) {
             throw new BusinessException(ErrorCode.RESERVATION_TIME_OUT);
         } finally {
             if (available) {
                 lock.unlock();
-                log.info("Redisson UnLock {}", customerId);
+                log.info("Redisson UnLock {}", reservationForm.getReservationTimeId());
             }
         }
     }
@@ -108,7 +117,7 @@ public class ReservationService {
      * @param customerId 고객 ID
      * @return 예약 정보를 담은 DTO
      */
-    private ReservationDto.ReservationDetail executeReservation(
+    protected ReservationDto.ReservationDetail executeReservation(
             ReservationDto.ReservationForm reservationForm,
             Long customerId
     ) {
