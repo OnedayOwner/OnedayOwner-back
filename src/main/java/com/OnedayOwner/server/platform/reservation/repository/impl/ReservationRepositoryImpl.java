@@ -35,7 +35,8 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                         reservation.count(),
                         reservation.numberOfPeople.sum())
                 .from(reservation)
-                .where(reservation.reservationDateTime
+                .where(reservation.popupRestaurant.id.eq(popupId), 
+                        reservation.reservationDateTime
                         .between(startDate.atStartOfDay(),endDate.plusDays(1).atStartOfDay()))
                 .groupBy(reservation.reservationDateTime.dayOfMonth())
                 .fetch();
