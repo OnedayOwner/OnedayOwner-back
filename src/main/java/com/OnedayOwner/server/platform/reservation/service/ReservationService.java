@@ -16,15 +16,11 @@ import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -38,8 +34,6 @@ public class ReservationService {
     private final ReservationMenuRepository reservationMenuRepository;
     private final MenuRepository menuRepository;
     private final FeedbackRepository feedbackRepository;
-    private final RedissonClient redissonClient;
-    private final TransactionTemplate transactionTemplate;
 
     /**
      * 팝업 예약 정보 조회
