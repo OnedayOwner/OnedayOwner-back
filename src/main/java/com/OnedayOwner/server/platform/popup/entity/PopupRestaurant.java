@@ -39,6 +39,7 @@ public class PopupRestaurant extends BaseTimeEntity {
     private Address address;
     private Boolean inBusiness;
     private String description;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "popupRestaurant", cascade = CascadeType.ALL)
     private List<BusinessTime> businessTimes = new ArrayList<>();
@@ -66,7 +67,7 @@ public class PopupRestaurant extends BaseTimeEntity {
     }
 
     @Builder
-    public PopupRestaurant(String name, LocalDateTime startDateTime, LocalDateTime endDateTime, User user, Address address, String description){
+    public PopupRestaurant(String name, LocalDateTime startDateTime, LocalDateTime endDateTime, User user, Address address, String description, String imageUrl){
         this.name = name;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
@@ -75,5 +76,6 @@ public class PopupRestaurant extends BaseTimeEntity {
 //        this.category = category;
         this.inBusiness = true;
         this.description = description;
+        this.imageUrl = imageUrl;
     }
 }

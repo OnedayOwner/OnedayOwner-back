@@ -11,25 +11,27 @@ import com.OnedayOwner.server.platform.popup.entity.PopupRestaurant;
 import com.OnedayOwner.server.platform.popup.repository.BusinessTimeRepository;
 import com.OnedayOwner.server.platform.popup.repository.MenuRepository;
 import com.OnedayOwner.server.platform.popup.repository.PopupRestaurantRepository;
-import com.OnedayOwner.server.platform.reservation.entity.QReservationMenu;
 import com.OnedayOwner.server.platform.reservation.entity.ReservationTime;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationMenuRepository;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationRepository;
 import com.OnedayOwner.server.platform.reservation.repository.ReservationTimeRepository;
 import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.repository.UserRepository;
+import com.OnedayOwner.server.platform.utils.FileConverter;
+import com.OnedayOwner.server.platform.utils.S3Uploader;
 import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -49,11 +51,14 @@ public class PopupService {
     private final ReservationRepository reservationRepository;
     private final ReservationMenuRepository reservationMenuRepository;
     private final FeedbackRepository feedbackRepository;
+    private final S3Uploader s3Uploader;
 
 
     @Transactional(noRollbackFor = BusinessException.class)
     public PopupDto.PopupInBusinessDetail registerPopup(
             PopupDto.PopupRestaurantForm restaurantForm,
+            MultipartFile multipartFile,
+            List<MultipartFile> menuFiles,
             Long ownerId){
         Optional<PopupRestaurant> prevRestaurant = popupRestaurantRepository.findByUserIdAndInBusiness(ownerId, true);
         if (prevRestaurant.isPresent()) {
@@ -67,6 +72,16 @@ public class PopupService {
         if (restaurantForm.getStartDateTime().isBefore(LocalDateTime.now())) {
             throw new BusinessException(ErrorCode.POPUP_START_DATETIME_INVALID);
         }
+
+        File file = null;
+        try {
+            file = FileConverter.convertFile(multipartFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String imageUrl = s3Uploader.uploadFileAndReturnUrl(file, "restaurant", ownerId);
+
         //레스토랑 등록
         PopupRestaurant restaurant = popupRestaurantRepository.save(PopupRestaurant.builder()
                 .name(restaurantForm.getName())
@@ -81,9 +96,10 @@ public class PopupService {
                 .user(userRepository.findByIdAndRole(ownerId, Role.OWNER).orElseThrow(
                         () -> new BusinessException(ErrorCode.OWNER_NOT_FOUND)
                 ))
+                .imageUrl(imageUrl)
                 .build());
 
-        registerMenus(restaurantForm.getMenuForms(), restaurant.getId());//메뉴 등록
+        registerMenus(ownerId, restaurantForm.getMenuForms(), menuFiles, restaurant.getId());//메뉴 등록
 
         restaurantForm.getBusinessTimes().forEach(o -> {
             BusinessTime businessTime = BusinessTime.builder()
@@ -94,6 +110,7 @@ public class PopupService {
             businessTimeRepository.save(businessTime);//영업시간 등록
             registerReservationTime(o, restaurant);//예약시간 등록
         });
+
 
         return PopupDto.PopupInBusinessDetail.builder()
                 .popupRestaurant(restaurant)
@@ -175,35 +192,46 @@ public class PopupService {
     }
 
     @Transactional
-    public PopupDto.MenuDetail registerMenu(Long ownerId, PopupDto.MenuForm menuForm, Long popupId){
+    public PopupDto.MenuDetail registerMenu(Long ownerId, PopupDto.MenuForm menuForm, MultipartFile multipartFile, Long popupId){
         PopupRestaurant popupRestaurant = popupRestaurantRepository.findById(popupId).orElseThrow(
                 () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND));
         if (!popupRestaurant.getUser().getId().equals(ownerId)) {
             throw new BusinessException(ErrorCode.POPUP_AND_USER_NOT_MATCH);
         }
+
+        String imageUrl = null;
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            try {
+                // 파일을 S3에 업로드하고 이미지 URL 반환
+                File file = FileConverter.convertFile(multipartFile);
+                imageUrl = s3Uploader.uploadFileAndReturnUrl(file, "menu", popupRestaurant.getUser().getId());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         return new PopupDto.MenuDetail(menuRepository.save(Menu.builder()
                 .name(menuForm.getName())
                 .price(menuForm.getPrice())
                 .description(menuForm.getDescription())
                 .popupRestaurant(popupRestaurant)
+                .imageUrl(imageUrl)
                 .build()));
     }
 
     @Transactional
-    public List<PopupDto.MenuDetail> registerMenus(List<PopupDto.MenuForm> menuForms, Long popupId){
-        return menuForms.stream()
-                .map(menuForm -> menuRepository.save(Menu.builder()
-                    .name(menuForm.getName())
-                    .price(menuForm.getPrice())
-                    .description(menuForm.getDescription())
-                    .popupRestaurant(popupRestaurantRepository.findById(popupId).orElseThrow(
-                            () -> new BusinessException(ErrorCode.POPUP_NOT_FOUND)
-                    ))
-                    .build()))
-                .toList()
-                .stream()
-                .map(PopupDto.MenuDetail::new)
-                .toList();
+    public List<PopupDto.MenuDetail> registerMenus(Long ownerId,
+                                                   List<PopupDto.MenuForm> menuForms,
+                                                   List<MultipartFile> menuFiles,
+                                                   Long popupId){
+        List<PopupDto.MenuDetail> menuDetailList = new ArrayList<>();
+        for (int i = 0; i < menuForms.size(); i++) {
+            PopupDto.MenuForm menuForm = menuForms.get(i);
+            MultipartFile multipartFile = menuFiles.get(i);
+
+            menuDetailList.add(registerMenu(ownerId, menuForm, multipartFile, popupId));
+        }
+        return menuDetailList;
     }
 
     @Transactional

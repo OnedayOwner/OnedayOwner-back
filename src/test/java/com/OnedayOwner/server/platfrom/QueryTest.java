@@ -11,7 +11,9 @@ import com.OnedayOwner.server.platform.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -85,7 +87,31 @@ public class QueryTest {
                 .description("popup1 description")
                 .build();
 
-        PopupDto.PopupInBusinessDetail registerPopup = popupService.registerPopup(restaurantForm, owner.getId());
+        MockMultipartFile mockMultipartFile = new MockMultipartFile(
+                "restaurantImage",
+                "test-image.png",
+                "image/png",
+                "test image content".getBytes()
+        );
+        MockMultipartFile mockMenuFile1 = new MockMultipartFile(
+                "menuImage",
+                "menuImage1.png",
+                "image/png",
+                "test image content".getBytes()
+        );
+        MockMultipartFile mockMenuFile2 = new MockMultipartFile(
+                "menuImage",
+                "menuImage2.png",
+                "image/png",
+                "test image content".getBytes()
+        );
+
+        List<MultipartFile> mockMultipartFileList = new ArrayList<>();
+        mockMultipartFileList.add(mockMenuFile1);
+        mockMultipartFileList.add(mockMenuFile2);
+
+
+        PopupDto.PopupInBusinessDetail registerPopup = popupService.registerPopup(restaurantForm, mockMultipartFile, mockMultipartFileList, owner.getId());
 //
 //        List<ReservationDto.ReservationInfoDto> reservationTimes = reservationService.getReservationInfo(registerPopup.getId()).getReservationTimes();
 //        for(ReservationDto.ReservationInfoDto reservationTimeDto : reservationTimes){
