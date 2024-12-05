@@ -1,14 +1,17 @@
 package com.OnedayOwner.server.platform.user.controller;
 
 import com.OnedayOwner.server.global.security.JwtConfig;
+import com.OnedayOwner.server.global.security.SecurityUtils;
 import com.OnedayOwner.server.platform.auth.entity.AccessToken;
 import com.OnedayOwner.server.platform.auth.service.AuthService;
 import com.OnedayOwner.server.platform.user.dto.UserDto;
 import com.OnedayOwner.server.platform.user.entity.Role;
 import com.OnedayOwner.server.platform.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,5 +45,15 @@ public class UserController {
         return ResponseEntity.ok()
                 .header(jwtConfig.getHeader(), bearerToken)
                 .body(userDto);
+    }
+
+    @Operation(summary = "회원 정보 조회")
+    @GetMapping
+    public ResponseEntity<UserDto.UserInfo> getUser(
+            SecurityContextHolderAwareRequestWrapper request
+    ) {
+        Long userId = SecurityUtils.extractUserId(request);
+        return ResponseEntity.ok()
+                .body(userService.getUser(userId));
     }
 }

@@ -102,4 +102,11 @@ public class UserService {
             return new UserDto.UserInfo(user);
         }
     }
+
+    @Transactional
+    public UserDto.UserInfo getUser(Long userId) {
+        return new UserDto.UserInfo(userRepository.findById(userId).orElseThrow(
+                () -> new BusinessException(ErrorCode.USER_NOT_FOUND)
+        ));
+    }
 }
