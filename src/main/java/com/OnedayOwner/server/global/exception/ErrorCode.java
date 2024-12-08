@@ -54,6 +54,7 @@ public enum ErrorCode {
     RESERVATION_USER_NOT_MATCH(400, "R007", "예약과 회원이 매치되지 않습니다."),
 
     MENU_NOT_FOUND(404, "M001", "Menu not found"),
+    RESERVATION_TIME_OUT(408, "R008", "Reservation time out"),
 
 
 
