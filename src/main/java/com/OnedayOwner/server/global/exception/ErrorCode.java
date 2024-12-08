@@ -75,6 +75,9 @@ public enum ErrorCode {
     REGISTER_FEEDBACK_FIRST(403, "F004", "매장 피드백을 먼저 작성해주세요"),
     INVALID_SCORE(403, "F005", "점수가 올바르지 않습니다."),
     INVALID_DESIRED_PRICE(403, "F006", "희망 가격이 올바르지 않습니다."),
+
+    IMAGE_CONVERT_FAILED(500, "I001", "이미지 변환에 실패했습니다."),
+    S3_UPLOAD_FAILED(500, "I002", "이미지 업로드에 실패했습니다.")
     ;
 
     private final String code;

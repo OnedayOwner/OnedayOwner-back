@@ -7,9 +7,11 @@ import com.OnedayOwner.server.platform.popup.service.PopupService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,26 +24,30 @@ public class PopupController {
     private final PopupService popupService;
 
     @Operation(summary = "팝업 등록")
-    @PostMapping("/register")
+    @PostMapping(value =  "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PopupDto.PopupInBusinessDetail> registerPopup(
-        @RequestBody PopupDto.PopupRestaurantForm form,
+        @RequestPart("form") PopupDto.PopupRestaurantForm form,
+        @RequestPart(name = "file", required = false) MultipartFile file,
+        @RequestPart(name = "menuFiles", required = false) List<MultipartFile> menuFiles,
         SecurityContextHolderAwareRequestWrapper request
     ) {
         Long ownerId = SecurityUtils.extractUserId(request);
+        System.out.println("ownerId = " + ownerId);
         return ResponseEntity.ok()
-            .body(popupService.registerPopup(form, ownerId));
+            .body(popupService.registerPopup(form, file, menuFiles, ownerId));
     }
 
     @Operation(summary = "팝업 메뉴 등록")
     @PostMapping("/{popupId}/menu")
     public ResponseEntity<PopupDto.MenuDetail> registerMenu(
             SecurityContextHolderAwareRequestWrapper request,
-            PopupDto.MenuForm form,
+            @RequestPart(name = "form") PopupDto.MenuForm form,
+            @RequestPart(name = "file") MultipartFile file,
             @PathVariable("popupId")Long popupId
     ) {
         Long ownerId = SecurityUtils.extractUserId(request);
         return ResponseEntity.ok()
-            .body(popupService.registerMenu(ownerId, form, popupId));
+            .body(popupService.registerMenu(ownerId, form, file, popupId));
     }
 
     @Operation(summary = "팝업 조회",
