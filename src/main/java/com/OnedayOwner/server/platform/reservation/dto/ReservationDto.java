@@ -148,7 +148,7 @@ public class ReservationDto {
         private String popupName;
         private PopupDto.AddressForm address;
         private LocalDateTime reservationDateTime;
-        private String menuImageUrl;
+        private String imageUrl;
 
         public ReservationSummary(Reservation reservation) {
             this.id = reservation.getId();
@@ -160,9 +160,7 @@ public class ReservationDto {
                     .detail(reservation.getPopupRestaurant().getAddress().getDetail())
                     .build();
             this.reservationDateTime = reservation.getReservationDateTime();
-            this.menuImageUrl = reservation.getPopupRestaurant().getMenus().stream().findFirst()
-                    .map(Menu::getImageUrl)
-                    .orElse(null);
+            this.imageUrl = reservation.getPopupRestaurant().getImageUrl();
         }
     }
 }
