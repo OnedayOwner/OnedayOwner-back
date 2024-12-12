@@ -51,6 +51,9 @@ public class AuthService {
 
     @Transactional
     public Boolean passwordAuthenticate(String loginId, String rawPassword, Role role){
+        System.out.println(loginId);
+        System.out.println(role);
+        System.out.println(rawPassword);
         User user = userRepository.findByLoginIdAndRole(loginId, role).orElseThrow(
                 () -> new BusinessException(ErrorCode.USER_NOT_FOUND)
         );
